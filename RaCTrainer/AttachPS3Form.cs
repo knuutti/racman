@@ -252,6 +252,14 @@ namespace racman
                 gameName = "ToD (PAL DL)";
                 tod.ShowDialog();
             }
+            else if (game == "NPEA00343") // Sly 3 (PAL, Digital)
+            {
+                Hide();
+                func.api.Notify("RaCMAN connected!");
+                SLY3Form sly3 = new SLY3Form(new sly3(func.api));
+                gameName = "SLY 3 (PAL)";
+                sly3.ShowDialog();
+            }
             else
             {
                 if (game.Length > 0)

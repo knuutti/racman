@@ -165,6 +165,7 @@
       <DependentUpon>ChargebootColorPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="offsets\TOD\tod.cs" />
+    <Compile Include="offsets\SLY3\sly3.cs" />
     <Compile Include="RAC1Mp\RAC1MpForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -322,6 +323,12 @@
     <Compile Include="RAC4\RAC4Form.Designer.cs">
       <DependentUpon>RAC4Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="SLY3\SLY3Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SLY3\SLY3Form.Designer.cs">
+      <DependentUpon>SLY3Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="TOD\CategoryChoiceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -441,6 +448,9 @@
     </Compile>
     <EmbeddedResource Include="RAC3\UYAUnlocks.resx">
       <DependentUpon>UYAUnlocks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SLY3\SLY3Form.resx">
+      <DependentUpon>SLY3Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TOD\CategoryChoiceForm.resx">
       <DependentUpon>CategoryChoiceForm.cs</DependentUpon>
