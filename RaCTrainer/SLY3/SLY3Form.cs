@@ -12,6 +12,7 @@ namespace racman
     public partial class SLY3Form : Form
     {
         public Form InputDisplay;
+        public Form GadgetsWindow;
         public sly3 game;
 
         public SLY3Form(sly3 game)
@@ -21,6 +22,9 @@ namespace racman
 
             positionsComboBox.Items.AddRange(new object[] { "1", "2", "3", "4", "5" });
             positionsComboBox.Text = "1";
+
+            mapComboBox.Items.AddRange(game.GetMapNames());
+            mapComboBox.SelectedIndex = 0;
 
             game.SetupInputDisplayMemorySubs();
         }
@@ -128,6 +132,30 @@ namespace racman
                 memoryForm = new MemoryForm();
                 memoryForm.Show();
             }
+        }
+
+        private void loadMapButton_Click(object sender, EventArgs e)
+        {
+            game.LoadMap(mapComboBox.SelectedIndex);
+        }
+
+        private void gadgetsButton_Click(object sender, EventArgs e)
+        {
+            if (GadgetsWindow == null || GadgetsWindow.IsDisposed)
+            {
+                GadgetsWindow = new SLY3GadgetsForm(game);
+                GadgetsWindow.FormClosed += GadgetsWindow_FormClosed;
+                GadgetsWindow.Show();
+            }
+            else
+            {
+                GadgetsWindow.Focus();
+            }
+        }
+
+        private void GadgetsWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            GadgetsWindow = null;
         }
     }
 }

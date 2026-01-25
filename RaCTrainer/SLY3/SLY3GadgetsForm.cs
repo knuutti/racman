@@ -1,0 +1,261 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace racman
+{
+    public partial class SLY3GadgetsForm : Form
+    {
+        private sly3 game;
+
+        public SLY3GadgetsForm(sly3 game)
+        {
+            this.game = game;
+            InitializeComponent();
+            LoadGadgets();
+        }
+
+        private void slyGadgetsCheckedList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void slyGadgetsToggleCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            for (var i = 0; i < slyGadgetsCheckedList.Items.Count; i++)
+            {
+                slyGadgetsCheckedList.SetItemChecked(i, slyGadgetsToggleCheckBox.Checked);
+            }
+        }
+
+        // Discard Changes button - just close without saving
+        private void discardChangesButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        // Save button - write to memory and close
+        private void saveButton_Click(object sender, EventArgs e)
+        {
+            SaveGadgets();
+            this.Close();
+        }
+
+        // Save and Reload button - write to memory, trigger reload, and close
+        private void saveAndReloadButton_Click(object sender, EventArgs e)
+        {
+            SaveAndReload();
+            this.Close();
+        }
+
+        // Write gadget unlock states to memory
+        private void SaveGadgets()
+        {
+            var updatedGadgetStates = GetGadgetStates(slyGadgetsCheckedList)
+                .Concat(GetGadgetStates(bentleyGadgetsCheckedList))
+                .Concat(GetGadgetStates(murrayGadgetsCheckedList));
+
+            // Gadget states are stored as bits in 8-byte array
+            // Default values: FE 00 02 00 00 02 00 00
+            var gadgetBytes = new byte[8] { 0xFE, 0x00, 0x02, 0x00, 0x00, 0x02, 0x00, 0x00 };
+
+            foreach (var gadget in updatedGadgetStates)
+            {
+                if (AllGadgets.ContainsKey(gadget.Name))
+                {
+                    int bitIndex = AllGadgets[gadget.Name].UnlockBitIndex;
+                    SetBit(gadgetBytes, bitIndex, gadget.IsUnlocked);
+                }
+            }
+
+            int spinAttackLevel = (int)spinAttackLevelSelector.Value;
+            int pushAttackLevel = (int)pushAttackLevelSelector.Value;
+            int jumpAttackLevel = (int)jumpAttackLevelSelector.Value;
+
+            if (spinAttackLevel >= 1)
+                SetBit(gadgetBytes, AllGadgets["Spin Attack 1"].UnlockBitIndex, true);
+            if (spinAttackLevel >= 2)
+                SetBit(gadgetBytes, AllGadgets["Spin Attack 2"].UnlockBitIndex, true);
+            if (spinAttackLevel >= 3)
+                SetBit(gadgetBytes, AllGadgets["Spin Attack 3"].UnlockBitIndex, true);
+
+            if (pushAttackLevel >= 1)
+                SetBit(gadgetBytes, AllGadgets["Push Attack 1"].UnlockBitIndex, true);
+            if (pushAttackLevel >= 2)
+                SetBit(gadgetBytes, AllGadgets["Push Attack 2"].UnlockBitIndex, true);
+            if (pushAttackLevel >= 3)
+                SetBit(gadgetBytes, AllGadgets["Push Attack 3"].UnlockBitIndex, true);
+
+            if (jumpAttackLevel >= 1)
+                SetBit(gadgetBytes, AllGadgets["Jump Attack 1"].UnlockBitIndex, true);
+            if (jumpAttackLevel >= 2)
+                SetBit(gadgetBytes, AllGadgets["Jump Attack 2"].UnlockBitIndex, true);
+            if (jumpAttackLevel >= 3)
+                SetBit(gadgetBytes, AllGadgets["Jump Attack 3"].UnlockBitIndex, true);
+
+            game.SetGadgetUnlocks(gadgetBytes);
+        }
+
+        private void SaveAndReload()
+        {
+            SaveGadgets();
+            game.Load();
+        }
+
+        private List<GadgetState> GetGadgetStates(CheckedListBox checkedListBox)
+        {
+            var gadgetStates = new List<GadgetState>();
+
+            for (int i = 0; i < checkedListBox.Items.Count; i++)
+            {
+                string gadgetName = checkedListBox.Items[i].ToString();
+                bool isUnlocked = checkedListBox.GetItemChecked(i);
+
+                gadgetStates.Add(new GadgetState
+                {
+                    Name = gadgetName,
+                    IsUnlocked = isUnlocked
+                });
+            }
+
+            return gadgetStates;
+        }
+
+        // Load current gadget unlock states from memory
+        public void LoadGadgets()
+        {
+            byte[] gadgetBytes = game.GetGadgetUnlocks();
+
+            LoadGadgetsToList(slyGadgetsCheckedList, gadgetBytes);
+            LoadGadgetsToList(bentleyGadgetsCheckedList, gadgetBytes);
+            LoadGadgetsToList(murrayGadgetsCheckedList, gadgetBytes);
+            LoadSpecialMoveLevels(spinAttackLevelSelector, pushAttackLevelSelector, jumpAttackLevelSelector, gadgetBytes);
+        }
+
+        // Helper method to load gadgets into a specific CheckedListBox
+        private void LoadGadgetsToList(CheckedListBox checkedListBox, byte[] gadgetBytes)
+        {
+            for (int i = 0; i < checkedListBox.Items.Count; i++)
+            {
+                string gadgetName = checkedListBox.Items[i].ToString();
+
+                if (AllGadgets.ContainsKey(gadgetName))
+                {
+                    int bitIndex = AllGadgets[gadgetName].UnlockBitIndex;
+                    bool isUnlocked = GetBit(gadgetBytes, bitIndex);
+                    checkedListBox.SetItemChecked(i, isUnlocked);
+                }
+            }
+        }
+
+        private void LoadSpecialMoveLevels(NumericUpDown spinAttackLevelSelector, NumericUpDown pushAttackLevelSelector, NumericUpDown jumpAttackLevelSelector, byte[] gadgetBytes)
+        {
+            int spinAttackLevel = 0;
+            if (GetBit(gadgetBytes, AllGadgets["Spin Attack 1"].UnlockBitIndex)) spinAttackLevel++;
+            if (GetBit(gadgetBytes, AllGadgets["Spin Attack 2"].UnlockBitIndex)) spinAttackLevel++;
+            if (GetBit(gadgetBytes, AllGadgets["Spin Attack 3"].UnlockBitIndex)) spinAttackLevel++;
+            spinAttackLevelSelector.Value = spinAttackLevel;
+
+            int pushAttackLevel = 0;
+            if (GetBit(gadgetBytes, AllGadgets["Push Attack 1"].UnlockBitIndex)) pushAttackLevel++;
+            if (GetBit(gadgetBytes, AllGadgets["Push Attack 2"].UnlockBitIndex)) pushAttackLevel++;
+            if (GetBit(gadgetBytes, AllGadgets["Push Attack 3"].UnlockBitIndex)) pushAttackLevel++;
+            pushAttackLevelSelector.Value = pushAttackLevel;
+
+            int jumpAttackLevel = 0;
+            if (GetBit(gadgetBytes, AllGadgets["Jump Attack 1"].UnlockBitIndex)) jumpAttackLevel++;
+            if (GetBit(gadgetBytes, AllGadgets["Jump Attack 2"].UnlockBitIndex)) jumpAttackLevel++;
+            if (GetBit(gadgetBytes, AllGadgets["Jump Attack 3"].UnlockBitIndex)) jumpAttackLevel++;
+            jumpAttackLevelSelector.Value = jumpAttackLevel;
+        }
+
+        private class GadgetState
+        {
+            public string Name { get; set; }
+            public bool IsUnlocked { get; set; }
+        }
+
+        private class GadgetInfo
+        {
+            public string Name { get; set; }
+            public int UnlockBitIndex { get; set; }      
+            public int? ButtonBindingIndex { get; set; }  
+        }
+
+        private static readonly Dictionary<string, GadgetInfo> AllGadgets = new Dictionary<string, GadgetInfo>
+        {
+            { "Knockout Dive", new GadgetInfo { Name = "Knockout Dive", UnlockBitIndex = 25, ButtonBindingIndex = 31 } },
+            { "Mega Jump", new GadgetInfo { Name = "Mega Jump", UnlockBitIndex = 26, ButtonBindingIndex = 30 } },
+            { "Feral Pounce", new GadgetInfo { Name = "Feral Pounce", UnlockBitIndex = 27, ButtonBindingIndex = 29 } },
+            { "Silent Obliteration", new GadgetInfo { Name = "Silent Obliteration", UnlockBitIndex = 28, ButtonBindingIndex = null } },
+            { "Paraglider", new GadgetInfo { Name = "Paraglider", UnlockBitIndex = 29, ButtonBindingIndex = null } },
+            { "Combat Dodge", new GadgetInfo { Name = "Combat Dodge", UnlockBitIndex = 30, ButtonBindingIndex = 26 } },
+            { "Smoke Bomb", new GadgetInfo { Name = "Smoke Bomb", UnlockBitIndex = 31, ButtonBindingIndex = 25 } },
+            { "Venice Disguise", new GadgetInfo { Name = "Venice Disguise", UnlockBitIndex = 34, ButtonBindingIndex = 38 } },
+            { "Photographer Disguise", new GadgetInfo { Name = "Photographer Disguise", UnlockBitIndex = 33, ButtonBindingIndex = 39 } },
+            { "Pirate Disguise", new GadgetInfo { Name = "Pirate Disguise", UnlockBitIndex = 48, ButtonBindingIndex = 40 } },
+            { "Treasure Map", new GadgetInfo { Name = "Treasure Map", UnlockBitIndex = 36, ButtonBindingIndex = 36 } },
+            { "Rocket Boots", new GadgetInfo { Name = "Rocket Boots", UnlockBitIndex = 37, ButtonBindingIndex = 35 } },
+            { "Shadow Power", new GadgetInfo { Name = "Shadow Power", UnlockBitIndex = 40, ButtonBindingIndex = 32 } },
+            { "Shadow Power 2", new GadgetInfo { Name = "Shadow Power 2", UnlockBitIndex = 38, ButtonBindingIndex = 34 } },
+            { "Thief Reflexes", new GadgetInfo { Name = "Thief Reflexes", UnlockBitIndex = 39, ButtonBindingIndex = 33 } },
+
+            { "Push Attack 1", new GadgetInfo { Name = "Push Attack 1", UnlockBitIndex = 41, ButtonBindingIndex = null } },
+            { "Push Attack 2", new GadgetInfo { Name = "Push Attack 2", UnlockBitIndex = 56, ButtonBindingIndex = null } },
+            { "Push Attack 3", new GadgetInfo { Name = "Push Attack 3", UnlockBitIndex = 55, ButtonBindingIndex = null } },
+            { "Jump Attack 1", new GadgetInfo { Name = "Jump Attack 1", UnlockBitIndex = 44, ButtonBindingIndex = null } },
+            { "Jump Attack 2", new GadgetInfo { Name = "Jump Attack 2", UnlockBitIndex = 43, ButtonBindingIndex = null } },
+            { "Jump Attack 3", new GadgetInfo { Name = "Jump Attack 3", UnlockBitIndex = 42, ButtonBindingIndex = null } },
+            { "Spin Attack 1", new GadgetInfo { Name = "Spin Attack 1", UnlockBitIndex = 47, ButtonBindingIndex = null } },
+            { "Spin Attack 2", new GadgetInfo { Name = "Spin Attack 2", UnlockBitIndex = 46, ButtonBindingIndex = null } },
+            { "Spin Attack 3", new GadgetInfo { Name = "Spin Attack 3", UnlockBitIndex = 45, ButtonBindingIndex = null } },
+
+            { "Rage Bomb", new GadgetInfo { Name = "Rage Bomb", UnlockBitIndex = 9, ButtonBindingIndex = 15 } },
+            { "Size Destabilizer", new GadgetInfo { Name = "Size Destabilizer", UnlockBitIndex = 10, ButtonBindingIndex = 14 } },
+            { "Reduction Bomb", new GadgetInfo { Name = "Reduction Bomb", UnlockBitIndex = 24, ButtonBindingIndex = 16 } },
+            { "Grapple-Cam", new GadgetInfo { Name = "Grapple-Cam", UnlockBitIndex = 11, ButtonBindingIndex = 13 } },
+            { "Insanity Strike", new GadgetInfo { Name = "Insanity Strike", UnlockBitIndex = 12, ButtonBindingIndex = 12 } },
+            { "Hover Pack", new GadgetInfo { Name = "Hover Pack", UnlockBitIndex = 13, ButtonBindingIndex = null } },
+            { "Health Extractor", new GadgetInfo { Name = "Health Extractor", UnlockBitIndex = 14, ButtonBindingIndex = 10 } },
+            { "Adrenaline Burst", new GadgetInfo { Name = "Adrenaline Burst", UnlockBitIndex = 15, ButtonBindingIndex = 9 } },
+            { "Alarm Clock", new GadgetInfo { Name = "Alarm Clock", UnlockBitIndex = 16, ButtonBindingIndex = 8 } },
+
+            { "Raging Inferno Flop", new GadgetInfo { Name = "Raging Inferno Flop", UnlockBitIndex = 17, ButtonBindingIndex = 23 } },
+            { "Temporal Lock", new GadgetInfo { Name = "Temporal Lock", UnlockBitIndex = 18, ButtonBindingIndex = 22 } },
+            { "Fists of Flame", new GadgetInfo { Name = "Fists of Flame", UnlockBitIndex = 19, ButtonBindingIndex = 21 } },
+            { "Guttural Roar", new GadgetInfo { Name = "Guttural Roar", UnlockBitIndex = 20, ButtonBindingIndex = 20 } },
+            { "Juggernaut Throw", new GadgetInfo { Name = "Juggernaut Throw", UnlockBitIndex = 21, ButtonBindingIndex = null } },
+            { "Berserker Charge", new GadgetInfo { Name = "Berserker Charge", UnlockBitIndex = 22, ButtonBindingIndex = 18 } },
+            { "Diablo Fire Slam", new GadgetInfo { Name = "Diablo Fire Slam", UnlockBitIndex = 32, ButtonBindingIndex = 24 } }
+        };
+
+        private bool GetBit(byte[] bytes, int bitIndex)
+        {
+            int byteIndex = (bitIndex - 1) / 8;
+            int bitPosition = 7 - (bitIndex - 1) % 8;
+            return (bytes[byteIndex] & (1 << bitPosition)) != 0;
+        }
+
+        private void SetBit(byte[] bytes, int bitIndex, bool state)
+        {
+            
+            int byteIndex = (bitIndex - 1) / 8;
+            int bitPosition = 7 - (bitIndex - 1) % 8;
+            
+            if (state)
+            {
+                bytes[byteIndex] |= (byte)(1 << bitPosition);  // Set bit to 1
+            }
+            else
+            {
+                bytes[byteIndex] &= (byte)~(1 << bitPosition); // Clear bit to 0
+            }
+        }
+    }
+}
