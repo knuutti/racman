@@ -57,7 +57,7 @@ namespace racman
             {
                 try
                 {
-                    game.SetBoltCount(uint.Parse(coinsTextBox.Text));
+                    game.SetCoinCount(int.Parse(coinsTextBox.Text));
                 }
                 catch
                 {
@@ -81,6 +81,52 @@ namespace racman
             if (game.DiscordTimer != null)
             {
                 game.DiscordTimer.Stop();
+            }
+        }
+
+        private void toolsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void switchGameToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            Program.AttachPS3Form.Show();
+        }
+
+        private void configureButtonCombosToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ConfigureCombos configureCombos = new ConfigureCombos();
+            configureCombos.ShowDialog();
+        }
+
+        private void inputDisplayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (InputDisplay == null || InputDisplay.IsDisposed)
+            {
+                InputDisplay = new InputDisplay();
+                InputDisplay.Show();
+                game.InputsTimer.Start();
+            }
+            else
+            {
+                InputDisplay.Focus();
+            }
+        }
+
+        private void memoryUtilitiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MemoryForm memoryForm = Application.OpenForms["MemoryForm"] as MemoryForm;
+
+            if (memoryForm != null)
+            {
+                memoryForm.Activate();
+            }
+            else
+            {
+                memoryForm = new MemoryForm();
+                memoryForm.Show();
             }
         }
     }
