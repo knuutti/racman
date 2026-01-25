@@ -37,6 +37,7 @@ namespace racman
         public uint loadTrigger => 0x78D2C0; // Set to 1 to trigger load
 
         public uint gadgetUnlocks => 0x6CC7F8;
+        public uint gadgetBinds => 0x6CC7B0;
 
         public enum LoadTypes : uint
         {

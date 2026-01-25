@@ -19,6 +19,12 @@ namespace racman
             this.game = game;
             InitializeComponent();
             LoadGadgets();
+            PopulateBindingComboBoxes();
+            
+            // Wire up events to update comboboxes when gadgets are checked/unchecked
+            slyGadgetsCheckedList.ItemCheck += (s, e) => { BeginInvoke((MethodInvoker)(() => PopulateSlyBindingComboBoxes())); };
+            bentleyGadgetsCheckedList.ItemCheck += (s, e) => { BeginInvoke((MethodInvoker)(() => PopulateBentleyBindingComboBoxes())); };
+            murrayGadgetsCheckedList.ItemCheck += (s, e) => { BeginInvoke((MethodInvoker)(() => PopulateMurrayBindingComboBoxes())); };
         }
 
         private void slyGadgetsCheckedList_SelectedIndexChanged(object sender, EventArgs e)
@@ -255,6 +261,90 @@ namespace racman
             else
             {
                 bytes[byteIndex] &= (byte)~(1 << bitPosition); // Clear bit to 0
+            }
+        }
+
+        // Populate all binding comboboxes
+        private void PopulateBindingComboBoxes()
+        {
+            PopulateSlyBindingComboBoxes();
+            PopulateBentleyBindingComboBoxes();
+            PopulateMurrayBindingComboBoxes();
+        }
+
+        // Populate Sly binding comboboxes with checked gadgets
+        private void PopulateSlyBindingComboBoxes()
+        {
+            var checkedGadgets = GetCheckedGadgetNames(slyGadgetsCheckedList);
+            
+            PopulateComboBox(slyGadgetsL1ComboBox, checkedGadgets);
+            PopulateComboBox(slyGadgetsL2ComboBox, checkedGadgets);
+            PopulateComboBox(slyGadgetsR2ComboBox, checkedGadgets);
+        }
+
+        // Populate Bentley binding comboboxes with checked gadgets
+        private void PopulateBentleyBindingComboBoxes()
+        {
+            var checkedGadgets = GetCheckedGadgetNames(bentleyGadgetsCheckedList);
+            
+            PopulateComboBox(comboBox1, checkedGadgets);
+            PopulateComboBox(comboBox2, checkedGadgets);
+            PopulateComboBox(comboBox3, checkedGadgets);
+        }
+
+        // Populate Murray binding comboboxes with checked gadgets
+        private void PopulateMurrayBindingComboBoxes()
+        {
+            var checkedGadgets = GetCheckedGadgetNames(murrayGadgetsCheckedList);
+            
+            PopulateComboBox(comboBox4, checkedGadgets);
+            PopulateComboBox(comboBox5, checkedGadgets);
+            PopulateComboBox(comboBox6, checkedGadgets);
+        }
+
+        // Get list of checked gadget names from a CheckedListBox, filtering out those without binding indices
+        private List<string> GetCheckedGadgetNames(CheckedListBox checkedListBox)
+        {
+            var gadgetNames = new List<string>();
+            
+            for (int i = 0; i < checkedListBox.Items.Count; i++)
+            {
+                if (checkedListBox.GetItemChecked(i))
+                {
+                    string gadgetName = checkedListBox.Items[i].ToString();
+                    
+                    // Only include gadgets that exist in AllGadgets and have valid binding index
+                    if (AllGadgets.ContainsKey(gadgetName) && AllGadgets[gadgetName].ButtonBindingIndex > 0)
+                    {
+                        gadgetNames.Add(gadgetName);
+                    }
+                }
+            }
+            
+            return gadgetNames;
+        }
+
+        // Populate a single combobox with gadget names
+        private void PopulateComboBox(ComboBox comboBox, List<string> gadgetNames)
+        {
+            string currentSelection = comboBox.SelectedItem?.ToString();
+            
+            comboBox.Items.Clear();
+            comboBox.Items.Add("None"); // Add "None" option to unbind
+            
+            foreach (var gadgetName in gadgetNames)
+            {
+                comboBox.Items.Add(gadgetName);
+            }
+            
+            // Restore previous selection if it still exists
+            if (!string.IsNullOrEmpty(currentSelection) && comboBox.Items.Contains(currentSelection))
+            {
+                comboBox.SelectedItem = currentSelection;
+            }
+            else
+            {
+                comboBox.SelectedIndex = 0; // Default to "None"
             }
         }
     }
