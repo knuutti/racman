@@ -27,6 +27,78 @@ namespace racman
             mapComboBox.SelectedIndex = 0;
 
             game.SetupInputDisplayMemorySubs();
+
+            // Setup disconnect/reconnect callbacks for XMB transitions
+            if (func.api is Ratchetron r)
+            {
+                r.setDisconnectCallback(() =>
+                {
+                    // Release memory subs
+                    if (game.api is Ratchetron ratchetron)
+                    {
+                        ratchetron.ReleaseAllSubs();
+                    }
+
+                    // TODO: Optimize reset time by disconnecting Ratchetron 
+                    // before closing the game
+                });
+
+                r.setReconnectCallback(() =>
+                {
+                    int pid = 0;
+                    int attempts = 0;
+                    int maxAttempts = 30; // 90 seconds max wait
+                    
+                    while (pid == 0 && attempts < maxAttempts)
+                    {
+                        Thread.Sleep(3000);
+                        attempts++;
+                        
+                        try
+                        {
+                            pid = game.api.getCurrentPID();
+                            if (pid != 0)
+                            {
+                                Console.WriteLine($"Sly 3: Game detected after {attempts * 3} seconds (PID: {pid})");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Sly 3: Still waiting for game... ({attempts * 3}s elapsed)");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"Sly 3: Error checking game status: {ex.Message}");
+                        }
+                    }
+                    
+                    if (pid == 0)
+                    {
+                        Console.WriteLine("Sly 3: Game did not start within 90 seconds");
+                        game.api.Notify("Sly 3: Reconnection timeout");
+                        return;
+                    }
+                    
+                    // Update PID for new game session
+                    AttachPS3Form.pid = pid;
+                    game.pid = pid;
+                    
+                    // Give game extra time to fully initialize
+                    Thread.Sleep(2000);
+                    
+                    // Re-establish memory subscriptions
+                    game.SetupInputDisplayMemorySubs();
+                    
+                    // Restart input timer if needed
+                    if (InputDisplay != null && !InputDisplay.IsDisposed)
+                    {
+                        game.InputsTimer.Start();
+                    }
+                    
+                    game.api.Notify("Sly 3 reconnected!");
+                    Console.WriteLine("Sly 3: Reconnection complete");
+                });
+            }
         }
 
         private void inputDisplayButton_Click(object sender, EventArgs e)
@@ -77,7 +149,17 @@ namespace racman
 
         private void SLY3Form_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // Cleanup when form closes
+            // Make sure all child forms are closed
+            if (InputDisplay != null && !InputDisplay.IsDisposed)
+            {
+                InputDisplay.Close();
+            }
+            if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
+            {
+                GadgetsWindow.Close();
+            }
+            
+            // Stop timers
             if (game.InputsTimer != null)
             {
                 game.InputsTimer.Stop();
@@ -86,6 +168,33 @@ namespace racman
             {
                 game.DiscordTimer.Stop();
             }
+
+            try
+            {
+                if (game.api is Ratchetron r)
+                {
+                    r.ReleaseAllSubs();
+                }
+                game.api.Disconnect();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during disconnect: {ex.Message}");
+            }
+            
+            Application.Exit();
+            
+            Environment.Exit(0);
+        }
+
+        private void HandleDisconnect()
+        {
+            if (game.api is Ratchetron r)
+            {
+                r.ReleaseAllSubs();
+            }
+            game.api.Disconnect();
+            Console.WriteLine("Sly 3: Full cleanup on form close");
         }
 
         private void toolsToolStripMenuItem_Click(object sender, EventArgs e)

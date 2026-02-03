@@ -37,7 +37,10 @@ namespace racman
         public uint loadTrigger => 0x78D2C0; // Set to 1 to trigger load
 
         public uint gadgetUnlocks => 0x6CC7F8;
-        public uint gadgetBinds => 0x6CC7B0;
+        public uint gadgetBindsSly => 0x6CC7B0;
+        public uint gadgetBindsBentley => 0x6CC7BC;
+        public uint gadgetBindsMurray => 0x6CC7C8;
+
 
         public enum LoadTypes : uint
         {
@@ -125,6 +128,9 @@ namespace racman
 
         public override void CheckInputs(object sender, EventArgs e)
         {
+            // Controller combos temporarily disabled for Sly 3
+            // TODO: Implement proper functions for Sly 3 before re-enabling
+            /*
             if (Inputs.RawInputs == ConfigureCombos.saveCombo && inputCheck)
             {
                 SavePosition();
@@ -149,6 +155,7 @@ namespace racman
             {
                 inputCheck = true;
             }
+            */
         }
 
         public override void CheckPlanetForDiscordRPC(object sender = null, EventArgs e = null) { }
@@ -302,6 +309,26 @@ namespace racman
         public byte[] GetGadgetUnlocks()
         {
             return api.ReadMemory(pid, sly3.addr.gadgetUnlocks, 8);
+        }
+
+        // Read gadget binding for a character (returns button binding index, -1 if unbound)
+        public int GetGadgetBinding(uint baseAddress, int buttonOffset)
+        {
+            uint address = baseAddress + (uint)(buttonOffset * 4);
+            byte[] bytes = api.ReadMemory(pid, address, 4);
+            return BitConverter.ToInt32(bytes.Reverse().ToArray(), 0);
+        }
+
+        // Write gadget binding for a character (buttonBindingIndex = -1 to unbind)
+        // public void SetGadgetBinding(uint baseAddress, int buttonOffset, int buttonBindingIndex)
+        // {
+        //     uint address = baseAddress + (uint)(buttonOffset * 4);
+        //     byte[] bytes = BitConverter.GetBytes(buttonBindingIndex).Reverse().ToArray();
+        //     api.WriteMemory(pid, address, bytes);
+        // }
+
+        public void SetGadgetBindings(byte[] bindingBytes) {
+            api.WriteMemory(pid, sly3.addr.gadgetBindsSly, bindingBytes);
         }
     }
 }

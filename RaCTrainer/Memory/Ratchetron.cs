@@ -335,6 +335,7 @@ namespace racman
                 //this.udpClient.Send(new byte[] { 0x01 }, 1, remoteEndpoint);
 
                 Thread dataThread = new Thread(this.DataChannelReceive);
+                dataThread.IsBackground = true; // Critical: Mark as background thread so app can exit
                 dataThread.Start();
             } else if (returnValue[0] == 2)
             {

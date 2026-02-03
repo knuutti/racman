@@ -13,6 +13,9 @@ namespace racman
     public partial class SLY3GadgetsForm : Form
     {
         private sly3 game;
+        private ItemCheckEventHandler slyItemCheckHandler;
+        private ItemCheckEventHandler bentleyItemCheckHandler;
+        private ItemCheckEventHandler murrayItemCheckHandler;
 
         public SLY3GadgetsForm(sly3 game)
         {
@@ -20,11 +23,17 @@ namespace racman
             InitializeComponent();
             LoadGadgets();
             PopulateBindingComboBoxes();
+            LoadGadgetBindings();
             
-            // Wire up events to update comboboxes when gadgets are checked/unchecked
-            slyGadgetsCheckedList.ItemCheck += (s, e) => { BeginInvoke((MethodInvoker)(() => PopulateSlyBindingComboBoxes())); };
-            bentleyGadgetsCheckedList.ItemCheck += (s, e) => { BeginInvoke((MethodInvoker)(() => PopulateBentleyBindingComboBoxes())); };
-            murrayGadgetsCheckedList.ItemCheck += (s, e) => { BeginInvoke((MethodInvoker)(() => PopulateMurrayBindingComboBoxes())); };
+            // Store event handlers so we can unhook them during bulk operations
+            slyItemCheckHandler = (s, e) => { BeginInvoke((MethodInvoker)(() => PopulateSlyBindingComboBoxes())); };
+            bentleyItemCheckHandler = (s, e) => { BeginInvoke((MethodInvoker)(() => PopulateBentleyBindingComboBoxes())); };
+            murrayItemCheckHandler = (s, e) => { BeginInvoke((MethodInvoker)(() => PopulateMurrayBindingComboBoxes())); };
+            
+            // Wire up events
+            slyGadgetsCheckedList.ItemCheck += slyItemCheckHandler;
+            bentleyGadgetsCheckedList.ItemCheck += bentleyItemCheckHandler;
+            murrayGadgetsCheckedList.ItemCheck += murrayItemCheckHandler;
         }
 
         private void slyGadgetsCheckedList_SelectedIndexChanged(object sender, EventArgs e)
@@ -34,10 +43,13 @@ namespace racman
 
         private void slyGadgetsToggleCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            SuspendComboBoxUpdates();
             for (var i = 0; i < slyGadgetsCheckedList.Items.Count; i++)
             {
                 slyGadgetsCheckedList.SetItemChecked(i, slyGadgetsToggleCheckBox.Checked);
             }
+            ResumeComboBoxUpdates();
+            PopulateSlyBindingComboBoxes();
         }
 
         // Discard Changes button - just close without saving
@@ -50,13 +62,16 @@ namespace racman
         private void saveButton_Click(object sender, EventArgs e)
         {
             SaveGadgets();
+            SaveBindings();
             this.Close();
         }
 
         // Save and Reload button - write to memory, trigger reload, and close
         private void saveAndReloadButton_Click(object sender, EventArgs e)
         {
-            SaveAndReload();
+            SaveGadgets();
+            SaveBindings();
+            game.Load();
             this.Close();
         }
 
@@ -108,10 +123,37 @@ namespace racman
             game.SetGadgetUnlocks(gadgetBytes);
         }
 
-        private void SaveAndReload()
-        {
-            SaveGadgets();
-            game.Load();
+        private void SaveBindings() {
+
+            byte[] gadgetBindingBytes = new byte[48];
+
+            // Read the binding values for all comboboxes
+            var bindingCombos = new List<ComboBox>
+            {
+                slyGadgetsL1ComboBox, slyGadgetsL2ComboBox, slyGadgetsR2ComboBox,
+                bentleyGadgetsL1ComboBox, bentleyGadgetsL2ComboBox, bentleyGadgetsR2ComboBox,
+                murrayGadgetsL1ComboBox, murrayGadgetsL2ComboBox, murrayGadgetsR2ComboBox
+            };
+
+            for (int i = 0; i < bindingCombos.Count; i++)
+            {
+                string selectedGadget = bindingCombos[i].SelectedItem?.ToString();
+
+                int buttonBindingIndex = -1; // Default to -1 (unbound)
+
+                if (!string.IsNullOrEmpty(selectedGadget) && AllGadgets.ContainsKey(selectedGadget))
+                {
+                    buttonBindingIndex = AllGadgets[selectedGadget].ButtonBindingIndex ?? -1;
+                }
+
+                // Each binding is stored as a 4-byte integer
+                byte[] bindingBytes = BitConverter.GetBytes(buttonBindingIndex);
+                // reverse for big-endian
+                Array.Reverse(bindingBytes);
+                Array.Copy(bindingBytes, 0, gadgetBindingBytes, i * 4, 4);
+            }
+
+            game.SetGadgetBindings(gadgetBindingBytes);
         }
 
         private List<GadgetState> GetGadgetStates(CheckedListBox checkedListBox)
@@ -231,7 +273,10 @@ namespace racman
             { "Health Extractor", new GadgetInfo { Name = "Health Extractor", UnlockBitIndex = 14, ButtonBindingIndex = 10 } },
             { "Adrenaline Burst", new GadgetInfo { Name = "Adrenaline Burst", UnlockBitIndex = 15, ButtonBindingIndex = 9 } },
             { "Alarm Clock", new GadgetInfo { Name = "Alarm Clock", UnlockBitIndex = 16, ButtonBindingIndex = 8 } },
+            { "Fishing Pole", new GadgetInfo { Name = "Fishing Pole", UnlockBitIndex = 1, ButtonBindingIndex = 7 } },
+            { "Trigger Bomb", new GadgetInfo { Name = "Trigger Bomb", UnlockBitIndex = 2, ButtonBindingIndex = 6 } },
 
+            { "Be The Ball", new GadgetInfo { Name = "Be The Ball", UnlockBitIndex = 23, ButtonBindingIndex = 17 } },
             { "Raging Inferno Flop", new GadgetInfo { Name = "Raging Inferno Flop", UnlockBitIndex = 17, ButtonBindingIndex = 23 } },
             { "Temporal Lock", new GadgetInfo { Name = "Temporal Lock", UnlockBitIndex = 18, ButtonBindingIndex = 22 } },
             { "Fists of Flame", new GadgetInfo { Name = "Fists of Flame", UnlockBitIndex = 19, ButtonBindingIndex = 21 } },
@@ -287,9 +332,9 @@ namespace racman
         {
             var checkedGadgets = GetCheckedGadgetNames(bentleyGadgetsCheckedList);
             
-            PopulateComboBox(comboBox1, checkedGadgets);
-            PopulateComboBox(comboBox2, checkedGadgets);
-            PopulateComboBox(comboBox3, checkedGadgets);
+            PopulateComboBox(bentleyGadgetsR2ComboBox, checkedGadgets);
+            PopulateComboBox(bentleyGadgetsL2ComboBox, checkedGadgets);
+            PopulateComboBox(bentleyGadgetsL1ComboBox, checkedGadgets);
         }
 
         // Populate Murray binding comboboxes with checked gadgets
@@ -297,9 +342,9 @@ namespace racman
         {
             var checkedGadgets = GetCheckedGadgetNames(murrayGadgetsCheckedList);
             
-            PopulateComboBox(comboBox4, checkedGadgets);
-            PopulateComboBox(comboBox5, checkedGadgets);
-            PopulateComboBox(comboBox6, checkedGadgets);
+            PopulateComboBox(murrayGadgetsR2ComboBox, checkedGadgets);
+            PopulateComboBox(murrayGadgetsL2ComboBox, checkedGadgets);
+            PopulateComboBox(murrayGadgetsL1ComboBox, checkedGadgets);
         }
 
         // Get list of checked gadget names from a CheckedListBox, filtering out those without binding indices
@@ -346,6 +391,100 @@ namespace racman
             {
                 comboBox.SelectedIndex = 0; // Default to "None"
             }
+        }
+
+        // Temporarily unhook event handlers during bulk operations
+        private void SuspendComboBoxUpdates()
+        {
+            slyGadgetsCheckedList.ItemCheck -= slyItemCheckHandler;
+            bentleyGadgetsCheckedList.ItemCheck -= bentleyItemCheckHandler;
+            murrayGadgetsCheckedList.ItemCheck -= murrayItemCheckHandler;
+        }
+
+        // Re-hook event handlers after bulk operations
+        private void ResumeComboBoxUpdates()
+        {
+            slyGadgetsCheckedList.ItemCheck += slyItemCheckHandler;
+            bentleyGadgetsCheckedList.ItemCheck += bentleyItemCheckHandler;
+            murrayGadgetsCheckedList.ItemCheck += murrayItemCheckHandler;
+        }
+
+        private void bentleyGadgetsToggleCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SuspendComboBoxUpdates();
+            for (var i = 0; i < bentleyGadgetsCheckedList.Items.Count; i++)
+            {
+                bentleyGadgetsCheckedList.SetItemChecked(i, bentleyGadgetsToggleCheckBox.Checked);
+            }
+            ResumeComboBoxUpdates();
+            PopulateBentleyBindingComboBoxes();
+        }
+
+        private void murrayGadgetsToggleCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            SuspendComboBoxUpdates();
+            for (var i = 0; i < murrayGadgetsCheckedList.Items.Count; i++)
+            {
+                murrayGadgetsCheckedList.SetItemChecked(i, murrayGadgetsToggleCheckBox.Checked);
+            }
+            ResumeComboBoxUpdates();
+            PopulateMurrayBindingComboBoxes();
+        }
+
+        // Load current gadget bindings from memory and select them in comboboxes
+        private void LoadGadgetBindings()
+        {
+            // Load Sly bindings (L1=0, L2=1, R2=2)
+            LoadBindingToComboBox(slyGadgetsL1ComboBox, sly3.addr.gadgetBindsSly, 0);
+            LoadBindingToComboBox(slyGadgetsL2ComboBox, sly3.addr.gadgetBindsSly, 1);
+            LoadBindingToComboBox(slyGadgetsR2ComboBox, sly3.addr.gadgetBindsSly, 2);
+
+            // Load Bentley bindings
+            LoadBindingToComboBox(bentleyGadgetsL1ComboBox, sly3.addr.gadgetBindsBentley, 0);
+            LoadBindingToComboBox(bentleyGadgetsL2ComboBox, sly3.addr.gadgetBindsBentley, 1);
+            LoadBindingToComboBox(bentleyGadgetsR2ComboBox, sly3.addr.gadgetBindsBentley, 2);
+
+            // Load Murray bindings
+            LoadBindingToComboBox(murrayGadgetsL1ComboBox, sly3.addr.gadgetBindsMurray, 0);
+            LoadBindingToComboBox(murrayGadgetsL2ComboBox, sly3.addr.gadgetBindsMurray, 1);
+            LoadBindingToComboBox(murrayGadgetsR2ComboBox, sly3.addr.gadgetBindsMurray, 2);
+        }
+
+        // Load a single binding from memory and select it in the combobox
+        private void LoadBindingToComboBox(ComboBox comboBox, uint baseAddress, int buttonOffset)
+        {
+            int buttonBindingIndex = game.GetGadgetBinding(baseAddress, buttonOffset);
+
+            // Find gadget with this binding index
+            string gadgetName = FindGadgetByBindingIndex(buttonBindingIndex);
+
+            if (gadgetName != null && comboBox.Items.Contains(gadgetName))
+            {
+                comboBox.SelectedItem = gadgetName;
+            }
+            else
+            {
+                comboBox.SelectedIndex = 0; // Select "None"
+            }
+        }
+
+        // Find gadget name by its button binding index (returns null if not found or -1)
+        private string FindGadgetByBindingIndex(int buttonBindingIndex)
+        {
+            if (buttonBindingIndex == -1)
+            {
+                return null; // Unbound
+            }
+
+            foreach (var kvp in AllGadgets)
+            {
+                if (kvp.Value.ButtonBindingIndex == buttonBindingIndex)
+                {
+                    return kvp.Key;
+                }
+            }
+
+            return null; // Not found
         }
     }
 }
