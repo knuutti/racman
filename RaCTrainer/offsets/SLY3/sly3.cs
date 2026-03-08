@@ -41,6 +41,12 @@ namespace racman
         public uint gadgetBindsBentley => 0x6CC7BC;
         public uint gadgetBindsMurray => 0x6CC7C8;
 
+        // Autosplitter addresses
+        public uint currentCharacter => 0x0000;
+        public uint isLoading => 0x0000;
+        public uint currentJob => 0x0000;
+        public uint currentCheckpoint => 0x0000;
+        public uint currentMap => 0x0000;
 
         public enum LoadTypes : uint
         {
@@ -50,7 +56,7 @@ namespace racman
         }
     }
 
-    public class sly3 : IGame
+    public class sly3 : IGame, IAutosplitterAvailable
     {
         public static Sly3Addresses addr = new Sly3Addresses();
 
@@ -120,6 +126,15 @@ namespace racman
             // For compatibility with base class
             this.planetsList = new string[] { };
         }
+
+        public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
+        {
+            (addr.currentCharacter, 4), // Current character (Sly/Bentley/Murray)
+            (addr.isLoading, 4), // Loading state
+            (addr.currentJob, 4), // Current job/mission identifier
+            (addr.currentCheckpoint, 4), // Current checkpoint identifier
+            (addr.currentMap, 4), // Current map identifier
+        };
 
         public override void ResetLevelFlags() { }
         public override void SetFastLoads(bool enabled = false) { }

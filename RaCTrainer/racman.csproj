@@ -335,6 +335,12 @@
     <Compile Include="SLY3\SLY3GadgetsForm.Designer.cs">
       <DependentUpon>SLY3GadgetsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SLY3\SLY3Speedrun.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SLY3\SLY3Speedrun.Designer.cs">
+      <DependentUpon>SLY3Speedrun.cs</DependentUpon>
+    </Compile>
     <Compile Include="TOD\CategoryChoiceForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -460,6 +466,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SLY3\SLY3GadgetsForm.resx">
       <DependentUpon>SLY3GadgetsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SLY3\SLY3Speedrun.resx">
+      <DependentUpon>SLY3Speedrun.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TOD\CategoryChoiceForm.resx">
       <DependentUpon>CategoryChoiceForm.cs</DependentUpon>

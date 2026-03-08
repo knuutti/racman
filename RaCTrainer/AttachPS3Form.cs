@@ -30,7 +30,7 @@ namespace racman
             console = new RacManConsole();
             scripting = new RacmanScripting();
 
-            currentVerLabel.Text = "v" + Assembly.GetEntryAssembly().GetName().Version.ToString(3);
+            currentVerLabel.Text = "SluMAN v" + Assembly.GetEntryAssembly().GetName().Version.ToString(3);
 
             if (File.Exists(Environment.CurrentDirectory + @"\config.txt"))
             {
@@ -107,10 +107,10 @@ namespace racman
                 }
             }
 
-            Attach(func.api);
+            Attach(func.api, false);
         }
 
-        private void Attach(IPS3API api)
+        private void Attach(IPS3API api, Boolean speedrunMode = false)
         {
             if (!api.Connect())
             {
@@ -315,6 +315,24 @@ namespace racman
             func.api = new RPCS3("FUCK");
 
             Attach(func.api);
+        }
+
+        private void attachPS3SpeedrunModeButton_Click(object sender, EventArgs e)
+        {
+            ip = IPTextBox.Text;
+            func.ChangeFileLines("config.txt", Convert.ToString(ip), "ip");
+
+            func.api = this.useOldAPI ? (IPS3API)new WebMAN(ip) : (IPS3API)new Ratchetron(ip);
+
+            if (!this.useOldAPI)
+            {
+                if (!func.PrepareRatchetron(ip))
+                {
+                    return;
+                }
+            }
+
+            Attach(func.api, true);
         }
     }
 }
