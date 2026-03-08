@@ -299,14 +299,34 @@ namespace racman
         {
             int analogLSubID = api.SubMemory(pid, sly3.addr.analogOffsetLeft, 2, (value) =>
             {
-                Inputs.ly = (value[0] - 127) / 127.0f;
-                Inputs.lx = (value[1] - 127) / 127.0f;
+                // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
+                if (value[0] == 0 && value[1] == 0)
+                {
+                    // Default to neutral position when disconnected
+                    Inputs.ly = 0.0f;
+                    Inputs.lx = 0.0f;
+                }
+                else
+                {
+                    Inputs.ly = (value[0] - 127) / 127.0f;
+                    Inputs.lx = (value[1] - 127) / 127.0f;
+                }
             });
 
             int analogRSubID = api.SubMemory(pid, sly3.addr.analogOffsetRight, 2, (value) =>
             {
-                Inputs.ry = (value[0] - 127) / 127.0f;
-                Inputs.rx = (value[1] - 127) / 127.0f;
+                // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
+                if (value[0] == 0 && value[1] == 0)
+                {
+                    // Default to neutral position when disconnected
+                    Inputs.ry = 0.0f;
+                    Inputs.rx = 0.0f;
+                }
+                else
+                {
+                    Inputs.ry = (value[0] - 127) / 127.0f;
+                    Inputs.rx = (value[1] - 127) / 127.0f;
+                }
             });
         }
         
