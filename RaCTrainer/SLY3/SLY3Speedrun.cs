@@ -14,6 +14,7 @@ namespace racman
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly3 game;
+        public AutosplitterHelper autosplitter;
 
         public SLY3Speedrun(sly3 game)
         {
@@ -106,6 +107,20 @@ namespace racman
             else
             {
                 InputDisplay.Focus();
+            }
+        }
+
+        private void AutosplitterCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!AutosplitterCheckbox.Checked)
+            {
+                autosplitter.Stop();
+                autosplitter = null;
+            }
+            else
+            {
+                autosplitter = new AutosplitterHelper();
+                autosplitter.StartAutosplitterForGame(this.game);
             }
         }
     }
