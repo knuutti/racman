@@ -254,11 +254,22 @@ namespace racman
             }
             else if (game == "NPEA00343") // Sly 3 (PAL, Digital)
             {
-                Hide();
-                func.api.Notify("RaCMAN connected!");
-                SLY3Form sly3 = new SLY3Form(new sly3(func.api));
-                gameName = "SLY 3 (PAL)";
-                sly3.ShowDialog();
+                if (speedrunMode)
+                {
+                    Hide();
+                    func.api.Notify("RaCMAN connected!");
+                    SLY3Speedrun sly3 = new SLY3Speedrun(new sly3(func.api));
+                    gameName = "SLY 3 (PAL)";
+                    sly3.ShowDialog();
+                }
+                else
+                {
+                    Hide();
+                    func.api.Notify("RaCMAN connected!");
+                    SLY3Form sly3 = new SLY3Form(new sly3(func.api));
+                    gameName = "SLY 3 (PAL)";
+                    sly3.ShowDialog();
+                }
             }
             else
             {
