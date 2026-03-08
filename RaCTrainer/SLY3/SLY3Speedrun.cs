@@ -112,7 +112,7 @@ namespace racman
 
         private void AutosplitterCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            if (!AutosplitterCheckbox.Checked)
+            if (!autosplitterCheckbox.Checked)
             {
                 autosplitter.Stop();
                 autosplitter = null;
