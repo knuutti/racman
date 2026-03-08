@@ -90,6 +90,15 @@ namespace racman
                         game.InputsTimer.Start();
                     }
 
+                    // Restart autosplitter if it was running
+                    if (autosplitterCheckbox.Checked)
+                    {
+                        Console.WriteLine("Sly 3: Restarting autosplitter...");
+                        autosplitter.Stop();
+                        autosplitter = new AutosplitterHelper();
+                        autosplitter.StartAutosplitterForGame(this.game);
+                    }
+
                     game.api.Notify("Sly 3 reconnected!");
                     Console.WriteLine("Sly 3: Reconnection complete");
                 });

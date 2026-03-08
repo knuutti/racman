@@ -42,10 +42,11 @@ namespace racman
         public uint gadgetBindsMurray => 0x6CC7C8;
 
         // Autosplitter addresses
-        public uint isLoading => 0x6CB600;
+        public uint isLoading => 0x6CB603;
         public uint currentJob => 0x5EB488;
         public uint currentCheckpoint => 0x5EB48C;
         public uint currentMap => 0x78D398;
+        public uint gameSpeed => 0x5898B8;
 
         // Episode 1 specific addresses
         public uint veniceStarted => 0x6CE0B4; // 0 by default, changes to 1 when selecting Sly
@@ -131,11 +132,12 @@ namespace racman
 
         public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
         {
-            (addr.currentCharacter, 4), // Current character (Sly/Bentley/Murray)
-            (addr.isLoading, 4), // Loading state
+            (addr.isLoading, 1), // Loading state (1 byte)
             (addr.currentJob, 4), // Current job/mission identifier
             (addr.currentCheckpoint, 4), // Current checkpoint identifier
             (addr.currentMap, 4), // Current map identifier
+            (addr.veniceStarted, 4), // Venice started flag
+            (addr.gameSpeed, 4), // Game speed
         };
 
         public override void ResetLevelFlags() { }
