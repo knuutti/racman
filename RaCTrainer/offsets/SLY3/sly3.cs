@@ -42,11 +42,13 @@ namespace racman
         public uint gadgetBindsMurray => 0x6CC7C8;
 
         // Autosplitter addresses
-        public uint currentCharacter => 0x0000;
-        public uint isLoading => 0x0000;
-        public uint currentJob => 0x0000;
-        public uint currentCheckpoint => 0x0000;
-        public uint currentMap => 0x0000;
+        public uint isLoading => 0x6CB600;
+        public uint currentJob => 0x5EB488;
+        public uint currentCheckpoint => 0x5EB48C;
+        public uint currentMap => 0x78D398;
+
+        // Episode 1 specific addresses
+        public uint veniceStarted => 0x6CE0B4; // 0 by default, changes to 1 when selecting Sly
 
         public enum LoadTypes : uint
         {

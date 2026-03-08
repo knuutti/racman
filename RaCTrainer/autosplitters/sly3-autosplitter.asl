@@ -18,35 +18,31 @@ init
     vars.reader.BaseStream.Position = 0;
 
     vars.jobsEpisode1 = new List<int> {2117, 2360, 2261, 2314, 2199, 2170, 2382, 2218, 2448}
+    vars.currentJob = 0;
 
-    current.currentCharacter = vars.reader.ReadByte();
     current.isLoading = vars.reader.ReadByte();
     current.currentJob = vars.reader.ReadUInt32();
     current.currentCheckpoint = vars.reader.ReadUInt32();
     current.currentMap = vars.reader.ReadUInt32();
+    current.veniceStarted = vars.reader.ReadUInt32();
 }
 
 update
 {
     vars.reader.BaseStream.Position = 0;
 
-    current.currentCharacter = vars.reader.ReadByte();
     current.isLoading = vars.reader.ReadByte();
     current.currentJob = vars.reader.ReadUInt32();
     current.currentCheckpoint = vars.reader.ReadUInt32();
     current.currentMap = vars.reader.ReadUInt32();
+    current.veniceStarted = vars.reader.ReadUInt32();
 }
 
 start
 {
     if (settings["EPISODE_1"])
     {
-        return current.currentCharacter == 7;
-    }
-    
-    if (settings["EPISODE_2"])
-    {
-        return current.currentJob == 4294967295; // -1 as uint32
+        return veniceStarted == 1;
     }
     
     return false;
@@ -56,24 +52,12 @@ split
 {
     if (settings["EPISODE_1"])
     {
-        // Episode 1 split condition
-        if (current.currentCharacter == 8 && old.currentCharacter != 8)
-        {
+        if (old.currentJob == vars.jobsEpisode1[vars.currentJob] && current.currentJob != old.currentJob) {
+            vars.currentJob++;
             return true;
         }
-    }
-    
-    if (settings["EPISODE_2"])
-    {
-        // Episode 2 split conditions
-        if (current.currentJob == 23 && old.currentJob != 23)
-        {
-            return true;
-        }
-        
-        if (current.currentJob == 234 && old.currentJob != 234)
-        {
-            return true;
+        if  (current.currentJob == 2448 && current.currentCheckpoint == 2516) {
+            return true; // final split, Octavio defeated
         }
     }
     
@@ -82,5 +66,5 @@ split
 
 reset
 {
-    return current.isLoading == 1;
+    return current.veniceStarted == 0;
 }
