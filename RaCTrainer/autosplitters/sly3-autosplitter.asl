@@ -40,7 +40,7 @@ start
 {
     if (settings["EPISODE_1"])
     {
-        return (current.veniceStarted == 1 && current.currentMap == 3);
+        return (current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3);
     }
     
     return false;
@@ -60,7 +60,10 @@ split
     {
         // Splits that have a checkpoint value before Job Complete screen
         if (current.gameSpeed == 0 && old.gameSpeed == 1) {
-            if (current.currentCheckpoint == 2035) { return true; }
+            if (current.currentCheckpoint == 2035) { 
+                    Thread.Sleep(1283);
+                    return true; 
+                }
             if (current.currentCheckpoint == 2358) { return true; }
             if (current.currentCheckpoint == 2215) { return true; }
             if (current.currentCheckpoint == 2197) { return true; }
