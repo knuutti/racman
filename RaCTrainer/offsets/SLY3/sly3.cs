@@ -41,6 +41,9 @@ namespace racman
         public uint gadgetBindsBentley => 0x6CC7BC;
         public uint gadgetBindsMurray => 0x6CC7C8;
 
+        // Run file specific addresses
+        public uint suckValue => 0x589A3C;
+
         // Autosplitter addresses
         public uint isLoading => 0x6CB603;
         public uint currentJob => 0x5EB488;
@@ -368,6 +371,90 @@ namespace racman
 
         public void SetGadgetBindings(byte[] bindingBytes) {
             api.WriteMemory(pid, sly3.addr.gadgetBindsSly, bindingBytes);
+        }
+
+        // Run file loading helper methods
+        public void SetSuckValue(float value)
+        {
+            byte[] suckBytes = BitConverter.GetBytes(value);
+            if (!BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(suckBytes);
+            }
+            api.WriteMemory(pid, sly3.addr.suckValue, suckBytes);
+        }
+
+        public void WriteMemoryRegion(uint startAddress, byte[] data)
+        {
+            var spliceSize = 256; // Write in chunks to avoid overwhelming the API
+            for (int i = 0; i < data.Length; i += spliceSize)
+            {
+                int chunkSize = Math.Min(spliceSize, data.Length - i);
+                byte[] chunk = new byte[chunkSize];
+                Array.Copy(data, i, chunk, 0, chunkSize);
+                api.WriteMemory(pid, startAddress + (uint)i, chunk);
+            }
+        }
+
+        public void SetMapName(string mapName)
+        {
+            if (!string.IsNullOrEmpty(mapName))
+            {
+                // Clear the map AOB region first
+                byte[] clearBytes = new byte[64];
+                api.WriteMemory(pid, sly3.addr.mapAOB, clearBytes);
+                
+                // Write the new map name
+                byte[] mapBytes = System.Text.Encoding.ASCII.GetBytes(mapName);
+                api.WriteMemory(pid, sly3.addr.mapAOB, mapBytes);
+            }
+        }
+
+        public void SetSpawnLocation(uint location)
+        {
+            api.WriteMemory(pid, sly3.addr.spawnLocation, location);
+        }
+
+        public void TriggerGameLoad()
+        {
+            // Set load type to custom run file load (using reset type for now)
+            api.WriteMemory(pid, sly3.addr.loadType, (uint)18);
+            // Trigger the load
+            api.WriteMemory(pid, sly3.addr.loadTrigger, (uint)1);
+        }
+
+        public byte[] ReadMemoryRegion(uint startAddress, uint size)
+        {
+            return api.ReadMemory(pid, startAddress, size);
+        }
+
+        public (uint startAddress, uint size) GetMemoryRegionForEpisode(string episode)
+        {
+            switch (episode)
+            {
+                case "Episode1":
+                    return (0x6CD764, 0x6CE7A3 - 0x6CD764);
+                case "Episode2":
+                    // Add Episode 2 addresses when available
+                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                case "Episode3":
+                    // Add Episode 3 addresses when available
+                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                case "Episode4":
+                    // Add Episode 4 addresses when available
+                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                case "Episode5":
+                    // Add Episode 5 addresses when available
+                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                case "Episode6_NoCE":
+                    // Add Episode 6 No CE addresses when available
+                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                case "Episode6_CE":
+                    // Add Episode 6 CE addresses when available
+                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                default:
+                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Default to Episode 1
+            }
         }
     }
 }

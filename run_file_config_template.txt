@@ -1,0 +1,62 @@
+# ==== EPISODE 1 ====
+Episode1_MapName=venice_01
+Episode1_SpawnLocation=12345
+Episode1_MemoryAddress=7128932
+Episode1_MemoryData=ABCDEF1234567890...
+Episode1_GadgetUnlocks=FE00020000020000
+Episode1_GadgetBindings=FFFFFFFF...
+Episode1_SpecialAttacks=3,2,1
+
+# ==== EPISODE 2 ====
+Episode2_MapName=australia_01
+Episode2_SpawnLocation=12345
+Episode2_MemoryAddress=7128932
+Episode2_MemoryData=ABCDEF1234567890...
+Episode2_GadgetUnlocks=FE00020000020000
+Episode2_GadgetBindings=FFFFFFFF...
+Episode2_SpecialAttacks=3,2,1
+
+# ==== EPISODE 3 ====
+Episode3_MapName=china_01
+Episode3_SpawnLocation=12345
+Episode3_MemoryAddress=7128932
+Episode3_MemoryData=ABCDEF1234567890...
+Episode3_GadgetUnlocks=FE00020000020000
+Episode3_GadgetBindings=FFFFFFFF...
+Episode3_SpecialAttacks=3,2,1
+
+# ==== EPISODE 4 ====
+Episode4_MapName=holland_01
+Episode4_SpawnLocation=12345
+Episode4_MemoryAddress=7128932
+Episode4_MemoryData=ABCDEF1234567890...
+Episode4_GadgetUnlocks=FE00020000020000
+Episode4_GadgetBindings=FFFFFFFF...
+Episode4_SpecialAttacks=3,2,1
+
+# ==== EPISODE 5 ====
+Episode5_MapName=blood_bath_bay_01
+Episode5_SpawnLocation=12345
+Episode5_MemoryAddress=7128932
+Episode5_MemoryData=ABCDEF1234567890...
+Episode5_GadgetUnlocks=FE00020000020000
+Episode5_GadgetBindings=FFFFFFFF...
+Episode5_SpecialAttacks=3,2,1
+
+# ==== EPISODE 6 (No CE) ====
+Episode6_NoCE_MapName=kaine_island_01
+Episode6_NoCE_SpawnLocation=12345
+Episode6_NoCE_MemoryAddress=7128932
+Episode6_NoCE_MemoryData=ABCDEF1234567890...
+Episode6_NoCE_GadgetUnlocks=FE00020000020000
+Episode6_NoCE_GadgetBindings=FFFFFFFF...
+Episode6_NoCE_SpecialAttacks=3,2,1
+
+# ==== EPISODE 6 (CE) ====
+Episode6_CE_MapName=kaine_island_01
+Episode6_CE_SpawnLocation=12345
+Episode6_CE_MemoryAddress=7128932
+Episode6_CE_MemoryData=ABCDEF1234567890...
+Episode6_CE_GadgetUnlocks=FE00020000020000
+Episode6_CE_GadgetBindings=FFFFFFFF...
+Episode6_CE_SpecialAttacks=3,2,1

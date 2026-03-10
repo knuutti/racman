@@ -195,7 +195,115 @@ namespace racman
                 return;
             }
             
-            LoadRunFileGadgets();
+            LoadCompleteRunFile();
+        }
+
+        private void LoadCompleteRunFile()
+        {
+            string episodeKey = GetEpisodeKey(runFileComboBox.SelectedItem.ToString());
+            
+            try
+            {
+                // Load run file data from config
+                var runFileData = LoadRunFileDataFromConfig(episodeKey);
+                
+                if (runFileData == null)
+                {
+                    return;
+                }
+                
+                // Step 1: Write suck value (0.0f)
+                game.SetSuckValue(runFileData.SuckValue);
+                
+                // Step 2: Write memory data region
+                if (runFileData.MemoryData != null && runFileData.MemoryData.Length > 0)
+                {
+                    game.WriteMemoryRegion(runFileData.MemoryStartAddress, runFileData.MemoryData);
+                }
+                
+                // Step 3: Set map name
+                if (!string.IsNullOrEmpty(runFileData.MapName))
+                {
+                    game.SetMapName(runFileData.MapName);
+                }
+                
+                // Step 4: Set spawn location
+                game.SetSpawnLocation(runFileData.SpawnLocation);
+                
+                // Step 5: Load gadgets (existing functionality)
+                LoadRunFileGadgets();
+                
+                // Step 6: Trigger game load
+                game.TriggerGameLoad();
+                
+                game.api.Notify($"Complete run file loaded: {runFileComboBox.SelectedItem}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading complete run file: {ex.Message}", "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private RunFileData LoadRunFileDataFromConfig(string episodeKey)
+        {
+            // Check if run file data exists in config
+            string mapName = func.GetConfigData("config.txt", episodeKey + "_MapName");
+            string spawnLocationStr = func.GetConfigData("config.txt", episodeKey + "_SpawnLocation");
+            string memoryDataHex = func.GetConfigData("config.txt", episodeKey + "_MemoryData");
+            string memoryAddressStr = func.GetConfigData("config.txt", episodeKey + "_MemoryAddress");
+            // If no core data, return null (fall back to gadgets-only)
+            if (string.IsNullOrEmpty(mapName) && string.IsNullOrEmpty(memoryDataHex))
+            {
+                return null;
+            }
+            
+            var runFileData = new RunFileData();
+            
+            // Parse map name
+            runFileData.MapName = mapName;
+            
+            // Parse spawn location
+            if (uint.TryParse(spawnLocationStr, out uint spawnLocation))
+            {
+                runFileData.SpawnLocation = spawnLocation;
+            }
+            
+            // Parse memory data
+            if (!string.IsNullOrEmpty(memoryDataHex))
+            {
+                try
+                {
+                    runFileData.MemoryData = ConvertMemoryDataString(memoryDataHex);
+                }
+                catch
+                {
+                    // If memory data is corrupted, ignore it
+                    runFileData.MemoryData = null;
+                }
+            }
+            
+            // Parse memory address (hex format like "ffff" for 0xffff)
+            if (!string.IsNullOrEmpty(memoryAddressStr))
+            {
+                try
+                {
+                    runFileData.MemoryStartAddress = Convert.ToUInt32(memoryAddressStr, 16);
+                }
+                catch
+                {
+                    // Use default address for the episode if parsing fails
+                    var (startAddress, size) = game.GetMemoryRegionForEpisode(episodeKey);
+                    runFileData.MemoryStartAddress = startAddress;
+                }
+            }
+            else
+            {
+                // Use default address for the episode
+                var (startAddress, size) = game.GetMemoryRegionForEpisode(episodeKey);
+                runFileData.MemoryStartAddress = startAddress;
+            }
+            
+            return runFileData;
         }
 
         private void LoadRunFileGadgets()
@@ -234,6 +342,15 @@ namespace racman
             }
         }
 
+        public class RunFileData
+        {
+            public string MapName { get; set; }
+            public uint SpawnLocation { get; set; }
+            public byte[] MemoryData { get; set; }
+            public uint MemoryStartAddress { get; set; }
+            public float SuckValue { get; set; } = 0.0f;
+        }
+
         // Convert episode display name to a safe config key prefix
         private string GetEpisodeKey(string episodeName)
         {
@@ -259,6 +376,20 @@ namespace racman
             {
                 bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
             }
+            return bytes;
+        }
+
+        // Convert memory data string where each digit becomes one byte (e.g., "123" → [0x01, 0x02, 0x03])
+        private static byte[] ConvertMemoryDataString(string data)
+        {
+            Console.WriteLine(data);
+            byte[] bytes = new byte[data.Length];
+            for (int i = 0; i < data.Length; i++)
+            {
+                // Convert single digit character directly to byte value
+                bytes[i] = (byte)int.Parse(data[i].ToString());
+            }
+            Console.WriteLine(bytes);
             return bytes;
         }
     }

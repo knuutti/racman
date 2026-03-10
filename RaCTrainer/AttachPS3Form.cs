@@ -38,8 +38,18 @@ namespace racman
             }
             else
             {
-                var config = File.Create("config.txt");
-                config.Close();
+                // Try to copy the template config.txt from the source directory
+                string sourceConfigPath = Path.Combine(Application.StartupPath, "..", "..", "..", "config.txt");
+                if (File.Exists(sourceConfigPath))
+                {
+                    File.Copy(sourceConfigPath, "config.txt");
+                }
+                else
+                {
+                    // Fallback: create empty config if template not found
+                    var config = File.Create("config.txt");
+                    config.Close();
+                }
             }
             IPTextBox.Text = ip;
 
