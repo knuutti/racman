@@ -238,7 +238,6 @@
             this.languageLabel.Size = new System.Drawing.Size(71, 16);
             this.languageLabel.TabIndex = 14;
             this.languageLabel.Text = "Language:";
-            this.languageLabel.Click += new System.EventHandler(this.label1_Click);
             // 
             // button1
             // 
@@ -249,7 +248,6 @@
             this.button1.TabIndex = 13;
             this.button1.Text = "Load";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // comboBox1
             // 
@@ -259,7 +257,6 @@
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(148, 24);
             this.comboBox1.TabIndex = 12;
-            this.comboBox1.SelectedIndexChanged += new System.EventHandler(this.comboBox1_SelectedIndexChanged);
             // 
             // SLY3Form
             // 
