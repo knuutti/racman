@@ -65,8 +65,8 @@
             this.saveAndReloadButton = new System.Windows.Forms.Button();
             this.discardChangesButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.runFileComboBox = new System.Windows.Forms.ComboBox();
             this.saveRunFileGadgetsButton = new System.Windows.Forms.Button();
+            this.runFileComboBox = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.spinAttackLevelSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pushAttackLevelSelector)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.jumpAttackLevelSelector)).BeginInit();
@@ -79,7 +79,6 @@
             this.slyGadgetsCheckedList.FormattingEnabled = true;
             this.slyGadgetsCheckedList.Items.AddRange(new object[] {
             "Knockout Dive",
-            "Mega Jump",
             "Feral Pounce",
             "Silent Obliteration",
             "Paraglider",
@@ -94,7 +93,7 @@
             "Shadow Power 2",
             "Thief Reflexes"});
             this.slyGadgetsCheckedList.Location = new System.Drawing.Point(16, 27);
-            this.slyGadgetsCheckedList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.slyGadgetsCheckedList.Margin = new System.Windows.Forms.Padding(4);
             this.slyGadgetsCheckedList.Name = "slyGadgetsCheckedList";
             this.slyGadgetsCheckedList.Size = new System.Drawing.Size(201, 276);
             this.slyGadgetsCheckedList.TabIndex = 0;
@@ -114,7 +113,7 @@
             "Berserker Charge",
             "Diablo Fire Slam"});
             this.murrayGadgetsCheckedList.Location = new System.Drawing.Point(437, 27);
-            this.murrayGadgetsCheckedList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.murrayGadgetsCheckedList.Margin = new System.Windows.Forms.Padding(4);
             this.murrayGadgetsCheckedList.Name = "murrayGadgetsCheckedList";
             this.murrayGadgetsCheckedList.Size = new System.Drawing.Size(201, 276);
             this.murrayGadgetsCheckedList.TabIndex = 1;
@@ -136,7 +135,7 @@
             "Adrenaline Burst",
             "Alarm Clock"});
             this.bentleyGadgetsCheckedList.Location = new System.Drawing.Point(227, 27);
-            this.bentleyGadgetsCheckedList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bentleyGadgetsCheckedList.Margin = new System.Windows.Forms.Padding(4);
             this.bentleyGadgetsCheckedList.Name = "bentleyGadgetsCheckedList";
             this.bentleyGadgetsCheckedList.Size = new System.Drawing.Size(201, 276);
             this.bentleyGadgetsCheckedList.TabIndex = 2;
@@ -144,7 +143,7 @@
             // spinAttackLevelSelector
             // 
             this.spinAttackLevelSelector.Location = new System.Drawing.Point(149, 478);
-            this.spinAttackLevelSelector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.spinAttackLevelSelector.Margin = new System.Windows.Forms.Padding(4);
             this.spinAttackLevelSelector.Maximum = new decimal(new int[] {
             3,
             0,
@@ -198,7 +197,7 @@
             // pushAttackLevelSelector
             // 
             this.pushAttackLevelSelector.Location = new System.Drawing.Point(149, 510);
-            this.pushAttackLevelSelector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pushAttackLevelSelector.Margin = new System.Windows.Forms.Padding(4);
             this.pushAttackLevelSelector.Maximum = new decimal(new int[] {
             3,
             0,
@@ -222,7 +221,7 @@
             // jumpAttackLevelSelector
             // 
             this.jumpAttackLevelSelector.Location = new System.Drawing.Point(149, 542);
-            this.jumpAttackLevelSelector.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.jumpAttackLevelSelector.Margin = new System.Windows.Forms.Padding(4);
             this.jumpAttackLevelSelector.Maximum = new decimal(new int[] {
             3,
             0,
@@ -257,9 +256,9 @@
             // 
             this.slyGadgetsToggleCheckBox.AutoSize = true;
             this.slyGadgetsToggleCheckBox.Location = new System.Drawing.Point(20, 318);
-            this.slyGadgetsToggleCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.slyGadgetsToggleCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.slyGadgetsToggleCheckBox.Name = "slyGadgetsToggleCheckBox";
-            this.slyGadgetsToggleCheckBox.Size = new System.Drawing.Size(145, 20);
+            this.slyGadgetsToggleCheckBox.Size = new System.Drawing.Size(148, 20);
             this.slyGadgetsToggleCheckBox.TabIndex = 12;
             this.slyGadgetsToggleCheckBox.Text = "Check / Uncheck All";
             this.slyGadgetsToggleCheckBox.UseVisualStyleBackColor = true;
@@ -269,9 +268,9 @@
             // 
             this.bentleyGadgetsToggleCheckBox.AutoSize = true;
             this.bentleyGadgetsToggleCheckBox.Location = new System.Drawing.Point(227, 318);
-            this.bentleyGadgetsToggleCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bentleyGadgetsToggleCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.bentleyGadgetsToggleCheckBox.Name = "bentleyGadgetsToggleCheckBox";
-            this.bentleyGadgetsToggleCheckBox.Size = new System.Drawing.Size(145, 20);
+            this.bentleyGadgetsToggleCheckBox.Size = new System.Drawing.Size(148, 20);
             this.bentleyGadgetsToggleCheckBox.TabIndex = 13;
             this.bentleyGadgetsToggleCheckBox.Text = "Check / Uncheck All";
             this.bentleyGadgetsToggleCheckBox.UseVisualStyleBackColor = true;
@@ -281,9 +280,9 @@
             // 
             this.murrayGadgetsToggleCheckBox.AutoSize = true;
             this.murrayGadgetsToggleCheckBox.Location = new System.Drawing.Point(437, 318);
-            this.murrayGadgetsToggleCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.murrayGadgetsToggleCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.murrayGadgetsToggleCheckBox.Name = "murrayGadgetsToggleCheckBox";
-            this.murrayGadgetsToggleCheckBox.Size = new System.Drawing.Size(145, 20);
+            this.murrayGadgetsToggleCheckBox.Size = new System.Drawing.Size(148, 20);
             this.murrayGadgetsToggleCheckBox.TabIndex = 14;
             this.murrayGadgetsToggleCheckBox.Text = "Check / Uncheck All";
             this.murrayGadgetsToggleCheckBox.UseVisualStyleBackColor = true;
@@ -303,7 +302,7 @@
             // 
             this.slyGadgetsL1ComboBox.FormattingEnabled = true;
             this.slyGadgetsL1ComboBox.Location = new System.Drawing.Point(57, 353);
-            this.slyGadgetsL1ComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.slyGadgetsL1ComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.slyGadgetsL1ComboBox.Name = "slyGadgetsL1ComboBox";
             this.slyGadgetsL1ComboBox.Size = new System.Drawing.Size(160, 24);
             this.slyGadgetsL1ComboBox.TabIndex = 16;
@@ -312,7 +311,7 @@
             // 
             this.slyGadgetsL2ComboBox.FormattingEnabled = true;
             this.slyGadgetsL2ComboBox.Location = new System.Drawing.Point(57, 386);
-            this.slyGadgetsL2ComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.slyGadgetsL2ComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.slyGadgetsL2ComboBox.Name = "slyGadgetsL2ComboBox";
             this.slyGadgetsL2ComboBox.Size = new System.Drawing.Size(160, 24);
             this.slyGadgetsL2ComboBox.TabIndex = 18;
@@ -331,7 +330,7 @@
             // 
             this.slyGadgetsR2ComboBox.FormattingEnabled = true;
             this.slyGadgetsR2ComboBox.Location = new System.Drawing.Point(57, 420);
-            this.slyGadgetsR2ComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.slyGadgetsR2ComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.slyGadgetsR2ComboBox.Name = "slyGadgetsR2ComboBox";
             this.slyGadgetsR2ComboBox.Size = new System.Drawing.Size(160, 24);
             this.slyGadgetsR2ComboBox.TabIndex = 20;
@@ -350,7 +349,7 @@
             // 
             this.bentleyGadgetsR2ComboBox.FormattingEnabled = true;
             this.bentleyGadgetsR2ComboBox.Location = new System.Drawing.Point(268, 420);
-            this.bentleyGadgetsR2ComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bentleyGadgetsR2ComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.bentleyGadgetsR2ComboBox.Name = "bentleyGadgetsR2ComboBox";
             this.bentleyGadgetsR2ComboBox.Size = new System.Drawing.Size(160, 24);
             this.bentleyGadgetsR2ComboBox.TabIndex = 26;
@@ -369,7 +368,7 @@
             // 
             this.bentleyGadgetsL2ComboBox.FormattingEnabled = true;
             this.bentleyGadgetsL2ComboBox.Location = new System.Drawing.Point(268, 386);
-            this.bentleyGadgetsL2ComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bentleyGadgetsL2ComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.bentleyGadgetsL2ComboBox.Name = "bentleyGadgetsL2ComboBox";
             this.bentleyGadgetsL2ComboBox.Size = new System.Drawing.Size(160, 24);
             this.bentleyGadgetsL2ComboBox.TabIndex = 24;
@@ -388,7 +387,7 @@
             // 
             this.bentleyGadgetsL1ComboBox.FormattingEnabled = true;
             this.bentleyGadgetsL1ComboBox.Location = new System.Drawing.Point(268, 353);
-            this.bentleyGadgetsL1ComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.bentleyGadgetsL1ComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.bentleyGadgetsL1ComboBox.Name = "bentleyGadgetsL1ComboBox";
             this.bentleyGadgetsL1ComboBox.Size = new System.Drawing.Size(160, 24);
             this.bentleyGadgetsL1ComboBox.TabIndex = 22;
@@ -407,7 +406,7 @@
             // 
             this.murrayGadgetsR2ComboBox.FormattingEnabled = true;
             this.murrayGadgetsR2ComboBox.Location = new System.Drawing.Point(479, 420);
-            this.murrayGadgetsR2ComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.murrayGadgetsR2ComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.murrayGadgetsR2ComboBox.Name = "murrayGadgetsR2ComboBox";
             this.murrayGadgetsR2ComboBox.Size = new System.Drawing.Size(160, 24);
             this.murrayGadgetsR2ComboBox.TabIndex = 32;
@@ -426,7 +425,7 @@
             // 
             this.murrayGadgetsL2ComboBox.FormattingEnabled = true;
             this.murrayGadgetsL2ComboBox.Location = new System.Drawing.Point(479, 386);
-            this.murrayGadgetsL2ComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.murrayGadgetsL2ComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.murrayGadgetsL2ComboBox.Name = "murrayGadgetsL2ComboBox";
             this.murrayGadgetsL2ComboBox.Size = new System.Drawing.Size(160, 24);
             this.murrayGadgetsL2ComboBox.TabIndex = 30;
@@ -445,7 +444,7 @@
             // 
             this.murrayGadgetsL1ComboBox.FormattingEnabled = true;
             this.murrayGadgetsL1ComboBox.Location = new System.Drawing.Point(479, 353);
-            this.murrayGadgetsL1ComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.murrayGadgetsL1ComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.murrayGadgetsL1ComboBox.Name = "murrayGadgetsL1ComboBox";
             this.murrayGadgetsL1ComboBox.Size = new System.Drawing.Size(160, 24);
             this.murrayGadgetsL1ComboBox.TabIndex = 28;
@@ -463,7 +462,7 @@
             // saveButton
             // 
             this.saveButton.Location = new System.Drawing.Point(479, 510);
-            this.saveButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.saveButton.Margin = new System.Windows.Forms.Padding(4);
             this.saveButton.Name = "saveButton";
             this.saveButton.Size = new System.Drawing.Size(161, 28);
             this.saveButton.TabIndex = 33;
@@ -474,7 +473,7 @@
             // saveAndReloadButton
             // 
             this.saveAndReloadButton.Location = new System.Drawing.Point(479, 544);
-            this.saveAndReloadButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.saveAndReloadButton.Margin = new System.Windows.Forms.Padding(4);
             this.saveAndReloadButton.Name = "saveAndReloadButton";
             this.saveAndReloadButton.Size = new System.Drawing.Size(161, 28);
             this.saveAndReloadButton.TabIndex = 34;
@@ -486,7 +485,7 @@
             // 
             this.discardChangesButton.BackColor = System.Drawing.Color.White;
             this.discardChangesButton.Location = new System.Drawing.Point(479, 476);
-            this.discardChangesButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.discardChangesButton.Margin = new System.Windows.Forms.Padding(4);
             this.discardChangesButton.Name = "discardChangesButton";
             this.discardChangesButton.Size = new System.Drawing.Size(161, 28);
             this.discardChangesButton.TabIndex = 35;
@@ -505,6 +504,16 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Save gadgets to run file";
             // 
+            // saveRunFileGadgetsButton
+            // 
+            this.saveRunFileGadgetsButton.Location = new System.Drawing.Point(6, 58);
+            this.saveRunFileGadgetsButton.Name = "saveRunFileGadgetsButton";
+            this.saveRunFileGadgetsButton.Size = new System.Drawing.Size(173, 23);
+            this.saveRunFileGadgetsButton.TabIndex = 1;
+            this.saveRunFileGadgetsButton.Text = "Save";
+            this.saveRunFileGadgetsButton.UseVisualStyleBackColor = true;
+            this.saveRunFileGadgetsButton.Click += new System.EventHandler(this.saveRunFileGadgetsButton_Click);
+            // 
             // runFileComboBox
             // 
             this.runFileComboBox.FormattingEnabled = true;
@@ -521,16 +530,6 @@
             this.runFileComboBox.Size = new System.Drawing.Size(173, 24);
             this.runFileComboBox.TabIndex = 0;
             this.runFileComboBox.Text = "Select run file...";
-            // 
-            // saveRunFileGadgetsButton
-            // 
-            this.saveRunFileGadgetsButton.Location = new System.Drawing.Point(6, 58);
-            this.saveRunFileGadgetsButton.Name = "saveRunFileGadgetsButton";
-            this.saveRunFileGadgetsButton.Size = new System.Drawing.Size(173, 23);
-            this.saveRunFileGadgetsButton.TabIndex = 1;
-            this.saveRunFileGadgetsButton.Text = "Save";
-            this.saveRunFileGadgetsButton.UseVisualStyleBackColor = true;
-            this.saveRunFileGadgetsButton.Click += new System.EventHandler(this.saveRunFileGadgetsButton_Click);
             // 
             // SLY3GadgetsForm
             // 
@@ -574,7 +573,7 @@
             this.Controls.Add(this.bentleyGadgetsCheckedList);
             this.Controls.Add(this.murrayGadgetsCheckedList);
             this.Controls.Add(this.slyGadgetsCheckedList);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SLY3GadgetsForm";
             this.Text = "Gadgets";
             ((System.ComponentModel.ISupportInitialize)(this.spinAttackLevelSelector)).EndInit();

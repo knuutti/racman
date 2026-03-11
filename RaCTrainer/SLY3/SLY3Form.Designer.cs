@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SLY3Form));
             this.coinsTextBox = new System.Windows.Forms.TextBox();
             this.inputDisplayButton = new System.Windows.Forms.Button();
             this.coinsLabel = new System.Windows.Forms.Label();
@@ -56,7 +57,7 @@
             // coinsTextBox
             // 
             this.coinsTextBox.Location = new System.Drawing.Point(315, 59);
-            this.coinsTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.coinsTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.coinsTextBox.Name = "coinsTextBox";
             this.coinsTextBox.Size = new System.Drawing.Size(179, 22);
             this.coinsTextBox.TabIndex = 0;
@@ -65,7 +66,7 @@
             // inputDisplayButton
             // 
             this.inputDisplayButton.Location = new System.Drawing.Point(315, 416);
-            this.inputDisplayButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.inputDisplayButton.Margin = new System.Windows.Forms.Padding(4);
             this.inputDisplayButton.Name = "inputDisplayButton";
             this.inputDisplayButton.Size = new System.Drawing.Size(177, 28);
             this.inputDisplayButton.TabIndex = 1;
@@ -86,7 +87,7 @@
             // savePosButton
             // 
             this.savePosButton.Location = new System.Drawing.Point(20, 55);
-            this.savePosButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.savePosButton.Margin = new System.Windows.Forms.Padding(4);
             this.savePosButton.Name = "savePosButton";
             this.savePosButton.Size = new System.Drawing.Size(153, 28);
             this.savePosButton.TabIndex = 3;
@@ -97,7 +98,7 @@
             // loadPosButton
             // 
             this.loadPosButton.Location = new System.Drawing.Point(20, 91);
-            this.loadPosButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.loadPosButton.Margin = new System.Windows.Forms.Padding(4);
             this.loadPosButton.Name = "loadPosButton";
             this.loadPosButton.Size = new System.Drawing.Size(153, 28);
             this.loadPosButton.TabIndex = 4;
@@ -109,7 +110,7 @@
             // 
             this.positionsComboBox.FormattingEnabled = true;
             this.positionsComboBox.Location = new System.Drawing.Point(181, 58);
-            this.positionsComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.positionsComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.positionsComboBox.Name = "positionsComboBox";
             this.positionsComboBox.Size = new System.Drawing.Size(121, 24);
             this.positionsComboBox.TabIndex = 5;
@@ -125,7 +126,7 @@
             this.toolsToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(513, 30);
+            this.menuStrip1.Size = new System.Drawing.Size(513, 28);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -138,7 +139,7 @@
             this.inputDisplayToolStripMenuItem,
             this.memoryUtilitiesToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
-            this.menuToolStripMenuItem.Size = new System.Drawing.Size(60, 26);
+            this.menuToolStripMenuItem.Size = new System.Drawing.Size(60, 24);
             this.menuToolStripMenuItem.Text = "Menu";
             // 
             // switchGameToolStripMenuItem
@@ -177,21 +178,21 @@
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(101, 26);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(101, 24);
             this.toolsToolStripMenuItem.Text = "Autosplitter";
             this.toolsToolStripMenuItem.Click += new System.EventHandler(this.toolsToolStripMenuItem_Click);
             // 
             // toolsToolStripMenuItem1
             // 
             this.toolsToolStripMenuItem1.Name = "toolsToolStripMenuItem1";
-            this.toolsToolStripMenuItem1.Size = new System.Drawing.Size(58, 26);
+            this.toolsToolStripMenuItem1.Size = new System.Drawing.Size(58, 24);
             this.toolsToolStripMenuItem1.Text = "Tools";
             // 
             // mapComboBox
             // 
             this.mapComboBox.FormattingEnabled = true;
             this.mapComboBox.Location = new System.Drawing.Point(20, 220);
-            this.mapComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.mapComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.mapComboBox.Name = "mapComboBox";
             this.mapComboBox.Size = new System.Drawing.Size(148, 24);
             this.mapComboBox.TabIndex = 8;
@@ -199,7 +200,7 @@
             // loadMapButton
             // 
             this.loadMapButton.Location = new System.Drawing.Point(177, 218);
-            this.loadMapButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.loadMapButton.Margin = new System.Windows.Forms.Padding(4);
             this.loadMapButton.Name = "loadMapButton";
             this.loadMapButton.Size = new System.Drawing.Size(100, 28);
             this.loadMapButton.TabIndex = 9;
@@ -220,7 +221,7 @@
             // gadgetButton
             // 
             this.gadgetButton.Location = new System.Drawing.Point(16, 407);
-            this.gadgetButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.gadgetButton.Margin = new System.Windows.Forms.Padding(4);
             this.gadgetButton.Name = "gadgetButton";
             this.gadgetButton.Size = new System.Drawing.Size(151, 49);
             this.gadgetButton.TabIndex = 11;
@@ -279,10 +280,11 @@
             this.Controls.Add(this.inputDisplayButton);
             this.Controls.Add(this.coinsTextBox);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SLY3Form";
-            this.Text = "Form1";
+            this.Text = "SluMAN :: Sly 3: Honor Among Thieves - NPEA00343 (Practice Mode)";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

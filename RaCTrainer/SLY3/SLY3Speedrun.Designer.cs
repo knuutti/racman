@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SLY3Speedrun));
             this.inputDisplayButton = new System.Windows.Forms.Button();
             this.autosplitterCheckbox = new System.Windows.Forms.CheckBox();
             this.gadgetsButton = new System.Windows.Forms.Button();
@@ -53,7 +54,7 @@
             this.autosplitterCheckbox.AutoSize = true;
             this.autosplitterCheckbox.Location = new System.Drawing.Point(12, 57);
             this.autosplitterCheckbox.Name = "autosplitterCheckbox";
-            this.autosplitterCheckbox.Size = new System.Drawing.Size(92, 20);
+            this.autosplitterCheckbox.Size = new System.Drawing.Size(95, 20);
             this.autosplitterCheckbox.TabIndex = 1;
             this.autosplitterCheckbox.Text = "Autosplitter";
             this.autosplitterCheckbox.UseVisualStyleBackColor = true;
@@ -75,7 +76,7 @@
             this.alwaysTopButton.AutoSize = true;
             this.alwaysTopButton.Location = new System.Drawing.Point(12, 83);
             this.alwaysTopButton.Name = "alwaysTopButton";
-            this.alwaysTopButton.Size = new System.Drawing.Size(117, 20);
+            this.alwaysTopButton.Size = new System.Drawing.Size(120, 20);
             this.alwaysTopButton.TabIndex = 4;
             this.alwaysTopButton.Text = "Always On Top";
             this.alwaysTopButton.UseVisualStyleBackColor = true;
@@ -130,6 +131,7 @@
             this.Controls.Add(this.gadgetsButton);
             this.Controls.Add(this.autosplitterCheckbox);
             this.Controls.Add(this.inputDisplayButton);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SLY3Speedrun";
             this.Text = "SluMAN :: Sly 3: Honor Among Thieves - NPEA00343 (Speedrun Mode)";
             this.groupBox1.ResumeLayout(false);

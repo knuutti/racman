@@ -83,17 +83,7 @@ namespace racman
         private int pleaseStartTheGame = 1;
 
         private string[] startGameText = {
-                "You need to start the game first." ,
-                "Bro, you need to start the game first.",
-                "You're not in a game. You need to be in a game to attach RaCMAN.",
-                "Are you even reading the error messages? Please start the game.",
-                "What the fuck? Can you please start the game before hitting \"Attach\"?",
-                "???",
-                "Fr, start the game on your PS3.",
-                "Why? What's your problem?",
-                "Fuck you",
-                "This is getting ridiculous.",
-                "I'm begging you, start the game.",
+                "You need to start the game first."
         };
 
 
@@ -267,7 +257,7 @@ namespace racman
                 if (speedrunMode)
                 {
                     Hide();
-                    func.api.Notify("RaCMAN connected!");
+                    func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Speedrun Mode)");
                     SLY3Speedrun sly3 = new SLY3Speedrun(new sly3(func.api));
                     gameName = "SLY 3 (PAL)";
                     sly3.ShowDialog();
@@ -275,7 +265,7 @@ namespace racman
                 else
                 {
                     Hide();
-                    func.api.Notify("RaCMAN connected!");
+                    func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Practice Mode)");
                     SLY3Form sly3 = new SLY3Form(new sly3(func.api));
                     gameName = "SLY 3 (PAL)";
                     sly3.ShowDialog();

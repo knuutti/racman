@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -204,7 +205,6 @@ namespace racman
             
             try
             {
-                // Load run file data from config
                 var runFileData = LoadRunFileDataFromConfig(episodeKey);
                 
                 if (runFileData == null)
@@ -212,31 +212,40 @@ namespace racman
                     return;
                 }
                 
-                // Step 1: Write suck value (0.0f)
                 game.SetSuckValue(runFileData.SuckValue);
                 
-                // Step 2: Write memory data region
                 if (runFileData.MemoryData != null && runFileData.MemoryData.Length > 0)
                 {
                     game.WriteMemoryRegion(runFileData.MemoryStartAddress, runFileData.MemoryData);
                 }
                 
-                // Step 3: Set map name
                 if (!string.IsNullOrEmpty(runFileData.MapName))
                 {
                     game.SetMapName(runFileData.MapName);
                 }
                 
-                // Step 4: Set spawn location
                 game.SetSpawnLocation(runFileData.SpawnLocation);
                 
-                // Step 5: Load gadgets (existing functionality)
                 LoadRunFileGadgets();
-                
-                // Step 6: Trigger game load
-                game.TriggerGameLoad();
-                
-                game.api.Notify($"Complete run file loaded: {runFileComboBox.SelectedItem}");
+
+                var loadType = (uint)Sly3Addresses.LoadTypes.RunFile;
+
+                if (episodeKey == "Episode6_CE" || episodeKey == "Episode6_NoCE")
+                {
+                    game.SetJobState(4342, 1842);
+                    if (episodeKey == "Episode6_CE")
+                    {
+                        game.SetEpisode6NoobMode();
+                        loadType = (uint)Sly3Addresses.LoadTypes.Job;
+                    }   
+                } else
+                {
+                    SetTutorialComplete();
+                }
+
+                game.TriggerGameLoad(loadType);
+
+                // game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)}: Loading {runFileComboBox.SelectedItem} run file.");
             }
             catch (Exception ex)
             {
@@ -244,14 +253,14 @@ namespace racman
             }
         }
 
+        // Function for loading saved run file data from config
         private RunFileData LoadRunFileDataFromConfig(string episodeKey)
         {
-            // Check if run file data exists in config
             string mapName = func.GetConfigData("config.txt", episodeKey + "_MapName");
             string spawnLocationStr = func.GetConfigData("config.txt", episodeKey + "_SpawnLocation");
             string memoryDataHex = func.GetConfigData("config.txt", episodeKey + "_MemoryData");
             string memoryAddressStr = func.GetConfigData("config.txt", episodeKey + "_MemoryAddress");
-            // If no core data, return null (fall back to gadgets-only)
+
             if (string.IsNullOrEmpty(mapName) && string.IsNullOrEmpty(memoryDataHex))
             {
                 return null;
@@ -259,16 +268,13 @@ namespace racman
             
             var runFileData = new RunFileData();
             
-            // Parse map name
             runFileData.MapName = mapName;
             
-            // Parse spawn location
             if (uint.TryParse(spawnLocationStr, out uint spawnLocation))
             {
                 runFileData.SpawnLocation = spawnLocation;
             }
             
-            // Parse memory data
             if (!string.IsNullOrEmpty(memoryDataHex))
             {
                 try
@@ -277,12 +283,10 @@ namespace racman
                 }
                 catch
                 {
-                    // If memory data is corrupted, ignore it
                     runFileData.MemoryData = null;
                 }
             }
             
-            // Parse memory address (hex format like "ffff" for 0xffff)
             if (!string.IsNullOrEmpty(memoryAddressStr))
             {
                 try
@@ -291,14 +295,12 @@ namespace racman
                 }
                 catch
                 {
-                    // Use default address for the episode if parsing fails
                     var (startAddress, size) = game.GetMemoryRegionForEpisode(episodeKey);
                     runFileData.MemoryStartAddress = startAddress;
                 }
             }
             else
             {
-                // Use default address for the episode
                 var (startAddress, size) = game.GetMemoryRegionForEpisode(episodeKey);
                 runFileData.MemoryStartAddress = startAddress;
             }
@@ -306,11 +308,30 @@ namespace racman
             return runFileData;
         }
 
+        private void SetTutorialComplete()
+        {
+            string memoryDataHex = func.GetConfigData("config.txt", "Episode0_MemoryData");
+            string memoryAddressStr = func.GetConfigData("config.txt", "Episode0_MemoryAddress");   
+
+            if (!string.IsNullOrEmpty(memoryDataHex) && !string.IsNullOrEmpty(memoryAddressStr))
+            {
+                try
+                {
+                    byte[] memoryData = ConvertMemoryDataString(memoryDataHex);
+                    uint memoryAddress = Convert.ToUInt32(memoryAddressStr, 16);
+                    game.WriteMemoryRegion(memoryAddress, memoryData);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error setting tutorial complete: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
         private void LoadRunFileGadgets()
         {
             string episodeKey = GetEpisodeKey(runFileComboBox.SelectedItem.ToString());
             
-            // Load gadget data from config
             string gadgetHex = func.GetConfigData("config.txt", episodeKey + "_GadgetUnlocks");
             string bindingHex = func.GetConfigData("config.txt", episodeKey + "_GadgetBindings");
             
@@ -323,13 +344,10 @@ namespace racman
                     
                     game.SetGadgetUnlocks(gadgetBytes);
                     
-                    // Only set bindings if we have binding data
                     if (!string.IsNullOrEmpty(bindingHex))
                     {
                         game.SetGadgetBindings(bindingBytes);
                     }
-                    
-                    game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)}: Loading {runFileComboBox.SelectedItem} run file.");
                 }
                 catch (Exception ex)
                 {
@@ -351,7 +369,6 @@ namespace racman
             public float SuckValue { get; set; } = 0.0f;
         }
 
-        // Convert episode display name to a safe config key prefix
         private string GetEpisodeKey(string episodeName)
         {
             switch (episodeName)
@@ -363,11 +380,11 @@ namespace racman
                 case "Episode 5": return "Episode5";
                 case "Episode 6 (No CE)": return "Episode6_NoCE";
                 case "Episode 6 (CE)": return "Episode6_CE";
-                default: return "Episode1"; // fallback
+                default: return "Episode1";
             }
         }
 
-        // Convert hex string to byte array
+        // Helper function for converting strings like "FFFF" to [0xFF, 0xFF] byte array
         private static byte[] StringToByteArray(string hex)
         {
             int NumberChars = hex.Length;
@@ -379,17 +396,16 @@ namespace racman
             return bytes;
         }
 
-        // Convert memory data string where each digit becomes one byte (e.g., "123" → [0x01, 0x02, 0x03])
+        // Helper function for converting (comma-separated) memory data to byte array
         private static byte[] ConvertMemoryDataString(string data)
         {
-            Console.WriteLine(data);
-            byte[] bytes = new byte[data.Length];
-            for (int i = 0; i < data.Length; i++)
+            var parts = data.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+    
+            byte[] bytes = new byte[parts.Length];
+            for (int i = 0; i < parts.Length; i++)
             {
-                // Convert single digit character directly to byte value
-                bytes[i] = (byte)int.Parse(data[i].ToString());
+                bytes[i] = (byte)int.Parse(parts[i].ToString());
             }
-            Console.WriteLine(bytes);
             return bytes;
         }
     }

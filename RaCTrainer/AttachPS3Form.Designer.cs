@@ -29,6 +29,7 @@ namespace racman
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AttachPS3Form));
             this.IPTextBox = new System.Windows.Forms.TextBox();
             this.attachButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -112,6 +113,7 @@ namespace racman
             this.Controls.Add(this.attachButton);
             this.Controls.Add(this.IPTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "AttachPS3Form";

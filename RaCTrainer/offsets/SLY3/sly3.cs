@@ -43,6 +43,7 @@ namespace racman
 
         // Run file specific addresses
         public uint suckValue => 0x589A3C;
+        public uint currentCharacter => 0x5EA000;
 
         // Autosplitter addresses
         public uint isLoading => 0x6CB603;
@@ -59,6 +60,8 @@ namespace racman
             Fast = 0,
             Normal = 6,
             Reset = 15,
+            RunFile = 18,
+            Job = 134,
         }
     }
 
@@ -415,11 +418,29 @@ namespace racman
             api.WriteMemory(pid, sly3.addr.spawnLocation, location);
         }
 
-        public void TriggerGameLoad()
+        public void SetJobState(uint jobId, uint cpId)
         {
-            // Set load type to custom run file load (using reset type for now)
-            api.WriteMemory(pid, sly3.addr.loadType, (uint)18);
-            // Trigger the load
+            api.WriteMemory(pid, sly3.addr.currentCharacter, BitConverter.GetBytes(-1));
+            api.WriteMemory(pid, sly3.addr.currentJob, jobId);
+            api.WriteMemory(pid, sly3.addr.currentCheckpoint, cpId);
+            api.WriteMemory(pid, sly3.addr.currentCheckpoint + 0x4, cpId);
+        }
+
+        public void SetEpisode6NoobMode()
+        {
+            api.WriteMemory(pid, 0x6CCDA0, BitConverter.GetBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCDC0, BitConverter.GetBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD90, BitConverter.GetBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD80, BitConverter.GetBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD60, BitConverter.GetBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD80, BitConverter.GetBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCDD0, BitConverter.GetBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD70, BitConverter.GetBytes(1.0f));
+        }
+
+        public void TriggerGameLoad(uint loadType = (uint)Sly3Addresses.LoadTypes.Normal)
+        {
+            api.WriteMemory(pid, sly3.addr.loadType, loadType);
             api.WriteMemory(pid, sly3.addr.loadTrigger, (uint)1);
         }
 
@@ -433,27 +454,21 @@ namespace racman
             switch (episode)
             {
                 case "Episode1":
-                    return (0x6CD764, 0x6CE7A3 - 0x6CD764);
+                    return (0x6CD764, 4096); // Reasonable size for memory region
                 case "Episode2":
-                    // Add Episode 2 addresses when available
-                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                    return (0x6CE314, 4096);
                 case "Episode3":
-                    // Add Episode 3 addresses when available
-                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                    return (0x6CED80, 4096);
                 case "Episode4":
-                    // Add Episode 4 addresses when available
-                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                    return (0x6CF688, 4096);
                 case "Episode5":
-                    // Add Episode 5 addresses when available
-                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                    return (0x6D0680, 4096);
                 case "Episode6_NoCE":
-                    // Add Episode 6 No CE addresses when available
-                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                    return (0x6D1258, 4096);
                 case "Episode6_CE":
-                    // Add Episode 6 CE addresses when available
-                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Placeholder
+                    return (0x6D1258, 4096);
                 default:
-                    return (0x6CD764, 0x6CE7A3 - 0x6CD764); // Default to Episode 1
+                    return (0x6CD764, 4096); // Default to Episode 1
             }
         }
     }
