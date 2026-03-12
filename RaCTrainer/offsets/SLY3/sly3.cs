@@ -418,24 +418,40 @@ namespace racman
             api.WriteMemory(pid, sly3.addr.spawnLocation, location);
         }
 
-        public void SetJobState(uint jobId, uint cpId)
+        public void SetJobState(uint jobId, uint cpId, int characterId = -1)
         {
-            api.WriteMemory(pid, sly3.addr.currentCharacter, BitConverter.GetBytes(-1));
+            
+            byte[] characterBytes = BitConverter.GetBytes(characterId);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(characterBytes);
+            }
+
+            api.WriteMemory(pid, sly3.addr.currentCharacter, characterBytes);
             api.WriteMemory(pid, sly3.addr.currentJob, jobId);
             api.WriteMemory(pid, sly3.addr.currentCheckpoint, cpId);
             api.WriteMemory(pid, sly3.addr.currentCheckpoint + 0x4, cpId);
         }
 
+        private static byte[] GetPs3FloatBytes(float value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes);
+            }
+            return bytes;
+        }
         public void SetEpisode6NoobMode()
         {
-            api.WriteMemory(pid, 0x6CCDA0, BitConverter.GetBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCDC0, BitConverter.GetBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCD90, BitConverter.GetBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCD80, BitConverter.GetBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCD60, BitConverter.GetBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCD80, BitConverter.GetBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCDD0, BitConverter.GetBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCD70, BitConverter.GetBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCDA0, GetPs3FloatBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCDC0, GetPs3FloatBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD90, GetPs3FloatBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD80, GetPs3FloatBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD60, GetPs3FloatBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCDB0, GetPs3FloatBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCDD0, GetPs3FloatBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD70, GetPs3FloatBytes(1.0f));
         }
 
         public void TriggerGameLoad(uint loadType = (uint)Sly3Addresses.LoadTypes.Normal)

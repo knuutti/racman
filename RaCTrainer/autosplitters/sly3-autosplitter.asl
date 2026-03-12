@@ -46,7 +46,7 @@ update
 start
 {
     if (settings["EPISODE_1"] && current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) { return true; }
-    
+    else if (settings["EPISODE_6"] && current.currentCheckpoint == 4369 && old.currentCheckpoint != 4369) { return true; }
     return false;
 }
 
@@ -202,14 +202,9 @@ split
             else if (current.currentCheckpoint == 1849 && old.currentCheckpoint != 1849) { vars.splitPending = true; }
         }
     }
-    
-    return false;
-}
 
-jobCompleteDelay
-{
-    vars.splitPending = true;
-    vars.splitPendingTime = DateTime.Now.AddMilliseconds(1283);
+    if (vars.splitPending == true) { vars.splitPendingTime = DateTime.Now.AddMilliseconds(1283);}
+    
     return false;
 }
 

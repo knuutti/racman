@@ -232,20 +232,20 @@ namespace racman
 
                 if (episodeKey == "Episode6_CE" || episodeKey == "Episode6_NoCE")
                 {
-                    game.SetJobState(4342, 1842);
+                    game.SetJobState(4342, 1842, (int)-1);
+                    loadType = (uint)Sly3Addresses.LoadTypes.Job;
                     if (episodeKey == "Episode6_CE")
                     {
                         game.SetEpisode6NoobMode();
-                        loadType = (uint)Sly3Addresses.LoadTypes.Job;
                     }   
                 } else
                 {
                     SetTutorialComplete();
                 }
 
-                game.TriggerGameLoad(loadType);
+                game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)}: Loading {runFileComboBox.SelectedItem} run file.");
 
-                // game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)}: Loading {runFileComboBox.SelectedItem} run file.");
+                game.TriggerGameLoad(loadType);
             }
             catch (Exception ex)
             {
