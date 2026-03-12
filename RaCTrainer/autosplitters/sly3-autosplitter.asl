@@ -8,6 +8,7 @@ startup
     settings.Add("EPISODE_4", false, "Episode 4");
     settings.Add("EPISODE_5", false, "Episode 5");
     settings.Add("EPISODE_6", false, "Episode 6");
+    settings.Add("ANY", false, "Any%");
 }
 
 init
@@ -22,13 +23,21 @@ init
     vars.currentJobIndex = 0;
     vars.splitPending = false;
     vars.splitPendingTime = DateTime.Now;
+    vars.kaineStarted = false;
+    vars.hollandStarted = false;
 
     current.isLoading = vars.reader.ReadByte();
     current.currentJob = vars.reader.ReadUInt32();
-    current.gameSpeed = vars.reader.ReadSingle();
     current.currentCheckpoint = vars.reader.ReadUInt32();
     current.currentMap = vars.reader.ReadUInt32();
+    current.gameSpeed = vars.reader.ReadSingle();
+    current.slyCharacterPointer = vars.reader.ReadUInt32();
+    current.activeCharacterPointer = vars.reader.ReadUInt32();
+    current.cameraFov = vars.reader.ReadSingle();
     current.veniceStarted = vars.reader.ReadUInt32();
+    current.outbackStarted = vars.reader.ReadUInt32();
+    current.chinaStarted = vars.reader.ReadUInt32();
+    current.pirateStarted = vars.reader.ReadUInt32();
 }
 
 update
@@ -39,13 +48,36 @@ update
     current.currentJob = vars.reader.ReadUInt32();
     current.currentCheckpoint = vars.reader.ReadUInt32();
     current.currentMap = vars.reader.ReadUInt32();
-    current.veniceStarted = vars.reader.ReadUInt32();
     current.gameSpeed = vars.reader.ReadSingle();
+    current.slyCharacterPointer = vars.reader.ReadUInt32();
+    current.activeCharacterPointer = vars.reader.ReadUInt32();
+    current.cameraFov = vars.reader.ReadSingle();
+    current.veniceStarted = vars.reader.ReadUInt32();
+    current.outbackStarted = vars.reader.ReadUInt32();
+    current.chinaStarted = vars.reader.ReadUInt32();
+    current.pirateStarted = vars.reader.ReadUInt32();
+    if (current.currentCheckpoint != old.currentCheckpoint) {
+    print("" + current.currentCheckpoint);
+    }
 }
 
 start
 {
-    if (settings["EPISODE_1"] && current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) { return true; }
+    if (settings["ANY"] && vars.kaineStarted == false && current.currentMap == 35 && current.cameraFov == 1.06f && current.currentJob == 1798) 
+    { 
+        vars.kaineStarted = true;
+        return true;
+        
+    }
+    else if (settings["EPISODE_1"] && current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) { return true; }
+    else if (settings["EPISODE_2"] && current.outbackStarted == 1 && old.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) { return true; }
+    else if (settings["EPISODE_3"] && vars.hollandStarted == false && old.cameraFov == 0.95f && current.cameraFov != 0.95f && current.cameraFov != 1.0f && current.currentMap == 15) 
+    { 
+        vars.hollandStarted = true;
+        return true; 
+    }
+    else if (settings["EPISODE_4"] && current.chinaStarted == 3 && old.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) { return true; }
+    else if (settings["EPISODE_5"] && current.pirateStarted == 3 && old.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) { return true; }
     else if (settings["EPISODE_6"] && current.currentCheckpoint == 4369 && old.currentCheckpoint != 4369) { return true; }
     return false;
 }
@@ -53,6 +85,14 @@ start
 isLoading
 {
     return current.isLoading != 3;
+}
+
+onReset
+{
+    vars.splitPending = false;
+    vars.splitPendingTime = DateTime.Now;
+    vars.kaineStarted = false;
+    vars.hollandStarted = false;
 }
 
 split
@@ -67,7 +107,43 @@ split
         return false;
     }
 
-    else if (settings["EPISODE_1"])
+    if (settings["ANY"])
+    {
+        // The Cooper Vault
+        if (old.currentCheckpoint == 2029 && current.currentCheckpoint != 2029 && current.currentJob == 1798) 
+        { 
+            return true; 
+        }
+
+        // Hazard Room 1
+        if (old.currentCheckpoint == 4607 && current.currentCheckpoint != 4607) { vars.splitPending = true; }
+
+        // Hazard Room 2
+        if (current.gameSpeed == 0 && old.gameSpeed == 1) 
+        {
+            if (current.currentCheckpoint == 4618) { vars.splitPending = true; }
+        }
+
+        // Start Episode
+        if (current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) { return true; }
+        if (current.outbackStarted == 1 && old.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) { return true; }
+        if (vars.hollandStarted == false && old.cameraFov == 0.95f && current.cameraFov != 0.95f && current.cameraFov != 1.0f && current.currentMap == 15) 
+        { 
+            vars.hollandStarted = true;
+            return true; 
+        }
+        if (current.chinaStarted == 3 && old.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) { return true; }
+        if (current.pirateStarted == 3 && old.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) { return true; }
+        if (current.currentCheckpoint == 4369 && old.currentCheckpoint != 4369) { return true; }
+
+        // King of Fire
+        if (old.currentCheckpoint == 3454 && current.currentCheckpoint != 3454) 
+        { 
+            return true;
+        }
+    }
+
+    if (settings["EPISODE_1"])
     { 
         // Splits that have a checkpoint value before Job Complete screen
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
@@ -91,7 +167,7 @@ split
         }
     }
 
-    else if (settings["EPISODE_2"])
+    if (settings["EPISODE_2"])
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
@@ -106,12 +182,15 @@ split
         }
 
         // Final split
-        else if (current.currentCheckpoint == 2944 && old.currentCheckpoint != 2944) {
+        else if (current.currentCheckpoint == 2944 && old.currentCheckpoint == 2942) {
+            return true;
+        }
+        else if (current.currentCheckpoint == 2942 && old.currentCheckpoint == 2944) {
             return true;
         }
     }
 
-    else if (settings["EPISODE_3"])
+    if (settings["EPISODE_3"])
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
@@ -135,31 +214,35 @@ split
         }
     }
 
-    else if (settings["EPISODE_4"])
+    if (settings["EPISODE_4"])
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
-            if (current.currentCheckpoint == 3525) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 3554) { vars.splitPending = true; }
+            if (current.currentCheckpoint == 3554) { vars.splitPending = true; }
             else if (current.currentCheckpoint == 3644) { vars.splitPending = true; }
             else if (current.currentCheckpoint == 2038) { vars.splitPending = true; }
             else if (current.currentCheckpoint == 3729) { vars.splitPending = true; }
         }
 
+        if (old.currentCheckpoint == 3525 && current.currentCheckpoint != 3525) { return true; }
+
         // Final split
-        else if (current.currentCheckpoint == 1823 && old.currentCheckpoint != 1823) 
+        if (current.currentCheckpoint == 1823 && old.currentCheckpoint != 1823) 
         {
             return true;
         }
 
-        else 
-        {
-            if (current.currentCheckpoint == 3603 && old.currentCheckpoint != 3603) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 3704 && old.currentCheckpoint != 3704) { vars.splitPending = true; }
+        if (current.currentCheckpoint == 3603 && old.currentCheckpoint != 3603) 
+        { 
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 3704 && old.currentCheckpoint != 3704) 
+        { 
+            vars.splitPending = true; 
         }
     }
 
-    else if (settings["EPISODE_5"])
+    if (settings["EPISODE_5"])
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
@@ -183,7 +266,7 @@ split
         }
     }
 
-    else if (settings["EPISODE_6"])
+    if (settings["EPISODE_6"])
     {
         // Final split
         if (current.currentCheckpoint == 1825 && old.currentCheckpoint != 1825) 

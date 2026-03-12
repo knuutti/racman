@@ -101,7 +101,7 @@ namespace racman
                         autosplitter.StartAutosplitterForGame(this.game);
                     }
 
-                    game.api.Notify("Sly 3 reconnected!");
+                    game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Speedrun Mode)");
                     Console.WriteLine("Sly 3: Reconnection complete");
                 });
             }

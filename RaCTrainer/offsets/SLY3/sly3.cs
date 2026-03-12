@@ -23,6 +23,8 @@ namespace racman
         public uint analogOffsetLeft => 0x5EC5F0;
         public uint analogOffsetRight => 0x5EC61C;
         public uint coinCount => 0x6CC808;
+        public uint slyCharacterPtr => 0x5ED940;
+        public uint activeCharacterPtr => 0x5EC654;
 
         public uint playerEntityPointer => 0x5EC654;
         public uint transformOffset => 0x44; 
@@ -44,6 +46,7 @@ namespace racman
         // Run file specific addresses
         public uint suckValue => 0x589A3C;
         public uint currentCharacter => 0x5EA000;
+        public uint cameraFov => 0x7F8680;
 
         // Autosplitter addresses
         public uint isLoading => 0x6CB603;
@@ -53,7 +56,10 @@ namespace racman
         public uint gameSpeed => 0x5898B8;
 
         // Episode 1 specific addresses
-        public uint veniceStarted => 0x6CE0B4; // 0 by default, changes to 1 when selecting Sly
+        public uint veniceStarted => 0x6CE0B4;
+        public uint outbackStarted => 0x6CEA80;
+        public uint chinaStarted => 0x6D0288;
+        public uint pirateStarted => 0x6D1110;
 
         public enum LoadTypes : uint
         {
@@ -138,12 +144,18 @@ namespace racman
 
         public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
         {
-            (addr.isLoading, 1), // Loading state (1 byte)
-            (addr.currentJob, 4), // Current job/mission identifier
-            (addr.currentCheckpoint, 4), // Current checkpoint identifier
-            (addr.currentMap, 4), // Current map identifier
-            (addr.veniceStarted, 4), // Venice started flag
-            (addr.gameSpeed, 4), // Game speed
+            (addr.isLoading, 1),
+            (addr.currentJob, 4),
+            (addr.currentCheckpoint, 4),
+            (addr.currentMap, 4), 
+            (addr.gameSpeed, 4),
+            (addr.slyCharacterPtr, 4),
+            (addr.activeCharacterPtr, 4),
+            (addr.cameraFov, 4),
+            (addr.veniceStarted, 4),
+            (addr.outbackStarted, 4), 
+            (addr.chinaStarted, 4),
+            (addr.pirateStarted, 4),
         };
 
         public override void ResetLevelFlags() { }
