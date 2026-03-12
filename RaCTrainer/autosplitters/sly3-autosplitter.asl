@@ -56,9 +56,7 @@ update
     current.outbackStarted = vars.reader.ReadUInt32();
     current.chinaStarted = vars.reader.ReadUInt32();
     current.pirateStarted = vars.reader.ReadUInt32();
-    if (current.currentCheckpoint != old.currentCheckpoint) {
     print("" + current.currentCheckpoint);
-    }
 }
 
 start
@@ -115,14 +113,8 @@ split
             return true; 
         }
 
-        // Hazard Room 1
-        if (old.currentCheckpoint == 4607 && current.currentCheckpoint != 4607) { vars.splitPending = true; }
-
-        // Hazard Room 2
-        if (current.gameSpeed == 0 && old.gameSpeed == 1) 
-        {
-            if (current.currentCheckpoint == 4618) { vars.splitPending = true; }
-        }
+        // Hazard Room
+        if (old.currentCheckpoint == 4618 && current.currentCheckpoint != 4618) { vars.splitPending = true; }
 
         // Start Episode
         if (current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) { return true; }
@@ -143,7 +135,7 @@ split
         }
     }
 
-    if (settings["EPISODE_1"])
+    if (settings["EPISODE_1"] || settings["ANY"])
     { 
         // Splits that have a checkpoint value before Job Complete screen
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
@@ -167,7 +159,7 @@ split
         }
     }
 
-    if (settings["EPISODE_2"])
+    if (settings["EPISODE_2"] || settings["ANY"])
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
@@ -190,7 +182,7 @@ split
         }
     }
 
-    if (settings["EPISODE_3"])
+    if (settings["EPISODE_3"] || settings["ANY"])
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
@@ -214,7 +206,7 @@ split
         }
     }
 
-    if (settings["EPISODE_4"])
+    if (settings["EPISODE_4"] || settings["ANY"])
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
@@ -242,7 +234,7 @@ split
         }
     }
 
-    if (settings["EPISODE_5"])
+    if (settings["EPISODE_5"] || settings["ANY"])
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
@@ -266,7 +258,7 @@ split
         }
     }
 
-    if (settings["EPISODE_6"])
+    if (settings["EPISODE_6"] || settings["ANY"])
     {
         // Final split
         if (current.currentCheckpoint == 1825 && old.currentCheckpoint != 1825) 
@@ -293,8 +285,24 @@ split
 
 reset
 {
-    if (current.veniceStarted == 0 && current.currentMap == 3)
+    if (settings["EPISODE_1"] && current.veniceStarted == 0 && current.currentMap == 3)
     {
         return true;
     }
+    
+    if (settings["EPISODE_2"] && current.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+
+    if (settings["EPISODE_4"] && current.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+
+    if (settings["EPISODE_5"] && current.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+
 }
