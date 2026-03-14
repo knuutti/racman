@@ -418,7 +418,7 @@ split
                 // Crusher from the Depths
                 vars.splitPending = true; 
             }
-            else if (current.currentCheckpoint == 4132) 
+            else if (current.currentCheckpoint == 4134) 
             { 
                 // Deep Sea Danger
                 vars.splitPending = true; 
@@ -434,6 +434,11 @@ split
         {
             // Operation: Reverse Double-Cross
             return true;
+        }
+        if (old.currentCheckpoint == 4083 && current.currentCheckpoint != 4083) 
+        { 
+            // Jollyboat of Destruction (2nd outcome)
+            vars.splitPending = true;
         }
         else if (current.currentCheckpoint == 3923 && old.currentCheckpoint != 3923) 
         {
