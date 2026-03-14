@@ -1,5 +1,8 @@
 state("SluMAN") {}
 
+// TODO: Move the start episode splitting logic to update loop, 
+// and only check for flags in split/start to avoid duplicate code
+
 startup
 {	
     settings.Add("EPISODE_1", true, "Episode 1");
@@ -19,12 +22,11 @@ init
     
     vars.reader.BaseStream.Position = 0;
 
-    vars.jobsEpisode1 = new List<int> {2117, 2360, 2261, 2314, 2199, 2170, 2382, 2218, 2448};
-    vars.currentJobIndex = 0;
     vars.splitPending = false;
     vars.splitPendingTime = DateTime.Now;
     vars.kaineStarted = false;
     vars.hollandStarted = false;
+    vars.getajobdone = false;
 
     current.isLoading = vars.reader.ReadByte();
     current.currentJob = vars.reader.ReadUInt32();
@@ -56,7 +58,6 @@ update
     current.outbackStarted = vars.reader.ReadUInt32();
     current.chinaStarted = vars.reader.ReadUInt32();
     current.pirateStarted = vars.reader.ReadUInt32();
-    print("" + current.currentCheckpoint);
 }
 
 start
@@ -107,77 +108,167 @@ split
 
     if (settings["ANY"])
     {
-        // The Cooper Vault
         if (old.currentCheckpoint == 2029 && current.currentCheckpoint != 2029 && current.currentJob == 1798) 
         { 
+            // The Cooper Vault
             return true; 
         }
 
-        // Hazard Room
-        if (old.currentCheckpoint == 4618 && current.currentCheckpoint != 4618) { vars.splitPending = true; }
+        if (old.currentCheckpoint == 4618 && current.currentCheckpoint != 4618) 
+        { 
+            // Hazard Room
+            vars.splitPending = true; 
+        }
 
-        // Start Episode
-        if (current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) { return true; }
-        if (current.outbackStarted == 1 && old.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) { return true; }
+        if (current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) 
+        { 
+            // Start Episode 1
+            return true; 
+        }
+
+        if (current.outbackStarted == 1 && old.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) 
+        { 
+            // Start Episode 2
+            return true; 
+        }
+
         if (vars.hollandStarted == false && old.cameraFov == 0.95f && current.cameraFov != 0.95f && current.cameraFov != 1.0f && current.currentMap == 15) 
         { 
+            // Start Episode 3
             vars.hollandStarted = true;
             return true; 
         }
-        if (current.chinaStarted == 3 && old.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) { return true; }
-        if (current.pirateStarted == 3 && old.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) { return true; }
-        if (current.currentCheckpoint == 4369 && old.currentCheckpoint != 4369) { return true; }
 
-        // King of Fire
+        if (current.chinaStarted == 3 && old.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) 
+        { 
+            // Start Episode 4
+            return true; 
+        }
+
+        if (current.pirateStarted == 3 && old.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) 
+        { 
+            // Start Episode 5
+            return true; 
+        }
+        if (current.currentCheckpoint == 4369 && old.currentCheckpoint != 4369) 
+        { 
+            // Start Episode 6
+            return true; 
+        }
+
         if (old.currentCheckpoint == 3454 && current.currentCheckpoint != 3454) 
         { 
+            // King of Fire
             return true;
         }
     }
 
     if (settings["EPISODE_1"] || settings["ANY"])
     { 
-        // Splits that have a checkpoint value before Job Complete screen
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
-            if (current.currentCheckpoint == 2035) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2358) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2215) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2197) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2434) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2252) { vars.splitPending = true; }
+            if (current.currentCheckpoint == 2035) 
+            { 
+                // Canal Chase
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2358) 
+            { 
+                // Into the Depths
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2215) 
+            { 
+                // Tar Ball
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2197) 
+            { 
+                // Turf War!
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2434) 
+            { 
+                // Guard Duty
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2252) 
+            { 
+                // Run n Bomb
+                vars.splitPending = true; 
+            }
         }
 
-        // Final split
-        else if (current.currentCheckpoint == 1820 && old.currentCheckpoint != 1820) { return true; }
-        
-        // Splits that change checkpoint value when Job Complete animation starts
-        else 
-        {
-            if (current.currentCheckpoint == 2165 && old.currentCheckpoint != 2165) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2305 && old.currentCheckpoint != 2305) { vars.splitPending = true; }
+        if (current.currentCheckpoint == 1820 && old.currentCheckpoint != 1820) 
+        { 
+            // Operation: Tar Be Gone!
+            return true; 
         }
+        else if (current.currentCheckpoint == 2165 && old.currentCheckpoint != 2165) 
+        { 
+            // Police HQ
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 2305 && old.currentCheckpoint != 2305) 
+        {
+            // Octavio Snap 
+            vars.splitPending = true; 
+        }
+        
     }
 
     if (settings["EPISODE_2"] || settings["ANY"])
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
-            if (current.currentCheckpoint == 2032) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2648) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2862) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2033) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2720) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2688) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2037) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2820) { vars.splitPending = true; }
+            if (current.currentCheckpoint == 2032) 
+            { 
+                // Searching for the Guru
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2648) 
+            { 
+                // Spelunking
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2862) 
+            { 
+                // Dark Caves
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2033) 
+            { 
+                // Big Truck
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2720) 
+            { 
+                // Unleash the Guru
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2688) 
+            { 
+                // The Claw
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2037) 
+            { 
+                // Lemon Rage
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2820) 
+            { 
+                // Hungry Croc
+                vars.splitPending = true; 
+            }
         }
 
-        // Final split
-        else if (current.currentCheckpoint == 2944 && old.currentCheckpoint == 2942) {
+        if (current.currentCheckpoint == 2944 && old.currentCheckpoint == 2942) {
+            // Operation: Moon Crash (1st outcome)
             return true;
         }
         else if (current.currentCheckpoint == 2942 && old.currentCheckpoint == 2944) {
+            // Operation: Moon Crash (2nd outcome)
             return true;
         }
     }
@@ -186,50 +277,109 @@ split
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
-            if (current.currentCheckpoint == 3038) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 3175) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 3223) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2043) { vars.splitPending = true; }
+            if (current.currentCheckpoint == 3175) 
+            { 
+                // ACES Semi-finals
+                vars.splitPending = true;
+            }
+            else if (current.currentCheckpoint == 3223) 
+            {
+                // Windmill Firewall
+                vars.splitPending = true;
+            }
+            else if (current.currentCheckpoint == 2043) 
+            {
+                // Beauty and the Beast
+                vars.splitPending = true;
+            }
         }
 
-        // Final split
-        else if (current.currentCheckpoint == 1822 && old.currentCheckpoint != 1822) {
+        if (current.currentCheckpoint == 1822 && old.currentCheckpoint != 1822) 
+        {
+            // Operation: Turbo Dominant Eagle
             return true;
         }
-
-        else 
-        {
-            if (current.currentCheckpoint == 3083 && old.currentCheckpoint != 3083) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 3123 && old.currentCheckpoint != 3123) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 3161 && old.currentCheckpoint != 3161) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 3181 && old.currentCheckpoint != 3181) { vars.splitPending = true; }
-        }
+        else if (current.currentCheckpoint == 3083 && old.currentCheckpoint != 3083) 
+        { 
+            // Frame Team Belgium
+            vars.splitPending = true; } 
+        else if (current.currentCheckpoint == 3038 && old.currentCheckpoint != 3038) 
+        { 
+            // Hidden Flight Roster
+            vars.splitPending = true; } 
+        else if (current.currentCheckpoint == 3123 && old.currentCheckpoint != 3123) 
+        { 
+            // Frame Team Iceland
+            vars.splitPending = true; } 
+        else if (current.currentCheckpoint == 3161 && old.currentCheckpoint != 3161) 
+        { 
+            // Cooper Hangar Defence
+            vars.splitPending = true; } 
+        else if (current.currentCheckpoint == 3181 && old.currentCheckpoint != 3181) 
+        { 
+            // Giant Wolf Massacre
+            vars.splitPending = true; } 
     }
 
     if (settings["EPISODE_4"] || settings["ANY"])
     {
-        if (current.gameSpeed == 0 && old.gameSpeed == 1) 
+
+        if (vars.getajobdone == true)
         {
-            if (current.currentCheckpoint == 3554) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 3644) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2038) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 3729) { vars.splitPending = true; }
+            // Get a Job
+            if (current.currentJob != 3471) 
+            { 
+                vars.getajobdone = false; 
+                return true;
+            }
+            return false;
         }
 
-        if (old.currentCheckpoint == 3525 && current.currentCheckpoint != 3525) { return true; }
+        if (current.gameSpeed == 0 && old.gameSpeed == 1) 
+        {
+            if (current.currentCheckpoint == 3554) 
+            {
+                // Tearful Reunion 
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 3644) 
+            {
+                // Laptop Retrieval 
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2038) 
+            {
+                // Vampiric Demise 
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 3729) 
+            {
+                // A Battery of Peril 
+                vars.splitPending = true; 
+            }
+        }
 
-        // Final split
+        if (old.currentCheckpoint == 3525 && current.currentCheckpoint != 3525) 
+        { 
+            // Get a Job (set flag)
+            vars.getajobdone = true;
+            return false;
+        }
+
         if (current.currentCheckpoint == 1823 && old.currentCheckpoint != 1823) 
         {
+             // Operation: Wedding Crasher
             return true;
         }
 
         if (current.currentCheckpoint == 3603 && old.currentCheckpoint != 3603) 
         { 
-            vars.splitPending = true; 
+            // Grapple-Cam Break-In
+            vars.splitPending = true;
         }
         else if (current.currentCheckpoint == 3704 && old.currentCheckpoint != 3704) 
         { 
+            // Down the Line
             vars.splitPending = true; 
         }
     }
@@ -238,43 +388,91 @@ split
     {
         if (current.gameSpeed == 0 && old.gameSpeed == 1) 
         {
-            if (current.currentCheckpoint == 4083) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2040) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 2044) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 4132) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 4157) { vars.splitPending = true; }
+            if (current.currentCheckpoint == 4083) 
+            { 
+                // Jollyboat of Destruction
+                vars.splitPending = true;
+            }
+            else if (current.currentCheckpoint == 2040) 
+            {
+                // X Marks the Spot 
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2044) 
+            { 
+                // Crusher from the Depths
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 4132) 
+            { 
+                // Deep Sea Danger
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 4157) 
+            { 
+                // Battle on the High Seas
+                vars.splitPending = true; 
+            }
         }
 
-        // Final split
-        else if (current.currentCheckpoint == 4221 && old.currentCheckpoint != 4221) 
+        if (current.currentCheckpoint == 4221 && old.currentCheckpoint != 4221) 
         {
+            // Operation: Reverse Double-Cross
             return true;
         }
-
-        else 
+        else if (current.currentCheckpoint == 3923 && old.currentCheckpoint != 3923) 
         {
-            if (current.currentCheckpoint == 3923 && old.currentCheckpoint != 3923) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 4001 && old.currentCheckpoint != 4001) { vars.splitPending = true; }
+            // The Talk of the Pirates 
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 4001 && old.currentCheckpoint != 4001) 
+        {
+            // Dynamic Duo 
+            vars.splitPending = true; 
         }
     }
 
     if (settings["EPISODE_6"] || settings["ANY"])
     {
-        // Final split
         if (current.currentCheckpoint == 1825 && old.currentCheckpoint != 1825) 
         {
+            // Final Legacy
             return true;
         }
-
-        else 
-        {
-            if (current.currentCheckpoint == 1843 && old.currentCheckpoint != 1843) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 1844 && old.currentCheckpoint != 1844) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 1845 && old.currentCheckpoint != 1845) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 1846 && old.currentCheckpoint != 1846) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 1847 && old.currentCheckpoint != 1847) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 1848 && old.currentCheckpoint != 1848) { vars.splitPending = true; }
-            else if (current.currentCheckpoint == 1849 && old.currentCheckpoint != 1849) { vars.splitPending = true; }
+        else if (current.currentCheckpoint == 1843 && old.currentCheckpoint != 1843) 
+        { 
+            // Carmelita to the Rescue
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1844 && old.currentCheckpoint != 1844) 
+        { 
+            // A Deadly Bite
+            vars.splitPending = true; 
+            }
+        else if (current.currentCheckpoint == 1845 && old.currentCheckpoint != 1845) 
+        { 
+            // The Dark Current
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1846 && old.currentCheckpoint != 1846) 
+        { 
+            // Bump-Charge-Jump
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1847 && old.currentCheckpoint != 1847) 
+        { 
+            // Danger in the Skies
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1848 && old.currentCheckpoint != 1848) 
+        { 
+            // The Ancestors Gauntlet
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1849 && old.currentCheckpoint != 1849) 
+        { 
+            // Stand Your Ground
+            vars.splitPending = true; 
         }
     }
 
