@@ -1,3 +1,6 @@
+DISCLAIMER!
+This repository is still WIP. There will be an official release of SluMAN v1.0.0 soon, please be patient. In the meanwhile, you can find the old SluMAN repository from [here](https://github.com/knuutti/SluMAN-EXT.com)
+
 # SluMAN
 
 SluMAN is speedrun tool for Sly Cooper games for PS3 and RPCS3. SluMAN is designed to help speedrunners practice the games by providing custom features that are not place in the vanilla game. 
