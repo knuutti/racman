@@ -40,18 +40,22 @@
             this.configureButtonCombosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.inputDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.webMANShortcutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.turnOffPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rebootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitTheGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mapComboBox = new System.Windows.Forms.ComboBox();
             this.loadMapButton = new System.Windows.Forms.Button();
             this.gadgetButton = new System.Windows.Forms.Button();
             this.setLanguageButton = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.toggleGroupBox = new System.Windows.Forms.GroupBox();
-            this.infiniteHealthCheckBox = new System.Windows.Forms.CheckBox();
-            this.infiniteJuiceCheckBox = new System.Windows.Forms.CheckBox();
-            this.disableGuardAiCheckBox = new System.Windows.Forms.CheckBox();
-            this.invulnerabilityCheckBox = new System.Windows.Forms.CheckBox();
-            this.infiniteJumpsCheckBox = new System.Windows.Forms.CheckBox();
             this.alwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
+            this.infiniteJumpsCheckBox = new System.Windows.Forms.CheckBox();
+            this.invulnerabilityCheckBox = new System.Windows.Forms.CheckBox();
+            this.disableGuardAiCheckBox = new System.Windows.Forms.CheckBox();
+            this.infiniteJuiceCheckBox = new System.Windows.Forms.CheckBox();
+            this.infiniteHealthCheckBox = new System.Windows.Forms.CheckBox();
             this.jobComboBox = new System.Windows.Forms.ComboBox();
             this.button2 = new System.Windows.Forms.Button();
             this.skipCinematicsButton = new System.Windows.Forms.Button();
@@ -67,16 +71,14 @@
             this.abandonJobButton = new System.Windows.Forms.Button();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.webMANShortcutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.turnOffPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rebootToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitTheGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.menuStrip1.SuspendLayout();
             this.toggleGroupBox.SuspendLayout();
             this.reloadGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.jobGroupBox.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // coinsTextBox
@@ -183,6 +185,35 @@
             this.inputDisplayToolStripMenuItem.Text = "Input Display";
             this.inputDisplayToolStripMenuItem.Click += new System.EventHandler(this.inputDisplayToolStripMenuItem_Click);
             // 
+            // webMANShortcutsToolStripMenuItem
+            // 
+            this.webMANShortcutsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.turnOffPS3ToolStripMenuItem,
+            this.rebootToolStripMenuItem,
+            this.exitTheGameToolStripMenuItem});
+            this.webMANShortcutsToolStripMenuItem.Name = "webMANShortcutsToolStripMenuItem";
+            this.webMANShortcutsToolStripMenuItem.Size = new System.Drawing.Size(86, 24);
+            this.webMANShortcutsToolStripMenuItem.Text = "PS3 Tools";
+            this.webMANShortcutsToolStripMenuItem.Click += new System.EventHandler(this.webMANShortcutsToolStripMenuItem_Click);
+            // 
+            // turnOffPS3ToolStripMenuItem
+            // 
+            this.turnOffPS3ToolStripMenuItem.Name = "turnOffPS3ToolStripMenuItem";
+            this.turnOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.turnOffPS3ToolStripMenuItem.Text = "Turn off the console";
+            // 
+            // rebootToolStripMenuItem
+            // 
+            this.rebootToolStripMenuItem.Name = "rebootToolStripMenuItem";
+            this.rebootToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.rebootToolStripMenuItem.Text = "Reboot the game";
+            // 
+            // exitTheGameToolStripMenuItem
+            // 
+            this.exitTheGameToolStripMenuItem.Name = "exitTheGameToolStripMenuItem";
+            this.exitTheGameToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
+            this.exitTheGameToolStripMenuItem.Text = "Exit the game";
+            // 
             // mapComboBox
             // 
             this.mapComboBox.FormattingEnabled = true;
@@ -251,45 +282,15 @@
             this.toggleGroupBox.Text = "Toggles";
             this.toggleGroupBox.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
-            // infiniteHealthCheckBox
+            // alwaysOnTopCheckBox
             // 
-            this.infiniteHealthCheckBox.AutoSize = true;
-            this.infiniteHealthCheckBox.Location = new System.Drawing.Point(7, 22);
-            this.infiniteHealthCheckBox.Name = "infiniteHealthCheckBox";
-            this.infiniteHealthCheckBox.Size = new System.Drawing.Size(108, 20);
-            this.infiniteHealthCheckBox.TabIndex = 0;
-            this.infiniteHealthCheckBox.Text = "Infinite Health";
-            this.infiniteHealthCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // infiniteJuiceCheckBox
-            // 
-            this.infiniteJuiceCheckBox.AutoSize = true;
-            this.infiniteJuiceCheckBox.Location = new System.Drawing.Point(7, 48);
-            this.infiniteJuiceCheckBox.Name = "infiniteJuiceCheckBox";
-            this.infiniteJuiceCheckBox.Size = new System.Drawing.Size(155, 20);
-            this.infiniteJuiceCheckBox.TabIndex = 1;
-            this.infiniteJuiceCheckBox.Text = "Infinite Gadget Power";
-            this.infiniteJuiceCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // disableGuardAiCheckBox
-            // 
-            this.disableGuardAiCheckBox.AutoSize = true;
-            this.disableGuardAiCheckBox.Location = new System.Drawing.Point(7, 74);
-            this.disableGuardAiCheckBox.Name = "disableGuardAiCheckBox";
-            this.disableGuardAiCheckBox.Size = new System.Drawing.Size(131, 20);
-            this.disableGuardAiCheckBox.TabIndex = 2;
-            this.disableGuardAiCheckBox.Text = "Disable Guard AI";
-            this.disableGuardAiCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // invulnerabilityCheckBox
-            // 
-            this.invulnerabilityCheckBox.AutoSize = true;
-            this.invulnerabilityCheckBox.Location = new System.Drawing.Point(7, 100);
-            this.invulnerabilityCheckBox.Name = "invulnerabilityCheckBox";
-            this.invulnerabilityCheckBox.Size = new System.Drawing.Size(110, 20);
-            this.invulnerabilityCheckBox.TabIndex = 3;
-            this.invulnerabilityCheckBox.Text = "Invulnerability";
-            this.invulnerabilityCheckBox.UseVisualStyleBackColor = true;
+            this.alwaysOnTopCheckBox.AutoSize = true;
+            this.alwaysOnTopCheckBox.Location = new System.Drawing.Point(7, 152);
+            this.alwaysOnTopCheckBox.Name = "alwaysOnTopCheckBox";
+            this.alwaysOnTopCheckBox.Size = new System.Drawing.Size(120, 20);
+            this.alwaysOnTopCheckBox.TabIndex = 5;
+            this.alwaysOnTopCheckBox.Text = "Always On Top";
+            this.alwaysOnTopCheckBox.UseVisualStyleBackColor = true;
             // 
             // infiniteJumpsCheckBox
             // 
@@ -301,15 +302,45 @@
             this.infiniteJumpsCheckBox.Text = "Infinite Jumps";
             this.infiniteJumpsCheckBox.UseVisualStyleBackColor = true;
             // 
-            // alwaysOnTopCheckBox
+            // invulnerabilityCheckBox
             // 
-            this.alwaysOnTopCheckBox.AutoSize = true;
-            this.alwaysOnTopCheckBox.Location = new System.Drawing.Point(7, 152);
-            this.alwaysOnTopCheckBox.Name = "alwaysOnTopCheckBox";
-            this.alwaysOnTopCheckBox.Size = new System.Drawing.Size(120, 20);
-            this.alwaysOnTopCheckBox.TabIndex = 5;
-            this.alwaysOnTopCheckBox.Text = "Always On Top";
-            this.alwaysOnTopCheckBox.UseVisualStyleBackColor = true;
+            this.invulnerabilityCheckBox.AutoSize = true;
+            this.invulnerabilityCheckBox.Location = new System.Drawing.Point(7, 100);
+            this.invulnerabilityCheckBox.Name = "invulnerabilityCheckBox";
+            this.invulnerabilityCheckBox.Size = new System.Drawing.Size(110, 20);
+            this.invulnerabilityCheckBox.TabIndex = 3;
+            this.invulnerabilityCheckBox.Text = "Invulnerability";
+            this.invulnerabilityCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // disableGuardAiCheckBox
+            // 
+            this.disableGuardAiCheckBox.AutoSize = true;
+            this.disableGuardAiCheckBox.Location = new System.Drawing.Point(7, 74);
+            this.disableGuardAiCheckBox.Name = "disableGuardAiCheckBox";
+            this.disableGuardAiCheckBox.Size = new System.Drawing.Size(131, 20);
+            this.disableGuardAiCheckBox.TabIndex = 2;
+            this.disableGuardAiCheckBox.Text = "Disable Guard AI";
+            this.disableGuardAiCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // infiniteJuiceCheckBox
+            // 
+            this.infiniteJuiceCheckBox.AutoSize = true;
+            this.infiniteJuiceCheckBox.Location = new System.Drawing.Point(7, 48);
+            this.infiniteJuiceCheckBox.Name = "infiniteJuiceCheckBox";
+            this.infiniteJuiceCheckBox.Size = new System.Drawing.Size(155, 20);
+            this.infiniteJuiceCheckBox.TabIndex = 1;
+            this.infiniteJuiceCheckBox.Text = "Infinite Gadget Power";
+            this.infiniteJuiceCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // infiniteHealthCheckBox
+            // 
+            this.infiniteHealthCheckBox.AutoSize = true;
+            this.infiniteHealthCheckBox.Location = new System.Drawing.Point(7, 22);
+            this.infiniteHealthCheckBox.Name = "infiniteHealthCheckBox";
+            this.infiniteHealthCheckBox.Size = new System.Drawing.Size(108, 20);
+            this.infiniteHealthCheckBox.TabIndex = 0;
+            this.infiniteHealthCheckBox.Text = "Infinite Health";
+            this.infiniteHealthCheckBox.UseVisualStyleBackColor = true;
             // 
             // jobComboBox
             // 
@@ -459,59 +490,40 @@
             // comboBox2
             // 
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(301, 402);
+            this.comboBox2.Location = new System.Drawing.Point(21, 35);
             this.comboBox2.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(152, 24);
+            this.comboBox2.Size = new System.Drawing.Size(131, 24);
             this.comboBox2.TabIndex = 19;
             this.comboBox2.Text = "Select character...";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(461, 400);
+            this.button1.Location = new System.Drawing.Point(160, 35);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(152, 26);
+            this.button1.Size = new System.Drawing.Size(133, 26);
             this.button1.TabIndex = 19;
             this.button1.Text = "Select and Reload";
             this.button1.UseVisualStyleBackColor = true;
             // 
-            // webMANShortcutsToolStripMenuItem
+            // groupBox3
             // 
-            this.webMANShortcutsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.turnOffPS3ToolStripMenuItem,
-            this.rebootToolStripMenuItem,
-            this.exitTheGameToolStripMenuItem});
-            this.webMANShortcutsToolStripMenuItem.Name = "webMANShortcutsToolStripMenuItem";
-            this.webMANShortcutsToolStripMenuItem.Size = new System.Drawing.Size(86, 24);
-            this.webMANShortcutsToolStripMenuItem.Text = "PS3 Tools";
-            this.webMANShortcutsToolStripMenuItem.Click += new System.EventHandler(this.webMANShortcutsToolStripMenuItem_Click);
-            // 
-            // turnOffPS3ToolStripMenuItem
-            // 
-            this.turnOffPS3ToolStripMenuItem.Name = "turnOffPS3ToolStripMenuItem";
-            this.turnOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.turnOffPS3ToolStripMenuItem.Text = "Turn off the console";
-            // 
-            // rebootToolStripMenuItem
-            // 
-            this.rebootToolStripMenuItem.Name = "rebootToolStripMenuItem";
-            this.rebootToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.rebootToolStripMenuItem.Text = "Reboot the game";
-            // 
-            // exitTheGameToolStripMenuItem
-            // 
-            this.exitTheGameToolStripMenuItem.Name = "exitTheGameToolStripMenuItem";
-            this.exitTheGameToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
-            this.exitTheGameToolStripMenuItem.Text = "Exit the game";
+            this.groupBox3.Controls.Add(this.comboBox2);
+            this.groupBox3.Controls.Add(this.button1);
+            this.groupBox3.Location = new System.Drawing.Point(301, 394);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(312, 81);
+            this.groupBox3.TabIndex = 27;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Character";
             // 
             // SLY3Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(801, 581);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.comboBox2);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.jobGroupBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -533,6 +545,7 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.jobGroupBox.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -582,5 +595,6 @@
         private System.Windows.Forms.ToolStripMenuItem turnOffPS3ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rebootToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitTheGameToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }
