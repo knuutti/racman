@@ -5,7 +5,7 @@ state("SluMAN") {}
 
 startup
 {	
-    settings.Add("EPISODE_1", true, "Episode 1");
+    settings.Add("EPISODE_1", false, "Episode 1");
     settings.Add("EPISODE_2", false, "Episode 2");
     settings.Add("EPISODE_3", false, "Episode 3");
     settings.Add("EPISODE_4", false, "Episode 4");
@@ -26,7 +26,12 @@ init
     vars.splitPendingTime = DateTime.Now;
     vars.kaineStarted = false;
     vars.hollandStarted = false;
-    vars.getajobdone = false;
+
+    vars.getAJobDone = false;
+    vars.frameTeamBelgiumDone = false;
+    vars.giantWolfMassacreDone = false;
+    vars.cooperHangarDefenceDone = false;
+    vars.hiddenFlightRosterDone = false;
 
     current.isLoading = vars.reader.ReadByte();
     current.currentJob = vars.reader.ReadUInt32();
@@ -297,11 +302,26 @@ split
                 // ACES Semi-finals
                 vars.splitPending = true;
             }
+            else if (current.currentCheckpoint == 3040 && current.cameraFov == 1.0f)
+            {
+                // Hidden Flight Roster
+                vars.splitPending = true;
+            }
+            else if (vars.cooperHangarDefenceDone == true)
+            {
+                vars.cooperHangarDefenceDone = false;
+                vars.splitPending = true;
+            }
             else if (current.currentCheckpoint == 3223) 
             {
                 // Windmill Firewall
                 vars.splitPending = true;
             }
+            else if (current.currentCheckpoint == 3123) 
+            { 
+                // Frame Team Iceland 
+                vars.splitPending = true; 
+            } 
             else if (current.currentCheckpoint == 2043) 
             {
                 // Beauty and the Beast
@@ -309,42 +329,44 @@ split
             }
         }
 
-        if (current.currentCheckpoint == 1822 && old.currentCheckpoint != 1822) 
+        if (current.currentCheckpoint == 1822 && old.currentCheckpoint != 1822)  
         {
             // Operation: Turbo Dominant Eagle
             return true;
         }
-        else if (current.currentCheckpoint == 3083 && old.currentCheckpoint != 3083) 
+        else if (current.currentCheckpoint != 3080 && old.currentCheckpoint == 3080) 
         { 
             // Frame Team Belgium
-            vars.splitPending = true; } 
-        else if (current.currentCheckpoint == 3038 && old.currentCheckpoint != 3038) 
+            vars.splitPending = true;
+        } 
+        else if (current.currentCheckpoint == 3040 && old.currentCheckpoint != 3040) 
         { 
             // Hidden Flight Roster
-            vars.splitPending = true; } 
-        else if (current.currentCheckpoint == 3123 && old.currentCheckpoint != 3123) 
-        { 
-            // Frame Team Iceland
-            vars.splitPending = true; } 
-        else if (current.currentCheckpoint == 3161 && old.currentCheckpoint != 3161) 
+            vars.hiddenFlightRosterDone = true;
+            return false;
+        } 
+        else if (vars.cooperHangarDefenceDone == false && vars.splitPending == false && current.currentCheckpoint == 3158) 
         { 
             // Cooper Hangar Defence
-            vars.splitPending = true; } 
-        else if (current.currentCheckpoint == 3181 && old.currentCheckpoint != 3181) 
+            vars.cooperHangarDefenceDone = true;
+            return false;
+        } 
+        else if (old.currentCheckpoint == 3244 && current.currentCheckpoint != 3244) 
         { 
             // Giant Wolf Massacre
-            vars.splitPending = true; } 
+            vars.splitPending = true;
+        } 
     }
 
     if (settings["EPISODE_4"] || settings["ANY"])
     {
 
-        if (vars.getajobdone == true)
+        if (vars.getAJobDone == true)
         {
             // Get a Job
             if (current.currentJob != 3471) 
             { 
-                vars.getajobdone = false; 
+                vars.getAJobDone = false; 
                 return true;
             }
             return false;
@@ -377,7 +399,7 @@ split
         if (old.currentCheckpoint == 3525 && current.currentCheckpoint != 3525) 
         { 
             // Get a Job (set flag)
-            vars.getajobdone = true;
+            vars.getAJobDone = true;
             return false;
         }
 
