@@ -266,5 +266,30 @@ namespace racman
         {
             GadgetsWindow = null;
         }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void fastReloadButton_Click(object sender, EventArgs e)
+        {
+            game.TriggerGameLoad((uint)0);
+        }
+
+        private void fullReloadButton_Click(object sender, EventArgs e)
+        {
+            game.TriggerGameLoad();
+        }
+
+        private void loadRunFileButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void webMANShortcutsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

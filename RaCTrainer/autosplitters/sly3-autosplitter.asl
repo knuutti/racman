@@ -30,7 +30,7 @@ init
     vars.getAJobDone = false;
     vars.frameTeamBelgiumDone = false;
     vars.giantWolfMassacreDone = false;
-    vars.cooperHangarDefenceDone = false;
+    vars.cooperHangarDefenceDone = 0;
     vars.hiddenFlightRosterDone = false;
 
     current.isLoading = vars.reader.ReadByte();
@@ -307,9 +307,9 @@ split
                 // Hidden Flight Roster
                 vars.splitPending = true;
             }
-            else if (vars.cooperHangarDefenceDone == true)
+            else if (vars.cooperHangarDefenceDone == 1)
             {
-                vars.cooperHangarDefenceDone = false;
+                vars.cooperHangarDefenceDone = 2;
                 vars.splitPending = true;
             }
             else if (current.currentCheckpoint == 3223) 
@@ -345,10 +345,10 @@ split
             vars.hiddenFlightRosterDone = true;
             return false;
         } 
-        else if (vars.cooperHangarDefenceDone == false && vars.splitPending == false && current.currentCheckpoint == 3158) 
+        else if (vars.cooperHangarDefenceDone == 0 && vars.splitPending == false && current.currentCheckpoint == 3158) 
         { 
             // Cooper Hangar Defence
-            vars.cooperHangarDefenceDone = true;
+            vars.cooperHangarDefenceDone = 1;
             return false;
         } 
         else if (old.currentCheckpoint == 3244 && current.currentCheckpoint != 3244) 
