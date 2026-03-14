@@ -65,19 +65,34 @@ start
     if (settings["ANY"] && vars.kaineStarted == false && current.currentMap == 35 && current.cameraFov == 1.06f && current.currentJob == 1798) 
     { 
         vars.kaineStarted = true;
-        return true;
-        
+        return true;   
     }
-    else if (settings["EPISODE_1"] && current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) { return true; }
-    else if (settings["EPISODE_2"] && current.outbackStarted == 1 && old.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) { return true; }
+    else if (settings["EPISODE_1"] && current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+    else if (settings["EPISODE_2"] && current.outbackStarted == 1 && old.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
     else if (settings["EPISODE_3"] && vars.hollandStarted == false && old.cameraFov == 0.95f && current.cameraFov != 0.95f && current.cameraFov != 1.0f && current.currentMap == 15) 
     { 
         vars.hollandStarted = true;
         return true; 
     }
-    else if (settings["EPISODE_4"] && current.chinaStarted == 3 && old.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) { return true; }
-    else if (settings["EPISODE_5"] && current.pirateStarted == 3 && old.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) { return true; }
-    else if (settings["EPISODE_6"] && current.currentCheckpoint == 4369 && old.currentCheckpoint != 4369) { return true; }
+    else if (settings["EPISODE_4"] && current.chinaStarted == 3 && old.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+    else if (settings["EPISODE_5"] && current.pirateStarted == 3 && old.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+    else if (settings["EPISODE_6"] && current.currentCheckpoint == 4369 && old.currentCheckpoint != 4369) 
+    { 
+        return true; 
+    }
+
     return false;
 }
 
