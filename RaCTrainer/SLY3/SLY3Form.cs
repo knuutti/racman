@@ -389,7 +389,7 @@ namespace racman
 
         private void healthTextBox_TextChanged(object sender, EventArgs e)
         {
-
+            SetHealthFromTextBox();
         }
 
         private void setHealthButton_Click(object sender, EventArgs e)
