@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,12 +24,19 @@ namespace racman
         public uint analogOffsetLeft => 0x5EC5F0;
         public uint analogOffsetRight => 0x5EC61C;
         public uint coinCount => 0x6CC808;
+        public uint slyCharacterPtr => 0x5ED940;
+        public uint activeCharacterPtr => 0x5EC654;
 
         public uint playerEntityPointer => 0x5EC654;
         public uint transformOffset => 0x44; 
         public uint coordsOffsetX => 0x130; 
         public uint coordsOffsetY => 0x134; 
         public uint coordsOffsetZ => 0x138;
+
+        // Cinematic skipping addresses
+        public uint dialogueState => 0x39B13F70;
+        public uint dialogueFrameCounter => 0x39B13F54;
+        public uint fmvState => 0x83C8BC;
 
         public uint mapAOB => 0x78D2C8;
         public uint spawnLocation => 0x78D308;
@@ -41,20 +49,38 @@ namespace racman
         public uint gadgetBindsBentley => 0x6CC7BC;
         public uint gadgetBindsMurray => 0x6CC7C8;
 
+        // Run file specific addresses
+        public uint suckValue => 0x589A3C;
+        public uint currentCharacter => 0x5EA000;
+        public uint cameraFov => 0x7F8680;
+
+        // Autosplitter addresses
+        public uint isLoading => 0x6CB603;
+        public uint currentJob => 0x5EB488;
+        public uint currentCheckpoint => 0x5EB48C;
+        public uint currentMap => 0x78D398;
+        public uint gameSpeed => 0x5898B8;
+
+        // Episode 1 specific addresses
+        public uint veniceStarted => 0x6CE0B4;
+        public uint outbackStarted => 0x6CEA80;
+        public uint chinaStarted => 0x6D0288;
+        public uint pirateStarted => 0x6D1110;
 
         public enum LoadTypes : uint
         {
             Fast = 0,
             Normal = 6,
             Reset = 15,
+            RunFile = 18,
+            Job = 134,
         }
     }
 
-    public class sly3 : IGame
+    public class sly3 : IGame, IAutosplitterAvailable
     {
         public static Sly3Addresses addr = new Sly3Addresses();
 
-        public string[] mapList;
         public uint mapIndex;
 
         public struct MapData
@@ -120,6 +146,22 @@ namespace racman
             // For compatibility with base class
             this.planetsList = new string[] { };
         }
+
+        public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
+        {
+            (addr.isLoading, 1),
+            (addr.currentJob, 4),
+            (addr.currentCheckpoint, 4),
+            (addr.currentMap, 4), 
+            (addr.gameSpeed, 4),
+            (addr.slyCharacterPtr, 4),
+            (addr.activeCharacterPtr, 4),
+            (addr.cameraFov, 4),
+            (addr.veniceStarted, 4),
+            (addr.outbackStarted, 4), 
+            (addr.chinaStarted, 4),
+            (addr.pirateStarted, 4),
+        };
 
         public override void ResetLevelFlags() { }
         public override void SetFastLoads(bool enabled = false) { }
@@ -254,7 +296,7 @@ namespace racman
                 uint coordsAddress = GetPlayerCoordsAddress();
                 
                 string position = api.ReadMemoryStr(pid, coordsAddress, 12);
-                func.ChangeFileLines("config.txt", position, mapList[mapIndex] + "SavedPos" + selectedPositionIndex);
+                func.ChangeFileLines("config.txt", position, maps[mapIndex].indicator + "SavedPos" + selectedPositionIndex);
             }
             catch (Exception ex)
             {
@@ -266,7 +308,8 @@ namespace racman
         {
             try
             {
-                string position = func.GetConfigData("config.txt", mapList[mapIndex] + "SavedPos" + selectedPositionIndex);
+                Console.WriteLine(maps[mapIndex].indicator + "SavedPos" + selectedPositionIndex);
+                string position = func.GetConfigData("config.txt", maps[mapIndex].indicator + "SavedPos" + selectedPositionIndex);
                 if (position != "")
                 {
                     uint coordsAddress = GetPlayerCoordsAddress();
@@ -284,21 +327,47 @@ namespace racman
         {
             int analogLSubID = api.SubMemory(pid, sly3.addr.analogOffsetLeft, 2, (value) =>
             {
-                Inputs.ly = (value[0] - 127) / 127.0f;
-                Inputs.lx = (value[1] - 127) / 127.0f;
+                // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
+                if (value[0] == 0 && value[1] == 0)
+                {
+                    // Default to neutral position when disconnected
+                    Inputs.ly = 0.0f;
+                    Inputs.lx = 0.0f;
+                }
+                else
+                {
+                    Inputs.ly = (value[0] - 127) / 127.0f;
+                    Inputs.lx = (value[1] - 127) / 127.0f;
+                }
             });
 
             int analogRSubID = api.SubMemory(pid, sly3.addr.analogOffsetRight, 2, (value) =>
             {
-                Inputs.ry = (value[0] - 127) / 127.0f;
-                Inputs.rx = (value[1] - 127) / 127.0f;
+                // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
+                if (value[0] == 0 && value[1] == 0)
+                {
+                    // Default to neutral position when disconnected
+                    Inputs.ry = 0.0f;
+                    Inputs.rx = 0.0f;
+                }
+                else
+                {
+                    Inputs.ry = (value[0] - 127) / 127.0f;
+                    Inputs.rx = (value[1] - 127) / 127.0f;
+                }
             });
         }
         
         public void SetCoinCount(int coins)
         {
-            byte[] coinBytes = BitConverter.GetBytes(coins).Reverse().ToArray();
-            api.WriteMemory(pid, sly3.addr.coinCount, coinBytes);
+            api.WriteMemory(pid, sly3.addr.coinCount, ConvertIntToBytes(coins));
+        }
+
+        public void SetHealth(int health)
+        {
+            byte[] healthBytes = ConvertIntToBytes(health);
+            var entityPtrBytes = api.ReadMemory(pid, sly3.addr.activeCharacterPtr, 4);
+            api.WriteMemory(pid, BitConverter.ToUInt32(entityPtrBytes.Reverse().ToArray(), 0) + 0x168, healthBytes);
         }
 
         public void SetGadgetUnlocks(byte[] gadgetBytes)
@@ -319,16 +388,458 @@ namespace racman
             return BitConverter.ToInt32(bytes.Reverse().ToArray(), 0);
         }
 
-        // Write gadget binding for a character (buttonBindingIndex = -1 to unbind)
-        // public void SetGadgetBinding(uint baseAddress, int buttonOffset, int buttonBindingIndex)
-        // {
-        //     uint address = baseAddress + (uint)(buttonOffset * 4);
-        //     byte[] bytes = BitConverter.GetBytes(buttonBindingIndex).Reverse().ToArray();
-        //     api.WriteMemory(pid, address, bytes);
-        // }
-
         public void SetGadgetBindings(byte[] bindingBytes) {
             api.WriteMemory(pid, sly3.addr.gadgetBindsSly, bindingBytes);
+        }
+
+        // Run file loading helper methods
+        public void SetSuckValue(float value)
+        {
+            byte[] suckBytes = BitConverter.GetBytes(value);
+            if (!BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(suckBytes);
+            }
+            api.WriteMemory(pid, sly3.addr.suckValue, suckBytes);
+        }
+
+        public void WriteMemoryRegion(uint startAddress, byte[] data)
+        {
+            var spliceSize = 256; // Write in chunks to avoid overwhelming the API
+            for (int i = 0; i < data.Length; i += spliceSize)
+            {
+                int chunkSize = Math.Min(spliceSize, data.Length - i);
+                byte[] chunk = new byte[chunkSize];
+                Array.Copy(data, i, chunk, 0, chunkSize);
+                api.WriteMemory(pid, startAddress + (uint)i, chunk);
+            }
+        }
+
+        public void SetMapName(string mapName)
+        {
+            if (!string.IsNullOrEmpty(mapName))
+            {
+                // Clear the map AOB region first
+                byte[] clearBytes = new byte[64];
+                api.WriteMemory(pid, sly3.addr.mapAOB, clearBytes);
+                
+                // Write the new map name
+                byte[] mapBytes = System.Text.Encoding.ASCII.GetBytes(mapName);
+                api.WriteMemory(pid, sly3.addr.mapAOB, mapBytes);
+            }
+        }
+
+        public void SetSpawnLocation(uint location)
+        {
+            api.WriteMemory(pid, sly3.addr.spawnLocation, location);
+        }
+
+        public void SetJobState(int jobId, int cpId, int characterId = -1)
+        {
+            
+            SetActiveCharacter(characterId);
+            SetCurrentJob(jobId, cpId);
+        }
+
+        private void SetCurrentJob(int jobId, int checkpointId)
+        {
+            api.WriteMemory(pid, sly3.addr.currentJob, ConvertIntToBytes(jobId));
+            api.WriteMemory(pid, sly3.addr.currentCheckpoint, ConvertIntToBytes(checkpointId));
+            api.WriteMemory(pid, sly3.addr.currentCheckpoint + 0x4, ConvertIntToBytes(checkpointId));
+        }
+
+        private void SetActiveCharacter(int characterId)
+        {
+            api.WriteMemory(pid, sly3.addr.currentCharacter, ConvertIntToBytes(characterId));
+        }
+
+        private byte[] ConvertIntToBytes(int value)
+        {
+            byte[] byteArray = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(byteArray);
+            }
+            return byteArray;
+        }
+
+        private static byte[] ConvertFloatToBytes(float value)
+        {
+            var bytes = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(bytes);
+            }
+            return bytes;
+        }
+
+        public void SetEpisode6NoobMode()
+        {
+            api.WriteMemory(pid, 0x6CCDA0, ConvertFloatToBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCDC0, ConvertFloatToBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD90, ConvertFloatToBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD80, ConvertFloatToBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD60, ConvertFloatToBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCDB0, ConvertFloatToBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCDD0, ConvertFloatToBytes(1.0f));
+            api.WriteMemory(pid, 0x6CCD70, ConvertFloatToBytes(1.0f));
+        }
+
+        public void TriggerGameLoad(uint loadType = (uint)Sly3Addresses.LoadTypes.Normal)
+        {
+            api.WriteMemory(pid, sly3.addr.loadType, loadType);
+            api.WriteMemory(pid, sly3.addr.loadTrigger, (uint)1);
+        }
+
+        public byte[] ReadMemoryRegion(uint startAddress, uint size)
+        {
+            return api.ReadMemory(pid, startAddress, size);
+        }
+
+        public (uint startAddress, uint size) GetMemoryRegionForEpisode(string episode)
+        {
+            switch (episode)
+            {
+                case "Episode1":
+                    return (0x6CD764, 4096); // Reasonable size for memory region
+                case "Episode2":
+                    return (0x6CE314, 4096);
+                case "Episode3":
+                    return (0x6CED80, 4096);
+                case "Episode4":
+                    return (0x6CF688, 4096);
+                case "Episode5":
+                    return (0x6D0680, 4096);
+                case "Episode6_NoCE":
+                    return (0x6D1258, 4096);
+                case "Episode6_CE":
+                    return (0x6D1258, 4096);
+                default:
+                    return (0x6CD764, 4096); // Default to Episode 1
+            }
+        }
+
+        public void SkipCinematic()
+        {
+            // Skip FMV
+            if (api.ReadMemory(pid, sly3.addr.fmvState + 0x3, 1)[0] == 0)
+            {
+                api.WriteMemory(pid, sly3.addr.fmvState, (uint)2);
+            }
+
+            // Skip dialogue
+            if (api.ReadMemory(pid, sly3.addr.dialogueFrameCounter + 0x3, 1)[0] > 10)
+            {
+                api.WriteMemory(pid, sly3.addr.dialogueState, (uint)0);
+            }
+        }
+
+        public void LoadJob(string jobName)
+        {
+            switch (jobName)
+            {
+                case "The Cooper Vault": LoadJobHelper(1798, 1799, 134, "Y$KFm_ext"); break;
+                case " [TCV] Cave": LoadJobHelper(1798, 1800, 4, "Y$KFm_ext"); break;
+                case " [TCV] Top": LoadJobHelper(1798, 1801, 4, "Y$KFm_ext"); break;
+                case " [TCV] Chase": LoadJobHelper(1798, 1803, 4, "Y$KFm_ext"); break;
+                case " [TCV] End": LoadJobHelper(1798, 1804, 4, "Y$KFm_ext"); break;
+                case "Police HQ": LoadJobHelper(2117, 2118, 134, "Y$KFv_ext"); break;
+                case " [PHQ] Exit the vent": LoadJobHelper(2117, 2123, 4, "Y$KFv_interpol"); break;
+                case " [PHQ] Crawl to the key": LoadJobHelper(2117, 2131, 4, "Y$KFv_interpol"); break;
+                case " [PHQ] Crawl back to Dimitri": LoadJobHelper(2117, 2138, 4, "Y$KFv_interpol"); break;
+                case " [PHQ] Pick the lock": LoadJobHelper(2117, 2144, 4, "Y$KFv_interpol"); break;
+                case " [PHQ] Carmelita chase": LoadJobHelper(2117, 2154, 4, "Y$KFv_ext"); break;
+                case "Octavio Snap": LoadJobHelper(2261, 2268, 134, "Y$KFv_ext"); break;
+                case " [OS] After 1st picture": LoadJobHelper(2261, 2273, 4, "Y$KFv_ext"); break;
+                case " [OS] Taking 2nd picture": LoadJobHelper(2261, 2276, 4, "Y$KFv_ext"); break;
+                case " [OS] After 2nd picture": LoadJobHelper(2261, 2278, 4, "Y$KFv_ext"); break;
+                case " [OS] Taking 3rd picture": LoadJobHelper(2261, 2281, 4, "Y$KFv_ext"); break;
+                case " [OS] After 3rd picture": LoadJobHelper(2261, 2283, 4, "Y$KFv_ext"); break;
+                case " [OS] Taking 4th picture": LoadJobHelper(2261, 2287, 4, "Y$KFv_ext"); break;
+                case " [OS] After 4th picture": LoadJobHelper(2261, 2291, 4, "Y$KFv_ext"); break;
+                case " [OS] Ferris Wheel": LoadJobHelper(2261, 2297, 4, "Y$KFv_ext"); break;
+                case "Into the Depths": LoadJobHelper(2314, 2315, 134, "Y$KFv_ext"); break;
+                case " [ItD] Enter the Opera House": LoadJobHelper(2314, 1811, 4, "Y$KFv_gauntlet"); break;
+                case " [ItD] Canal": LoadJobHelper(2314, 2327, 4, "Y$KFv_gauntlet"); break;
+                case " [ItD] First laser door": LoadJobHelper(2314, 2335, 4, "Y$KFv_gauntlet"); break;
+                case " [ItD] Computer Room": LoadJobHelper(2314, 2351, 4, "Y$KFv_gauntlet"); break;
+                case "Canal Chase": LoadJobHelper(2360, 2362, 134, "Y$KFv_ext"); break;
+                case " [CC] Start of the chase": LoadJobHelper(2360, 1805, 4, "Y$KFv_canal"); break;
+                case "Turf War!": LoadJobHelper(2170, 2172, 134, "Y$KFv_ext"); break;
+                case " [TW] Wave #1": LoadJobHelper(2170, 2182, 4, "Y$KFv_ext"); break;
+                case " [TW] Wave #2": LoadJobHelper(2170, 2186, 4, "Y$KFv_ext"); break;
+                case " [TW] Wave #3": LoadJobHelper(2170, 2190, 4, "Y$KFv_ext"); break;
+                case " [TW] Wave #4": LoadJobHelper(2170, 2194, 4, "Y$KFv_ext"); break;
+                case "Tar Ball": LoadJobHelper(2199, 2202, 134, "Y$KFv_ext"); break;
+                case "Run 'n Bomb": LoadJobHelper(2218, 2223, 134, "Y$KFv_ext"); break;
+                case " [RnB] After bomb 1": LoadJobHelper(2218, 2229, 4, "Y$KFv_ext"); break;
+                case " [RnB] Deliever bomb 2": LoadJobHelper(2218, 2232, 4, "Y$KFv_ext"); break;
+                case " [RnB] Climb the tower": LoadJobHelper(2218, 2237, 4, "Y$KFv_ext"); break;
+                case " [RnB] Run to the shop": LoadJobHelper(2218, 2241, 4, "Y$KFv_ext"); break;
+                case " [RnB] Chase Octavio": LoadJobHelper(2218, 2245, 4, "Y$KFv_ext"); break;
+                case "Guard Duty": LoadJobHelper(2382, 2383, 134, "Y$KFv_ext"); break;
+                case " [GD] Enter Coffee House #1": LoadJobHelper(2382, 2391, 4, "Y$KFv_apt"); break;
+                case " [GD] Run to Coffee House #2": LoadJobHelper(2382, 2031, 4, "Y$KFv_ext"); break;
+                case " [GD] Enter Coffee House #2": LoadJobHelper(2382, 2404, 4, "Y$KFv_apt"); break;
+                case " [GD] Run to Coffee House #3": LoadJobHelper(2382, 2411, 4, "Y$KFv_ext"); break;
+                case " [GD] Enter Coffee House #3": LoadJobHelper(2382, 2422, 4, "Y$KFv_apt"); break;
+                case " [GD] Escape the guards": LoadJobHelper(2382, 2429, 4, "Y$KFv_ext"); break;
+                case "OP: Tar Be Gone!": LoadJobHelper(2448, 2453, 134, "Y$KFv_ext"); break;
+                case " [TBG] Enter the Opera House": LoadJobHelper(2448, 2459, 4, "Y$KFv_gauntlet"); break;
+                case " [TBG] Tar Pump room": LoadJobHelper(2448, 2471, 4, "Y$KFv_gauntlet"); break;
+                case " [TBG] Opera Minigame": LoadJobHelper(2448, 2486, 4, "Y$KFv_ext"); break;
+                case " [TBG] Canal Chase": LoadJobHelper(2448, 2505, 4, "Y$KFv_canal"); break;
+                case " [TBG] Boss fight": LoadJobHelper(2448, 2516, 4, "Y$KFv_ext"); break;
+                case "Search for the Guru": LoadJobHelper(2605, 2606, 134, "Y$KFo_ext"); break;
+                case " [SftG] Cave entrance": LoadJobHelper(2605, 2610, 4, "Y$KFo_ext"); break;
+                case " [SftG] Guru's home": LoadJobHelper(2605, 2615, 4, "Y$KFo_ext"); break;
+                case "Spelunking": LoadJobHelper(2623, 2624, 134, "Y$KFo_ext"); break;
+                case " [S] Enter the cave": LoadJobHelper(2623, 2629, 4, "Y$KFo_cave_murray"); break;
+                case " [S] First piston": LoadJobHelper(2623, 2632, 4, "Y$KFo_cave_murray"); break;
+                case " [S] Second pistons": LoadJobHelper(2623, 2636, 4, "Y$KFo_cave_murray"); break;
+                case " [S] Drills": LoadJobHelper(2623, 2640, 4, "Y$KFo_cave_murray"); break;
+                case " [S] Find the Guru": LoadJobHelper(2623, 2648, 4, "Y$KFo_ext"); break;
+                case "Dark Caves": LoadJobHelper(2829, 2833, 134, "Y$KFo_ext"); break;
+                case " [DC] Enter cave #1": LoadJobHelper(2829, 2839, 4, "Y$KFo_cave_a"); break;
+                case " [DC] Escape cave #1": LoadJobHelper(2829, 2846, 4, "Y$KFo_cave_a"); break;
+                case " [DC] Find cave #2 entrance": LoadJobHelper(2829, 2850, 4, "Y$KFo_ext"); break;
+                case " [DC] Enter cave #2": LoadJobHelper(2829, 2852, 4, "Y$KFo_cave_b"); break;
+                case " [DC] Escape cave #2": LoadJobHelper(2829, 2859, 4, "Y$KFo_cave_b"); break;
+                case "Big Truck": LoadJobHelper(2722, 2731, 134, "Y$KFo_ext"); break;
+                case " [BT] Enter Ayer's Rock": LoadJobHelper(2722, 2734, 4, "Y$KFo_quarry"); break;
+                case " [BT] Phase 1": LoadJobHelper(2722, 2737, 4, "Y$KFo_quarry"); break;
+                case " [BT] Climb the tower": LoadJobHelper(2722, 2742, 4, "Y$KFo_quarry"); break;
+                case " [BT] Phase 2": LoadJobHelper(2722, 2742, 4, "Y$KFo_quarry"); break;
+                case " [BT] Release the scorpions": LoadJobHelper(2722, 2033, 4, "Y$KFo_quarry"); break;
+                case "Unleash the Guru": LoadJobHelper(2690, 1807, 134, "Y$KFo_ext"); break;
+                case " [UtG] Find the drills": LoadJobHelper(2690, 2698, 4, "Y$KFo_ext"); break;
+                case " [UtG] Drills": LoadJobHelper(2690, 2704, 4, "Y$KFo_ext"); break;
+                case " [UtG] Generator": LoadJobHelper(2690, 2715, 4, "Y$KFo_ext"); break;
+                case "The Claw": LoadJobHelper(2650, 2654, 134, "Y$KFo_ext"); break;
+                case " [TC] Phase 1": LoadJobHelper(2650, 2656, 4, "Y$KFo_arena"); break;
+                case " [TC] Phase 2": LoadJobHelper(2650, 2668, 4, "Y$KFo_arena"); break;
+                case " [TC] Phase 3": LoadJobHelper(2650, 2678, 4, "Y$KFo_arena"); break;
+                case "Lemon Rage": LoadJobHelper(2756, 2757, 134, "Y$KFo_ext"); break;
+                case " [LR] Enter the bar": LoadJobHelper(2756, 2759, 4, "Y$KFo_bar"); break;
+                case " [LR] Drinking contest": LoadJobHelper(2756, 1806, 4, "Y$KFo_bar"); break;
+                case " [LR] Bar fight": LoadJobHelper(2756, 2779, 4, "Y$KFo_bar"); break;
+                case " [LR] Boss fight": LoadJobHelper(2756, 2788, 4, "Y$KFo_bar"); break;
+                case "Hungry Croc": LoadJobHelper(2804, 2810, 134, "Y$KFo_ext"); break;
+                case " [HC] Feed the Croc": LoadJobHelper(2804, 2814, 4, "Y$KFo_ext"); break;
+                case " [HC] Flashlight guard": LoadJobHelper(2804, 2817, 4, "Y$KFo_ext"); break;
+                case "OP: Moon Crash": LoadJobHelper(2867, 2869, 134, "Y$KFo_ext"); break;
+                case " [MC] Sleep darts": LoadJobHelper(2867, 2891, 4, "Y$KFo_ext"); break;
+                case " [MC] Truck": LoadJobHelper(2867, 2925, 4, "Y$KFo_quarry"); break;
+                case " [MC] Climb": LoadJobHelper(2867, 2934, 4, "Y$KFo_quarry"); break;
+                case "Hidden Flight Roster": LoadJobHelper(3007, 3009, 134, "Y$KFh_hotel"); break;
+                case " [HFR] Exit the hotel": LoadJobHelper(3007, 1818, 4, "Y$KFh_hotel"); break;
+                case " [HFR] Find the castle": LoadJobHelper(3007, 1818, 4, "Y$KFh_ext"); break;
+                case " [HFR] Castle Climb": LoadJobHelper(3007, 3022, 4, "Y$KFh_ext"); break;
+                case " [HFR] Reach the hangar": LoadJobHelper(3007, 3031, 4, "Y$KFh_ext"); break;
+                case " [HFR] Hangar": LoadJobHelper(3007, 3034, 4, "Y$KFh_hangar_b"); break;
+                case "Frame Team Belgium": LoadJobHelper(3049, 3051, 134, "Y$KFh_ext"); break;
+                case " [FTB] Find the pilot": LoadJobHelper(3049, 3053, 4, "Y$KFh_hotel"); break;
+                case " [FTB] Pickpocket": LoadJobHelper(3049, 3058, 4, "Y$KFh_hotel"); break;
+                case " [FTB] Guru section": LoadJobHelper(3049, 3068, 4, "Y$KFh_ext"); break;
+                case " [FTB] Sly section": LoadJobHelper(3049, 3075, 4, "Y$KFh_ext"); break;
+                case "Frame Team Iceland": LoadJobHelper(3085, 3086, 134, "Y$KFh_ext"); break;
+                case " [FTI] Rowing #1": LoadJobHelper(3085, 3088, 4, "Y$KFh_sewer"); break;
+                case " [FTI] Platforming #1": LoadJobHelper(3085, 3090, 4, "Y$KFh_sewer"); break;
+                case " [FTI] Hotel": LoadJobHelper(3085, 3094, 4, "Y$KFh_hotel"); break;
+                case " [FTI] Platforming #2": LoadJobHelper(3085, 3102, 4, "Y$KFh_sewer"); break;
+                case " [FTI] Rowing #2": LoadJobHelper(3085, 3104, 4, "Y$KFh_sewer"); break;
+                case " [FTI] Find the hangar": LoadJobHelper(3085, 3108, 4, "Y$KFh_ext"); break;
+                case " [FTI] Hangar": LoadJobHelper(3085, 3112, 4, "Y$KFh_hangar_a"); break;
+                case "Cooper Hangar Defence": LoadJobHelper(3125, 3126, 134, "Y$KFh_ext"); break;
+                case " [CHD] Muggshot": LoadJobHelper(3125, 3126, 4, "Y$KFh_hangar_c"); break;
+                case " [CHD] Sewers #1": LoadJobHelper(3125, 3140, 4, "Y$KFh_hangar_c"); break;
+                case " [CHD] Sewers #2": LoadJobHelper(3125, 3146, 4, "Y$KFh_hangar_c"); break;
+                case " [CHD] RC Chopper": LoadJobHelper(3125, 3153, 4, "Y$KFh_ext"); break;
+                case "ACES Semi-finals": LoadJobHelper(3167, 3164, 134, "Y$KFh_ext"); break;
+                case " [AS] Dogfight": LoadJobHelper(3167, 1808, 4, "Y$KFh_dogfight"); break;
+                case "Giant Wolf Massacre": LoadJobHelper(3225, 3227, 134, "Y$KFh_ext"); break;
+                case " [GWM] Guru section": LoadJobHelper(3225, 3235, 4, "Y$KFh_ext"); break;
+                case "Windmill Firewall": LoadJobHelper(3187, 3193, 134, "Y$KFh_ext"); break;
+                case " [WF] Hack #1": LoadJobHelper(3187, 3196, 4, "Y$KFh_ext"); break;
+                case " [WF] Find computer #2": LoadJobHelper(3187, 3201, 4, "Y$KFh_ext"); break;
+                case " [WF] Hack #2": LoadJobHelper(3187, 3204, 4, "Y$KFh_ext"); break;
+                case " [WF] Find computer #3": LoadJobHelper(3187, 3209, 4, "Y$KFh_ext"); break;
+                case " [WF] Hack #3": LoadJobHelper(3187, 3212, 4, "Y$KFh_ext"); break;
+                case " [WF] Find computer #4": LoadJobHelper(3187, 3216, 4, "Y$KFh_ext"); break;
+                case " [WF] Hack #4": LoadJobHelper(3187, 3219, 4, "Y$KFh_ext"); break;
+                case "Beauty and the Beast": LoadJobHelper(3248, 3249, 134, "Y$KFh_ext"); break;
+                case " [BatB] Find Muggshot": LoadJobHelper(3248, 3249, 4, "Y$KFh_hotel"); break;
+                case " [BatB] Find Carmelita": LoadJobHelper(3248, 3256, 134, "Y$KFh_ext"); break;
+                case " [BatB] Muggshot fight": LoadJobHelper(3248, 1809, 4, "Y$KFh_ext"); break;
+                case "OP: Turbo Dominant Eagle": LoadJobHelper(3281, 3283, 134, "Y$KFh_ext"); break;
+                case " [TDE] Murray section": LoadJobHelper(3281, 3303, 4, "Y$KFh_ext"); break;
+                case " [TDE] Dogfight": LoadJobHelper(3281, 3317, 4, "Y$KFh_dogfight"); break;
+                case " [TDE] Boss fight": LoadJobHelper(3281, 3325, 4, "Y$KFh_dogfight"); break;
+                case "King of Fire": LoadJobHelper(3403, 3405, 134, "Y$KFc_intro"); break;
+                case " [KoF] Murray": LoadJobHelper(3403, 3406, 4, "Y$KFc_intro"); break;
+                case " [KoF] Penelope": LoadJobHelper(3403, 3411, 4, "Y$KFc_intro"); break;
+                case " [KoF] Sly": LoadJobHelper(3403, 3425, 4, "Y$KFc_intro"); break;
+                case " [KoF] Bentley": LoadJobHelper(3403, 3433, 4, "Y$KFc_intro"); break;
+                case " [KoF] Guru": LoadJobHelper(3403, 3442, 4, "Y$KFc_intro"); break;
+                case " [KoF] Flashback": LoadJobHelper(3403, 3454, 4, "Y$KFc_flashback"); break;
+                case "Get a Job": LoadJobHelper(3471, 3473, 134, "Y$KFc_ext"); break;
+                case " [GaJ] Talk to Tsao": LoadJobHelper(3471, 3473, 4, "Y$KFc_hall_b"); break;
+                case " [GaJ] Picture #1": LoadJobHelper(3471, 3480, 4, "Y$KFc_ext"); break;
+                case " [GaJ] Picture #2": LoadJobHelper(3471, 3487, 4, "Y$KFc_ext"); break;
+                case " [GaJ] Picture #3": LoadJobHelper(3471, 3498, 4, "Y$KFc_ext"); break;
+                case " [GaJ] Pictures of Tsao": LoadJobHelper(3471, 3511, 4, "Y$KFc_hall_b"); break;
+                case "Tearful Reunion": LoadJobHelper(3531, 3536, 134, "Y$KFc_ext"); break;
+                case " [TR] Free the van": LoadJobHelper(3531, 3541, 4, "Y$KFc_ext"); break;
+                case " [TR] Defend Murray #1": LoadJobHelper(3531, 3545, 4, "Y$KFc_ext"); break;
+                case " [TR] Defend Murray #2": LoadJobHelper(3531, 3550, 4, "Y$KFc_ext"); break;
+                case "Grapple-Cam Break-in": LoadJobHelper(3562, 3565, 134, "Y$KFc_ext"); break;
+                case " [GCB] Steal the keys": LoadJobHelper(3562, 3570, 4, "Y$KFc_ext"); break;
+                case " [GCB] Exchange the keys": LoadJobHelper(3562, 3576, 4, "Y$KFc_ext"); break;
+                case " [GCB] Break in the building": LoadJobHelper(3562, 3580, 4, "Y$KFc_ext"); break;
+                case " [GCB] Lure #1": LoadJobHelper(3562, 3584, 4, "Y$KFc_hall_a"); break;
+                case " [GCB] Lure #2": LoadJobHelper(3562, 3590, 4, "Y$KFc_hall_a"); break;
+                case " [GCB] Find the computer": LoadJobHelper(3562, 3595, 4, "Y$KFc_hall_a"); break;
+                case " [GCB] Hack": LoadJobHelper(3562, 3600, 4, "Y$KFc_hall_a"); break;
+                case "Laptop Retrieval": LoadJobHelper(3606, 3607, 134, "Y$KFc_ext"); break;
+                case " [LR] Find the computer": LoadJobHelper(3606, 3609, 4, "Y$KFc_hall_b"); break;
+                case " [LR] Hack": LoadJobHelper(3606, 3613, 4, "Y$KFc_hall_b"); break;
+                case " [LR] Guru section": LoadJobHelper(3606, 3618, 4, "Y$KFc_ext"); break;
+                case " [LR] Tsao #1": LoadJobHelper(3606, 1810, 4, "Y$KFc_forest"); break;
+                case " [LR] Tsao #2": LoadJobHelper(3606, 3639, 4, "Y$KFc_forest"); break;
+                case "Vampiric Demise": LoadJobHelper(3651, 3654, 134, "Y$KFc_ext"); break;
+                case " [VD] Panda King's house": LoadJobHelper(3651, 3654, 4, "Y$KFc_apt"); break;
+                case " [VD] Tutorial": LoadJobHelper(3651, 3662, 4, "Y$KFc_ext"); break;
+                case " [VD] Go to safe #2": LoadJobHelper(3651, 3673, 4, "Y$KFc_ext"); break;
+                case " [VD] Defend Sly #1": LoadJobHelper(3651, 3675, 4, "Y$KFc_ext"); break;
+                case " [VD] Go to safe #3": LoadJobHelper(3651, 3679, 4, "Y$KFc_ext"); break;
+                case " [VD] Defend Sly #2": LoadJobHelper(3651, 3681, 4, "Y$KFc_ext"); break;
+                case " [VD] Find the gravestone": LoadJobHelper(3651, 3685, 4, "Y$KFc_ext"); break;
+                case " [VD] Destroy the gravestone": LoadJobHelper(3651, 3689, 4, "Y$KFc_ext"); break;
+                case "Down the Line": LoadJobHelper(3693, 3694, 134, "Y$KFc_ext"); break;
+                case " [DtL] RC section": LoadJobHelper(3693, 3701, 4, "Y$KFc_ext"); break;
+                case "A Battery of Peril": LoadJobHelper(3705, 3706, 134, "Y$KFc_ext"); break;
+                case " [ABoP] Carmelita": LoadJobHelper(3705, 3709, 4, "Y$KFc_ext"); break;
+                case " [ABoP] Stabilize the battery": LoadJobHelper(3705, 3718, 4, "Y$KFc_ext"); break;
+                case "OP: Wedding Crasher": LoadJobHelper(3733, 3734, 134, "Y$KFc_ext"); break;
+                case " [WC] Open the door": LoadJobHelper(3733, 3735, 4, "Y$KFc_tilt_hall"); break;
+                case " [WC] Reach the computer": LoadJobHelper(3733, 3737, 4, "Y$KFc_tilt_hall"); break;
+                case " [WC] Destroy alarms": LoadJobHelper(3733, 3742, 4, "Y$KFc_tilt_hall"); break;
+                case " [WC] Open the trapdoor": LoadJobHelper(3733, 3779, 4, "Y$KFc_tilt_hall"); break;
+                case " [WC] Go to the palace": LoadJobHelper(3733, 3782, 4, "Y$KFc_ext"); break;
+                case " [WC] Protect vases": LoadJobHelper(3733, 3787, 4, "Y$KFc_hall_b"); break;
+                case " [WC] Lure Carmelita": LoadJobHelper(3733, 3794, 4, "Y$KFc_ext"); break;
+                case " [WC] Dragon fight": LoadJobHelper(3733, 3807, 4, "Y$KFc_ext"); break;
+                case "The Talk of Pirates": LoadJobHelper(3867, 3871, 134, "Y$KFp_ext"); break;
+                case " [TToP] Stone-Jake": LoadJobHelper(3867, 3875, 4, "Y$KFp_ext"); break;
+                case " [TToP] Find the loutenant": LoadJobHelper(3867, 3882, 4, "Y$KFp_ext"); break;
+                case " [TToP] Steal the bootleg": LoadJobHelper(3867, 3884, 4, "Y$KFp_ext"); break;
+                case " [TToP] Find Ned": LoadJobHelper(3867, 3891, 4, "Y$KFp_ext"); break;
+                case " [TToP] Chase Ned": LoadJobHelper(3867, 3895, 4, "Y$KFp_ext"); break;
+                case " [TToP] Return to Pete": LoadJobHelper(3867, 3907, 4, "Y$KFp_ext"); break;
+                case " [TToP] Vinegar Talk": LoadJobHelper(3867, 3911, 4, "Y$KFp_ext"); break;
+                case "Dynamic Duo": LoadJobHelper(3926, 3927, 134, "Y$KFp_ext"); break;
+                case " [DD] Go to Skull Keep": LoadJobHelper(3926, 3944, 4, "Y$KFp_ext"); break;
+                case " [DD] Floating boxes": LoadJobHelper(3926, 3950, 4, "Y$KFp_ext"); break;
+                case " [DD] Beat the guards": LoadJobHelper(3926, 3957, 4, "Y$KFp_ext"); break;
+                case " [DD] Lure Penelope #1": LoadJobHelper(3926, 3977, 4, "Y$KFp_ext"); break;
+                case " [DD] Lure Penelope #2": LoadJobHelper(3926, 3982, 4, "Y$KFp_ext"); break;
+                case " [DD] Lure Penelope #3": LoadJobHelper(3926, 3994, 4, "Y$KFp_ext"); break;
+                case "Jollyboat of Destruction": LoadJobHelper(4055, 4056, 134, "Y$KFp_ext"); break;
+                case " [JoD] Harbor patrol": LoadJobHelper(4055, 4068, 4, "Y$KFp_ext"); break;
+                case " [JoD] Cutter": LoadJobHelper(4055, 4079, 4, "Y$KFp_ext"); break;
+                case "X Marks the Spot": LoadJobHelper(4009, 4011, 134, "Y$KFp_ext"); break;
+                case " [XMtS] Row to the ship": LoadJobHelper(4009, 4015, 4, "Y$KFp_ext"); break;
+                case " [XMtS] Beat the guards": LoadJobHelper(4009, 4019, 4, "Y$KFp_ext"); break;
+                case " [XMtS] Escape the bay": LoadJobHelper(4009, 4023, 4, "Y$KFp_ext"); break;
+                case " [XMtS] Sail to Dagger Isle": LoadJobHelper(4009, 4030, 4, "Y$KFp_at_sea"); break;
+                case " [XMtS] Sink the ship": LoadJobHelper(4009, 4032, 4, "Y$KFp_at_sea"); break;
+                case " [XMtS] Dagger Isle": LoadJobHelper(4009, 4040, 4, "Y$KFp_island_map"); break;
+                case " [XMtS] Statue": LoadJobHelper(4009, 4042, 4, "Y$KFp_island_map"); break;
+                case " [XMtS] Dig up the chest": LoadJobHelper(4009, 2040, 4, "Y$KFp_island_map"); break;
+                case "Crusher from the Depths": LoadJobHelper(4088, 4091, 134, "Y$KFp_at_sea"); break;
+                case " [CftD] Shoot Crusher #1": LoadJobHelper(4088, 4097, 4, "Y$KFp_at_sea"); break;
+                case " [CftD] Shoot the tentacles": LoadJobHelper(4088, 4101, 4, "Y$KFp_at_sea"); break;
+                case " [CftD] Shoot Crusher #2": LoadJobHelper(4088, 4105, 4, "Y$KFp_at_sea"); break;
+                case " [CftD] Cannons": LoadJobHelper(4088, 4109, 4, "Y$KFp_at_sea"); break;
+                case "Deep Sea Danger": LoadJobHelper(4117, 4118, 134, "Y$KFp_at_sea"); break;
+                case " [DSD] Underwater": LoadJobHelper(4117, 4123, 4, "Y$KFp_dive"); break;
+                case " [DSD] Collars": LoadJobHelper(4117, 4125, 4, "Y$KFp_dive"); break;
+                case " [DSD] Fish": LoadJobHelper(4117, 4128, 4, "Y$KFp_dive"); break;
+                case " [DSD] Hammersharks": LoadJobHelper(4117, 4132, 4, "Y$KFp_dive"); break;
+                case "Battle on the High Seas": LoadJobHelper(4136, 4137, 134, "Y$KFp_at_sea"); break;
+                case " [BotHS] Sail to fight #2": LoadJobHelper(4136, 4141, 4, "Y$KFp_at_sea"); break;
+                case " [BotHS] Fight #2": LoadJobHelper(4136, 4145, 4, "Y$KFp_at_sea"); break;
+                case " [BotHS] Sail to fight #3": LoadJobHelper(4136, 4149, 4, "Y$KFp_at_sea"); break;
+                case " [BotHS] Fight #3": LoadJobHelper(4136, 4153, 4, "Y$KFp_at_sea"); break;
+                case "OP: Reverse Double-Cross": LoadJobHelper(4161, 4163, 134, "Y$KFp_ext"); break;
+                case " [RDC] Insult LefWee": LoadJobHelper(4161, 4166, 4, "Y$KFp_ext"); break;
+                case " [RDC] Escape the ship": LoadJobHelper(4161, 4180, 4, "Y$KFp_ext"); break;
+                case " [RDC] Skull Keep": LoadJobHelper(4161, 4185, 4, "Y$KFp_ext"); break;
+                case " [RDC] Crusher": LoadJobHelper(4161, 4192, 4, "Y$KFp_ext"); break;
+                case " [RDC] Boss fight": LoadJobHelper(4161, 4202, 4, "Y$KFp_ext"); break;
+                case "Carmelita to the Rescue": LoadJobHelper(4342, 1842, 134, "Y$KFm_ext"); break;
+                case " [CttR] Talk with Dr. M": LoadJobHelper(4342, 4382, 4, "Y$KFm_ext"); break;
+                case "A Deadly Bite": LoadJobHelper(4384, 1843, 134, "Y$KFm_ext"); break;
+                case " [ADB] Sharks #2": LoadJobHelper(4384, 4396, 4, "Y$KFm_ext"); break;
+                case " [ADB] Sharks #3": LoadJobHelper(4384, 4400, 4, "Y$KFm_ext"); break;
+                case " [ADB] Sharks #4": LoadJobHelper(4384, 4404, 4, "Y$KFm_ext"); break;
+                case " [ADB] Return to the boat": LoadJobHelper(4384, 4408, 4, "Y$KFm_ext"); break;
+                case "The Dark Current": LoadJobHelper(4411, 1844, 134, "Y$KFm_ext"); break;
+                case " [TDC] Pinchers": LoadJobHelper(4411, 4413, 4, "Y$KFm_underwater"); break;
+                case " [TDC] Mutant fish": LoadJobHelper(4411, 4420, 4, "Y$KFm_underwater"); break;
+                case "Bump-Charge-Jump": LoadJobHelper(4427, 1845, 134, "Y$KFm_ext"); break;
+                case " [BCJ] Track #1": LoadJobHelper(4427, 4433, 4, "Y$KFm_ext"); break;
+                case " [BCJ] Track #2": LoadJobHelper(4427, 4439, 4, "Y$KFm_ext"); break;
+                case " [BCJ] Track #3": LoadJobHelper(4427, 4444, 4, "Y$KFm_ext"); break;
+                case "Danger in the Skies": LoadJobHelper(4451, 1846, 134, "Y$KFm_ext"); break;
+                case " [DitS] Turrets": LoadJobHelper(4451, 4453, 4, "Y$KFm_ext"); break;
+                case " [DitS] Bats": LoadJobHelper(4451, 4472, 4, "Y$KFm_ext"); break;
+                case " [DitS] Dogfight": LoadJobHelper(4451, 4478, 4, "Y$KFm_ext"); break;
+                case " [DitS] Paraglide": LoadJobHelper(4451, 4486, 4, "Y$KFm_ext"); break;
+                case "The Ancestors' Gauntlet": LoadJobHelper(4494, 1847, 134, "Y$KFm_vault"); break;
+                case " [TAG] Enter the gauntlet": LoadJobHelper(4494, 4495, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Slytunkhamen Cooper II": LoadJobHelper(4494, 4498, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Sir Galleth Cooper": LoadJobHelper(4494, 4500, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Salim al-Kupar": LoadJobHelper(4494, 4502, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Slaigh MacCooper": LoadJobHelper(4494, 4504, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Rioichi Cooper": LoadJobHelper(4494, 4506, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Henriette Cooper": LoadJobHelper(4494, 4508, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Tennessee Cooper": LoadJobHelper(4494, 4510, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Thaddeus W. Cooper III": LoadJobHelper(4494, 4512, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Otto van Cooper": LoadJobHelper(4494, 4514, 4, "Y$KFm_gauntlet"); break;
+                case " [TAG] Connor Cooper": LoadJobHelper(4494, 4516, 4, "Y$KFm_gauntlet"); break;
+                case "Stand Your Ground": LoadJobHelper(4520, 1848, 134, "Y$KFm_vault"); break;
+                case " [SYG] Checkpoint #1": LoadJobHelper(4520, 4531, 4, "Y$KFm_vault"); break;
+                case " [SYG] Checkpoint #2": LoadJobHelper(4520, 4534, 4, "Y$KFm_vault"); break;
+                case " [SYG] Place the treasures": LoadJobHelper(4520, 4538, 4, "Y$KFm_vault"); break;
+                case "Final Legacy": LoadJobHelper(4558, 1849, 134, "Y$KFm_boss"); break;
+                case " [FL] Carmelita section": LoadJobHelper(4558, 2041, 4, "Y$KFm_boss"); break;
+                case "Sly Tutorial #1": LoadJobHelper(4590, 4592, 134, "Y$KFi_trainer"); break;
+                case "Sly Tutorial #2": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
+                case "Sly Tutorial #3": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
+                case "Sly Tutorial #4": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
+                case "Bentley Tutorial": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
+                case "Murray Tutorial": LoadJobHelper(4725, 4727, 134, "Y$KFi_trainer"); break;
+                default: break;
+            }
+        }
+
+        private void LoadJobHelper(int jobId, int checkpointId, int loadMode, string mapName)
+        {
+            SetMapName(mapName);
+            SetActiveCharacter((int)-1);
+
+            // TODO: DAG logic
+
+            SetJobState(jobId, checkpointId);
+            TriggerGameLoad((uint)loadMode);
+            return;
+        }
+
+        public void AbandonJob(string jobName)
+        {
+            SetJobState(-1, -1);
+            
         }
     }
 }

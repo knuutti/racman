@@ -30,7 +30,7 @@ namespace racman
             console = new RacManConsole();
             scripting = new RacmanScripting();
 
-            currentVerLabel.Text = "v" + Assembly.GetEntryAssembly().GetName().Version.ToString(3);
+            currentVerLabel.Text = "SluMAN v" + Assembly.GetEntryAssembly().GetName().Version.ToString(3);
 
             if (File.Exists(Environment.CurrentDirectory + @"\config.txt"))
             {
@@ -38,8 +38,18 @@ namespace racman
             }
             else
             {
-                var config = File.Create("config.txt");
-                config.Close();
+                // Try to copy the template config.txt from the source directory
+                string sourceConfigPath = Path.Combine(Application.StartupPath, "..", "..", "..", "config.txt");
+                if (File.Exists(sourceConfigPath))
+                {
+                    File.Copy(sourceConfigPath, "config.txt");
+                }
+                else
+                {
+                    // Fallback: create empty config if template not found
+                    var config = File.Create("config.txt");
+                    config.Close();
+                }
             }
             IPTextBox.Text = ip;
 
@@ -73,17 +83,7 @@ namespace racman
         private int pleaseStartTheGame = 1;
 
         private string[] startGameText = {
-                "You need to start the game first." ,
-                "Bro, you need to start the game first.",
-                "You're not in a game. You need to be in a game to attach RaCMAN.",
-                "Are you even reading the error messages? Please start the game.",
-                "What the fuck? Can you please start the game before hitting \"Attach\"?",
-                "???",
-                "Fr, start the game on your PS3.",
-                "Why? What's your problem?",
-                "Fuck you",
-                "This is getting ridiculous.",
-                "I'm begging you, start the game.",
+                "You need to start the game first."
         };
 
 
@@ -107,10 +107,10 @@ namespace racman
                 }
             }
 
-            Attach(func.api);
+            Attach(func.api, false);
         }
 
-        private void Attach(IPS3API api)
+        private void Attach(IPS3API api, Boolean speedrunMode = false)
         {
             if (!api.Connect())
             {
@@ -254,11 +254,22 @@ namespace racman
             }
             else if (game == "NPEA00343") // Sly 3 (PAL, Digital)
             {
-                Hide();
-                func.api.Notify("RaCMAN connected!");
-                SLY3Form sly3 = new SLY3Form(new sly3(func.api));
-                gameName = "SLY 3 (PAL)";
-                sly3.ShowDialog();
+                if (speedrunMode)
+                {
+                    Hide();
+                    func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Speedrun Mode)");
+                    SLY3Speedrun sly3 = new SLY3Speedrun(new sly3(func.api));
+                    gameName = "SLY 3 (PAL)";
+                    sly3.ShowDialog();
+                }
+                else
+                {
+                    Hide();
+                    func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Practice Mode)");
+                    SLY3Form sly3 = new SLY3Form(new sly3(func.api));
+                    gameName = "SLY 3 (PAL)";
+                    sly3.ShowDialog();
+                }
             }
             else
             {
@@ -315,6 +326,24 @@ namespace racman
             func.api = new RPCS3("FUCK");
 
             Attach(func.api);
+        }
+
+        private void attachPS3SpeedrunModeButton_Click(object sender, EventArgs e)
+        {
+            ip = IPTextBox.Text;
+            func.ChangeFileLines("config.txt", Convert.ToString(ip), "ip");
+
+            func.api = this.useOldAPI ? (IPS3API)new WebMAN(ip) : (IPS3API)new Ratchetron(ip);
+
+            if (!this.useOldAPI)
+            {
+                if (!func.PrepareRatchetron(ip))
+                {
+                    return;
+                }
+            }
+
+            Attach(func.api, true);
         }
     }
 }

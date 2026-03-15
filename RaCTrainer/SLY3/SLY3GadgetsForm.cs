@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -61,6 +62,7 @@ namespace racman
         // Save button - write to memory and close
         private void saveButton_Click(object sender, EventArgs e)
         {
+            game.api.Notify("GadgetForm :: Save");
             SaveGadgets();
             SaveBindings();
             this.Close();
@@ -69,6 +71,7 @@ namespace racman
         // Save and Reload button - write to memory, trigger reload, and close
         private void saveAndReloadButton_Click(object sender, EventArgs e)
         {
+            game.api.Notify("GadgetForm :: Save and Reload");
             SaveGadgets();
             SaveBindings();
             game.Load();
@@ -485,6 +488,138 @@ namespace racman
             }
 
             return null; // Not found
+        }
+
+        private void saveRunFileGadgetsButton_Click(object sender, EventArgs e)
+        {
+            if (runFileComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Please select a run file to save to.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            SaveGadgetsToRunFile();
+            game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)}: Gadget settings saved to {runFileComboBox.SelectedItem} run file.");
+        }
+
+        private void SaveGadgetsToRunFile()
+        {
+            string episodeKey = GetEpisodeKey(runFileComboBox.SelectedItem.ToString());
+
+            // Get current gadget states (same logic as SaveGadgets())
+            var gadgetBytes = GetCurrentGadgetBytes();
+            var bindingBytes = GetCurrentBindingBytes();
+
+            // Save to config
+            func.ChangeFileLines("config.txt",
+                BitConverter.ToString(gadgetBytes).Replace("-", ""),
+                episodeKey + "_GadgetUnlocks");
+
+            func.ChangeFileLines("config.txt",
+                BitConverter.ToString(bindingBytes).Replace("-", ""),
+                episodeKey + "_GadgetBindings");
+
+            func.ChangeFileLines("config.txt",
+                $"{spinAttackLevelSelector.Value},{pushAttackLevelSelector.Value},{jumpAttackLevelSelector.Value}",
+                episodeKey + "_SpecialAttacks");
+        }
+
+        // Convert episode display name to a safe config key prefix
+        private string GetEpisodeKey(string episodeName)
+        {
+            switch (episodeName)
+            {
+                case "Episode 1": return "Episode1";
+                case "Episode 2": return "Episode2";
+                case "Episode 3": return "Episode3";
+                case "Episode 4": return "Episode4";
+                case "Episode 5": return "Episode5";
+                case "Episode 6 (No CE)": return "Episode6_NoCE";
+                case "Episode 6 (CE)": return "Episode6_CE";
+                default: return "Episode1"; // fallback
+            }
+        }
+
+        // Get current gadget unlock states as byte array (extracted from SaveGadgets logic)
+        private byte[] GetCurrentGadgetBytes()
+        {
+            var updatedGadgetStates = GetGadgetStates(slyGadgetsCheckedList)
+                .Concat(GetGadgetStates(bentleyGadgetsCheckedList))
+                .Concat(GetGadgetStates(murrayGadgetsCheckedList));
+
+            // Gadget states are stored as bits in 8-byte array
+            // Default values: FE 00 02 00 00 02 00 00
+            var gadgetBytes = new byte[8] { 0xFE, 0x00, 0x02, 0x00, 0x00, 0x02, 0x00, 0x00 };
+
+            foreach (var gadget in updatedGadgetStates)
+            {
+                if (AllGadgets.ContainsKey(gadget.Name))
+                {
+                    int bitIndex = AllGadgets[gadget.Name].UnlockBitIndex;
+                    SetBit(gadgetBytes, bitIndex, gadget.IsUnlocked);
+                }
+            }
+
+            int spinAttackLevel = (int)spinAttackLevelSelector.Value;
+            int pushAttackLevel = (int)pushAttackLevelSelector.Value;
+            int jumpAttackLevel = (int)jumpAttackLevelSelector.Value;
+
+            if (spinAttackLevel >= 1)
+                SetBit(gadgetBytes, AllGadgets["Spin Attack 1"].UnlockBitIndex, true);
+            if (spinAttackLevel >= 2)
+                SetBit(gadgetBytes, AllGadgets["Spin Attack 2"].UnlockBitIndex, true);
+            if (spinAttackLevel >= 3)
+                SetBit(gadgetBytes, AllGadgets["Spin Attack 3"].UnlockBitIndex, true);
+
+            if (pushAttackLevel >= 1)
+                SetBit(gadgetBytes, AllGadgets["Push Attack 1"].UnlockBitIndex, true);
+            if (pushAttackLevel >= 2)
+                SetBit(gadgetBytes, AllGadgets["Push Attack 2"].UnlockBitIndex, true);
+            if (pushAttackLevel >= 3)
+                SetBit(gadgetBytes, AllGadgets["Push Attack 3"].UnlockBitIndex, true);
+
+            if (jumpAttackLevel >= 1)
+                SetBit(gadgetBytes, AllGadgets["Jump Attack 1"].UnlockBitIndex, true);
+            if (jumpAttackLevel >= 2)
+                SetBit(gadgetBytes, AllGadgets["Jump Attack 2"].UnlockBitIndex, true);
+            if (jumpAttackLevel >= 3)
+                SetBit(gadgetBytes, AllGadgets["Jump Attack 3"].UnlockBitIndex, true);
+
+            return gadgetBytes;
+        }
+
+        // Get current gadget binding states as byte array (extracted from SaveBindings logic)
+        private byte[] GetCurrentBindingBytes()
+        {
+            byte[] gadgetBindingBytes = new byte[48];
+
+            // Read the binding values for all comboboxes
+            var bindingCombos = new List<ComboBox>
+            {
+                slyGadgetsL1ComboBox, slyGadgetsL2ComboBox, slyGadgetsR2ComboBox,
+                bentleyGadgetsL1ComboBox, bentleyGadgetsL2ComboBox, bentleyGadgetsR2ComboBox,
+                murrayGadgetsL1ComboBox, murrayGadgetsL2ComboBox, murrayGadgetsR2ComboBox
+            };
+
+            for (int i = 0; i < bindingCombos.Count; i++)
+            {
+                string selectedGadget = bindingCombos[i].SelectedItem?.ToString();
+
+                int buttonBindingIndex = -1; // Default to -1 (unbound)
+
+                if (!string.IsNullOrEmpty(selectedGadget) && AllGadgets.ContainsKey(selectedGadget))
+                {
+                    buttonBindingIndex = AllGadgets[selectedGadget].ButtonBindingIndex ?? -1;
+                }
+
+                // Each binding is stored as a 4-byte integer
+                byte[] bindingBytes = BitConverter.GetBytes(buttonBindingIndex);
+                // reverse for big-endian
+                Array.Reverse(bindingBytes);
+                Array.Copy(bindingBytes, 0, gadgetBindingBytes, i * 4, 4);
+            }
+
+            return gadgetBindingBytes;
         }
     }
 }

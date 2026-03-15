@@ -20,9 +20,6 @@ namespace racman
             this.game = game;
             InitializeComponent();
 
-            positionsComboBox.Items.AddRange(new object[] { "1", "2", "3", "4", "5" });
-            positionsComboBox.Text = "1";
-
             mapComboBox.Items.AddRange(game.GetMapNames());
             mapComboBox.SelectedIndex = 0;
 
@@ -117,14 +114,10 @@ namespace racman
 
         private void loadPosButton_Click(object sender, EventArgs e)
         {
-            game.selectedPositionIndex = int.Parse(positionsComboBox.Text);
-            game.LoadPosition();
         }
 
         private void savePosButton_Click(object sender, EventArgs e)
         {
-            game.selectedPositionIndex = int.Parse(positionsComboBox.Text);
-            game.SavePosition();
         }
 
         private void coinsTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -265,6 +258,110 @@ namespace racman
         private void GadgetsWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             GadgetsWindow = null;
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void fastReloadButton_Click(object sender, EventArgs e)
+        {
+            game.TriggerGameLoad((uint)0);
+        }
+
+        private void fullReloadButton_Click(object sender, EventArgs e)
+        {
+            game.TriggerGameLoad();
+        }
+
+        private void loadRunFileButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void webMANShortcutsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void skipCinematicsButton_Click(object sender, EventArgs e)
+        {
+            game.SkipCinematic();
+        }
+
+        private void alwaysOnTopCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!alwaysOnTopCheckBox.Checked)
+            {
+                this.TopMost = false;
+
+            }
+            else
+            {
+                this.TopMost = true;
+            }
+        }
+
+        private void loadJobButton_Click(object sender, EventArgs e)
+        {
+            game.LoadJob(jobComboBox.Text);
+        }
+
+        private void abandonJobButton_Click(object sender, EventArgs e)
+        {
+            game.AbandonJob(jobComboBox.Text);
+        }
+
+        private void setCoinsButton_Click(object sender, EventArgs e)
+        {
+            SetCoinsFromTextBox();
+
+        }
+
+        private void coinsTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SetCoinsFromTextBox();
+
+        }
+
+
+        private void SetCoinsFromTextBox()
+        {
+            var coinsText = coinsTextBox.Text;
+            // try to parse the input as an integer
+            if (int.TryParse(coinsText, out int coins))
+            {
+                game.SetCoinCount(coins);
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid number for coins.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetHealthFromTextBox()
+        {
+            var healthText = healthTextBox.Text;
+            // try to parse the input as an integer
+            if (int.TryParse(healthText, out int health))
+            {
+                game.SetHealth(health);
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid number for health.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void healthTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void setHealthButton_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

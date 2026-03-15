@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32819.101
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "racman", "RaCTrainer\racman.csproj", "{0909BCDB-6DF1-4F1B-B2F9-67AF696E7325}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SluMAN", "RaCTrainer\SluMAN.csproj", "{0909BCDB-6DF1-4F1B-B2F9-67AF696E7325}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
