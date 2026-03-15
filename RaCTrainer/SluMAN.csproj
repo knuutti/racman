@@ -489,7 +489,6 @@
     <Folder Include="Resources\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="autosplitters\rac2planets.txt" />
     <Content Include="sluman_icon.ico" />
     <None Include="autosplitters\sly3-autosplitter.asl" />
     <Content Include="autosplitters\dlplanets.txt" />
