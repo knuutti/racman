@@ -1,5 +1,4 @@
-DISCLAIMER!
-This repository is still WIP. There will be an official release of SluMAN v1.0.0 soon, please be patient. In the meanwhile, you can find the old SluMAN repository from [here](https://github.com/knuutti/SluMAN-EXT.com)
+You can find the old SluMAN repository from [here](https://github.com/knuutti/SluMAN-EXT.com)
 
 # SluMAN
 
