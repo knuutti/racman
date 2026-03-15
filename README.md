@@ -25,3 +25,6 @@ Then all you need to do is run a game, and click Attach!
 Just run `SluMAN.exe`, then while your game is open in RPCS3, click the `RPCS3` button. 
 
 Some features may unfortunately not be supported on RPCS3.
+
+## Acknowledgements
+This project is a fork of [racman](https://github.com/MichaelRelaxen/racman). Huge thank you for the work of the racman and [Ratchetron](https://github.com/bordplate/Ratchetron) developers, without your contributions this project would not be possible!
