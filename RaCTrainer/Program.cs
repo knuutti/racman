@@ -2,8 +2,6 @@
 using System.Windows.Forms;
 using System.Reflection;
 
-using AutoUpdaterDotNET;
-
 namespace racman
 {
     static class Program
@@ -17,11 +15,6 @@ namespace racman
         [STAThread]
         static void Main(string[] args)
         {
-#if !DEBUG
-            AutoUpdater.Start("https://raw.githubusercontent.com/knuutti/SluMAN/master/update.xml");
-            AutoUpdater.RunUpdateAsAdmin = false;
-#endif
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Start();

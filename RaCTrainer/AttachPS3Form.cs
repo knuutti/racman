@@ -6,6 +6,7 @@ using System.Threading;
 using racman.Memory;
 using racman.TOD;
 using System.Diagnostics;
+using AutoUpdaterDotNET;
 
 namespace racman
 {
@@ -31,6 +32,11 @@ namespace racman
             scripting = new RacmanScripting();
 
             currentVerLabel.Text = "SluMAN v" + Assembly.GetEntryAssembly().GetName().Version.ToString(3);
+
+#if !DEBUG
+            AutoUpdater.RunUpdateAsAdmin = false;
+            AutoUpdater.Start("https://raw.githubusercontent.com/knuutti/SluMAN/master/update.xml");
+#endif
 
             if (File.Exists(Environment.CurrentDirectory + @"\config.txt"))
             {
