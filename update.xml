@@ -1,12 +1,6 @@
 <item>
 <version>1.0.2.0</version>
 <url>https://github.com/knuutti/SluMAN/releases/download/v1.0.0/SluMAN.zip</url>
-<changelog>## General
-- Changed backend from RacMAN-EXT to racman, which means major changes in the UI as well as the backend functionality.
-- Support for Sly 2 is temporarily disabled
-- Added automatic updater that checks for new versions when app is launched
-## Sly 3
-- Added Speedrun Mode that includes input display, memory-based autosplitter and run file loading. Use of Speedrun Mode is allowed during speedruns, however only input display and autosplitter can be actively used while the timer is running.
-- Added autosplitter for Any% category as well as all individual Episode categories</changelog>
+<changelog></changelog>
 <mandatory>false</mandatory>
 </item>
