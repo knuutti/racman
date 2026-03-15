@@ -1,6 +1,6 @@
 <item>
 <version>1.0.2.0</version>
 <url>https://github.com/knuutti/SluMAN/releases/download/v1.0.0/SluMAN.zip</url>
-<changelog></changelog>
+<changelog><html><body><ul><li>Fixed issue with memory reading</li></ul></body></html></changelog>
 <mandatory>false</mandatory>
 </item>
