@@ -164,27 +164,11 @@ namespace racman
             if (!alwaysTopButton.Checked)
             {
                 this.TopMost = false;
-                if (InputDisplay != null && !InputDisplay.IsDisposed)
-                {
-                    InputDisplay.TopMost = false;
-                }
-                if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
-                {
-                    GadgetsWindow.TopMost = false;
-                }
 
             }
             else
             {
                 this.TopMost = true;
-                if (InputDisplay != null && !InputDisplay.IsDisposed)
-                {
-                    InputDisplay.TopMost = true;
-                }
-                if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
-                {
-                    GadgetsWindow.TopMost = true;
-                }
             }
         }
 

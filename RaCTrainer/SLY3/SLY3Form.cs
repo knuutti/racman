@@ -291,5 +291,84 @@ namespace racman
         {
 
         }
+
+        private void skipCinematicsButton_Click(object sender, EventArgs e)
+        {
+            game.SkipCinematic();
+        }
+
+        private void alwaysOnTopCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!alwaysOnTopCheckBox.Checked)
+            {
+                this.TopMost = false;
+
+            }
+            else
+            {
+                this.TopMost = true;
+            }
+        }
+
+        private void loadJobButton_Click(object sender, EventArgs e)
+        {
+            game.LoadJob(jobComboBox.Text);
+        }
+
+        private void abandonJobButton_Click(object sender, EventArgs e)
+        {
+            game.AbandonJob(jobComboBox.Text);
+        }
+
+        private void setCoinsButton_Click(object sender, EventArgs e)
+        {
+            SetCoinsFromTextBox();
+
+        }
+
+        private void coinsTextBox_TextChanged(object sender, EventArgs e)
+        {
+            SetCoinsFromTextBox();
+
+        }
+
+
+        private void SetCoinsFromTextBox()
+        {
+            var coinsText = coinsTextBox.Text;
+            // try to parse the input as an integer
+            if (int.TryParse(coinsText, out int coins))
+            {
+                game.SetCoinCount(coins);
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid number for coins.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void SetHealthFromTextBox()
+        {
+            var healthText = healthTextBox.Text;
+            // try to parse the input as an integer
+            if (int.TryParse(healthText, out int health))
+            {
+                game.SetHealth(health);
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid number for health.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void healthTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void setHealthButton_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

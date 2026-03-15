@@ -57,14 +57,14 @@
             this.infiniteJuiceCheckBox = new System.Windows.Forms.CheckBox();
             this.infiniteHealthCheckBox = new System.Windows.Forms.CheckBox();
             this.jobComboBox = new System.Windows.Forms.ComboBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.loadJobButton = new System.Windows.Forms.Button();
             this.skipCinematicsButton = new System.Windows.Forms.Button();
             this.fullReloadButton = new System.Windows.Forms.Button();
             this.reloadGroupBox = new System.Windows.Forms.GroupBox();
             this.fastReloadButton = new System.Windows.Forms.Button();
             this.healthTextBox = new System.Windows.Forms.TextBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.setCoinsButton = new System.Windows.Forms.Button();
+            this.setHealthButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.jobGroupBox = new System.Windows.Forms.GroupBox();
@@ -89,6 +89,7 @@
             this.coinsTextBox.Size = new System.Drawing.Size(148, 22);
             this.coinsTextBox.TabIndex = 0;
             this.coinsTextBox.Text = "Set coins...";
+            this.coinsTextBox.TextChanged += new System.EventHandler(this.coinsTextBox_TextChanged);
             this.coinsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.coinsTextBox_KeyDown);
             // 
             // inputDisplayButton
@@ -259,6 +260,18 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Items.AddRange(new object[] {
+            "English",
+            "Dutch",
+            "Norwegian",
+            "Finnish",
+            "Spanish",
+            "Danish",
+            "Portuguese",
+            "Swedish",
+            "French",
+            "German",
+            "Italian"});
             this.comboBox1.Location = new System.Drawing.Point(21, 179);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(4);
             this.comboBox1.Name = "comboBox1";
@@ -291,6 +304,7 @@
             this.alwaysOnTopCheckBox.TabIndex = 5;
             this.alwaysOnTopCheckBox.Text = "Always On Top";
             this.alwaysOnTopCheckBox.UseVisualStyleBackColor = true;
+            this.alwaysOnTopCheckBox.CheckedChanged += new System.EventHandler(this.alwaysOnTopCheckBox_CheckedChanged);
             // 
             // infiniteJumpsCheckBox
             // 
@@ -345,6 +359,284 @@
             // jobComboBox
             // 
             this.jobComboBox.FormattingEnabled = true;
+            this.jobComboBox.Items.AddRange(new object[] {
+            "The Cooper Vault",
+            " [TCV] Cave",
+            " [TCV] Top",
+            " [TCV] Chase",
+            " [TCV] End",
+            "Police HQ",
+            " [PHQ] Exit the vent",
+            " [PHQ] Crawl to the key",
+            " [PHQ] Crawl back to Dimitri",
+            " [PHQ] Pick the lock",
+            " [PHQ] Carmelita chase",
+            "Octavio Snap",
+            " [OS] After 1st picture",
+            " [OS] Taking 2nd picture",
+            " [OS] After 2nd picture",
+            " [OS] Taking 3rd picture",
+            " [OS] After 3rd picture",
+            " [OS] Taking 4th picture",
+            " [OS] After 4th picture",
+            " [OS] Ferris Wheel",
+            "Into the Depths",
+            " [ItD] Enter the Opera House",
+            " [ItD] Canal",
+            " [ItD] First laser door",
+            " [ItD] Computer Room",
+            "Canal Chase",
+            " [CC] Start of the chase",
+            "Turf War!",
+            " [TW] Wave #1",
+            " [TW] Wave #2",
+            " [TW] Wave #3",
+            " [TW] Wave #4",
+            "Tar Ball",
+            "Run \'n Bomb",
+            " [RnB] After bomb 1",
+            " [RnB] Deliever bomb 2",
+            " [RnB] Climb the tower",
+            " [RnB] Run to the shop",
+            " [RnB] Chase Octavio",
+            "Guard Duty",
+            " [GD] Enter Coffee House #1",
+            " [GD] Run to Coffee House #2",
+            " [GD] Enter Coffee House #2",
+            " [GD] Run to Coffee House #3",
+            " [GD] Enter Coffee House #3",
+            " [GD] Escape the guards",
+            "OP: Tar Be Gone!",
+            " [TBG] Enter the Opera House",
+            " [TBG] Tar Pump room",
+            " [TBG] Opera Minigame",
+            " [TBG] Canal Chase",
+            " [TBG] Boss fight",
+            "Search for the Guru",
+            " [SftG] Cave entrance",
+            " [SftG] Guru\'s home",
+            "Spelunking",
+            " [S] Enter the cave",
+            " [S] First piston",
+            " [S] Second pistons",
+            " [S] Drills",
+            "Dark Caves",
+            " [DC] Enter cave #1",
+            " [DC] Escape cave #1",
+            " [DC] Find cave #2 entrance",
+            " [DC] Enter cave #2",
+            " [DC] Escape cave #2",
+            "Big Truck",
+            " [BT] Enter Ayer\'s Rock",
+            " [BT] Phase 1",
+            " [BT] Climb the tower",
+            " [BT] Phase 2",
+            "Unleash the Guru",
+            " [UtG] Find the drills",
+            " [UtG] Drills",
+            " [UtG] Generator",
+            "The Claw",
+            " [TC] Phase 1",
+            " [TC] Phase 2",
+            " [TC] Phase 3",
+            "Lemon Rage",
+            " [LR] Enter the bar",
+            " [LR] Drinking contest",
+            " [LR] Bar fight",
+            " [LR] Boss fight",
+            "Hungry Croc",
+            " [HC] Feed the Croc",
+            " [HC] Flashlight guard",
+            "OP: Moon Crash",
+            " [MC] Sleep darts",
+            " [MC] Truck",
+            " [MC] Climb",
+            "Hidden Flight Roster",
+            " [HFR] Exit the hotel",
+            " [HFR] Find the castle",
+            " [HFR] Castle Climb",
+            " [HFR] Reach the hangar",
+            " [HFR] Hangar",
+            "Frame Team Belgium",
+            " [FTB] Find the pilot",
+            " [FTB] Pickpocket",
+            " [FTB] Guru section",
+            " [FTB] Sly section",
+            "Frame Team Iceland",
+            " [FTI] Rowing #1",
+            " [FTI] Platforming #1",
+            " [FTI] Hotel",
+            " [FTI] Platforming #2",
+            " [FTI] Rowing #2",
+            " [FTI] Find the hangar",
+            " [FTI] Hangar",
+            "Cooper Hangar Defence",
+            " [CHD] Muggshot",
+            " [CHD] Sewers #1",
+            " [CHD] Sewers #2",
+            " [CHD] RC Chopper",
+            "ACES Semi-finals",
+            " [AS] Dogfight",
+            "Giant Wolf Massacre",
+            " [GWM] Guru section",
+            "Windmill Firewall",
+            " [WF] Hack #1",
+            " [WF] Find computer #2",
+            " [WF] Hack #2",
+            " [WF] Find computer #3",
+            " [WF] Hack #3",
+            " [WF] Find computer #4",
+            " [WF] Hack #4",
+            "Beauty and the Beast",
+            " [BatB] Find Muggshot",
+            " [BatB] Find Carmelita",
+            " [BatB] Muggshot fight",
+            "OP: Turbo Dominant Eagle",
+            " [TDE] Murray section",
+            " [TDE] Dogfight",
+            " [TDE] Boss fight",
+            "King of Fire",
+            " [KoF] Murray",
+            " [KoF] Penelope",
+            " [KoF] Sly",
+            " [KoF] Bentley",
+            " [KoF] Guru",
+            " [KoF] Flashback",
+            "Get a Job",
+            " [GaJ] Talk to Tsao",
+            " [GaJ] Picture #1",
+            " [GaJ] Picture #2",
+            " [GaJ] Picture #3",
+            " [GaJ] Pictures of Tsao",
+            "Tearful Reunion",
+            " [TR] Free the van",
+            " [TR] Defend Murray #1",
+            " [TR] Defend Murray #2",
+            "Grapple-Cam Break-in",
+            " [GCB] Steal the keys",
+            " [GCB] Exchange the keys",
+            " [GCB] Break in the building",
+            " [GCB] Lure #1",
+            " [GCB] Lure #2",
+            " [GCB] Find the computer",
+            " [GCB] Hack",
+            "Laptop Retrieval",
+            " [LR] Find the computer",
+            " [LR] Hack",
+            " [LR] Guru section",
+            " [LR] Tsao #1",
+            " [LR] Tsao #2",
+            "Vampiric Demise",
+            " [VD] Panda King\'s house",
+            " [VD] Tutorial",
+            " [VD] Go to safe #2",
+            " [VD] Defend Sly #1",
+            " [VD] Go to safe #3",
+            " [VD] Defend Sly #2",
+            " [VD] Find the gravestone",
+            " [VD] Destroy the gravestone",
+            "Down the Line",
+            " [DtL] RC section",
+            "A Battery of Peril",
+            " [ABoP] Carmelita",
+            " [ABoP] Stabilize the battery",
+            "OP: Wedding Crasher",
+            " [WC] Open the door",
+            " [WC] Reach the computer",
+            " [WC] Destroy alarms",
+            " [WC] Open the trapdoor",
+            " [WC] Go to the palace",
+            " [WC] Protect vases",
+            " [WC] Lure Carmelita",
+            " [WC] Dragon fight",
+            "The Talk of Pirates",
+            " [TToP] Stone-Jake",
+            " [TToP] Find the loutenant",
+            " [TToP] Steal the bootleg",
+            " [TToP] Find Ned",
+            " [TToP] Chase Ned",
+            " [TToP] Return to Pete",
+            " [TToP] Vinegar Talk",
+            "Dynamic Duo",
+            " [DD] Go to Skull Keep",
+            " [DD] Floating boxes",
+            " [DD] Beat the guards",
+            " [DD] Lure Penelope #1",
+            " [DD] Lure Penelope #2",
+            " [DD] Lure Penelope #3",
+            "Jollyboat of Destruction",
+            " [JoD] Harbor patrol",
+            " [JoD] Cutter",
+            "X Marks the Spot",
+            " [XMtS] Row to the ship",
+            " [XMtS] Beat the guards",
+            " [XMtS] Escape the bay",
+            " [XMtS] Sail to Dagger Isle",
+            " [XMtS] Sink the ship",
+            " [XMtS] Dagger Isle",
+            " [XMtS] Statue",
+            "Crusher from the Depths",
+            " [CftD] Shoot Crusher #1",
+            " [CftD] Shoot the tentacles",
+            " [CftD] Shoot Crusher #2",
+            " [CftD] Cannons",
+            "Deep Sea Danger",
+            " [DSD] Underwater",
+            " [DSD] Collars",
+            " [DSD] Fish",
+            " [DSD] Hammersharks",
+            "Battle on the High Seas",
+            " [BotHS] Sail to fight #2",
+            " [BotHS] Fight #2",
+            " [BotHS] Sail to fight #3",
+            " [BotHS] Fight #3",
+            "OP: Reverse Double-Cross",
+            " [RDC] Insult LefWee",
+            " [RDC] Escape the ship",
+            " [RDC] Skull Keep",
+            " [RDC] Crusher",
+            " [RDC] Boss fight",
+            "Carmelita to the Rescue",
+            "A Deadly Bite",
+            " [ADB] Sharks #2",
+            " [ADB] Sharks #3",
+            " [ADB] Sharks #4",
+            "The Dark Current",
+            " [TDC] Pinchers",
+            " [TDC] Mutant fish",
+            "Bump-Charge-Jump",
+            " [BCJ] Track #1",
+            " [BCJ] Track #2",
+            " [BCJ] Track #3",
+            "Danger in the Skies",
+            " [DitS] Turrets",
+            " [DitS] Bats",
+            " [DitS] Dogfight",
+            " [DitS] Paraglide",
+            "The Ancestors\' Gauntlet",
+            " [TAG] Enter the gauntlet",
+            " [TAG] Slytunkhamen Cooper II",
+            " [TAG] Sir Galleth Cooper",
+            " [TAG] Salim al-Kupar",
+            " [TAG] Slaigh MacCooper",
+            " [TAG] Rioichi Cooper",
+            " [TAG] Henriette Cooper",
+            " [TAG] Tennessee Cooper",
+            " [TAG] Thaddeus W. Cooper III",
+            " [TAG] Otto van Cooper",
+            " [TAG] Connor Cooper",
+            "Stand Your Ground",
+            " [SYG] Checkpoint #1",
+            " [SYG] Checkpoint #2",
+            " [SYG] Place the treasures",
+            "Final Legacy",
+            " [FL] Carmelita section",
+            "Sly Tutorial #1",
+            "Sly Tutorial #2",
+            "Sly Tutorial #3",
+            "Sly Tutorial #4",
+            "Bentley Tutorial",
+            "Murray Tutorial"});
             this.jobComboBox.Location = new System.Drawing.Point(21, 31);
             this.jobComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.jobComboBox.Name = "jobComboBox";
@@ -352,15 +644,16 @@
             this.jobComboBox.TabIndex = 16;
             this.jobComboBox.Text = "Select a job...";
             // 
-            // button2
+            // loadJobButton
             // 
-            this.button2.Location = new System.Drawing.Point(21, 63);
-            this.button2.Margin = new System.Windows.Forms.Padding(4);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(118, 30);
-            this.button2.TabIndex = 17;
-            this.button2.Text = "Load";
-            this.button2.UseVisualStyleBackColor = true;
+            this.loadJobButton.Location = new System.Drawing.Point(21, 63);
+            this.loadJobButton.Margin = new System.Windows.Forms.Padding(4);
+            this.loadJobButton.Name = "loadJobButton";
+            this.loadJobButton.Size = new System.Drawing.Size(118, 30);
+            this.loadJobButton.TabIndex = 17;
+            this.loadJobButton.Text = "Load";
+            this.loadJobButton.UseVisualStyleBackColor = true;
+            this.loadJobButton.Click += new System.EventHandler(this.loadJobButton_Click);
             // 
             // skipCinematicsButton
             // 
@@ -371,6 +664,7 @@
             this.skipCinematicsButton.TabIndex = 18;
             this.skipCinematicsButton.Text = "Skip Cinematic";
             this.skipCinematicsButton.UseVisualStyleBackColor = true;
+            this.skipCinematicsButton.Click += new System.EventHandler(this.skipCinematicsButton_Click);
             // 
             // fullReloadButton
             // 
@@ -413,33 +707,36 @@
             this.healthTextBox.Size = new System.Drawing.Size(148, 22);
             this.healthTextBox.TabIndex = 21;
             this.healthTextBox.Text = "Set health...";
+            this.healthTextBox.TextChanged += new System.EventHandler(this.healthTextBox_TextChanged);
             // 
-            // button3
+            // setCoinsButton
             // 
-            this.button3.Location = new System.Drawing.Point(178, 37);
-            this.button3.Margin = new System.Windows.Forms.Padding(4);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(115, 22);
-            this.button3.TabIndex = 22;
-            this.button3.Text = "Set Coins";
-            this.button3.UseVisualStyleBackColor = true;
+            this.setCoinsButton.Location = new System.Drawing.Point(178, 37);
+            this.setCoinsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.setCoinsButton.Name = "setCoinsButton";
+            this.setCoinsButton.Size = new System.Drawing.Size(115, 22);
+            this.setCoinsButton.TabIndex = 22;
+            this.setCoinsButton.Text = "Set Coins";
+            this.setCoinsButton.UseVisualStyleBackColor = true;
+            this.setCoinsButton.Click += new System.EventHandler(this.setCoinsButton_Click);
             // 
-            // button4
+            // setHealthButton
             // 
-            this.button4.Location = new System.Drawing.Point(178, 71);
-            this.button4.Margin = new System.Windows.Forms.Padding(4);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(115, 22);
-            this.button4.TabIndex = 23;
-            this.button4.Text = "Set Health";
-            this.button4.UseVisualStyleBackColor = true;
+            this.setHealthButton.Location = new System.Drawing.Point(178, 71);
+            this.setHealthButton.Margin = new System.Windows.Forms.Padding(4);
+            this.setHealthButton.Name = "setHealthButton";
+            this.setHealthButton.Size = new System.Drawing.Size(115, 22);
+            this.setHealthButton.TabIndex = 23;
+            this.setHealthButton.Text = "Set Health";
+            this.setHealthButton.UseVisualStyleBackColor = true;
+            this.setHealthButton.Click += new System.EventHandler(this.setHealthButton_Click);
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.button4);
+            this.groupBox1.Controls.Add(this.setHealthButton);
             this.groupBox1.Controls.Add(this.coinsTextBox);
             this.groupBox1.Controls.Add(this.skipCinematicsButton);
-            this.groupBox1.Controls.Add(this.button3);
+            this.groupBox1.Controls.Add(this.setCoinsButton);
             this.groupBox1.Controls.Add(this.healthTextBox);
             this.groupBox1.Controls.Add(this.setLanguageButton);
             this.groupBox1.Controls.Add(this.gadgetButton);
@@ -469,7 +766,7 @@
             // 
             this.jobGroupBox.Controls.Add(this.abandonJobButton);
             this.jobGroupBox.Controls.Add(this.jobComboBox);
-            this.jobGroupBox.Controls.Add(this.button2);
+            this.jobGroupBox.Controls.Add(this.loadJobButton);
             this.jobGroupBox.Location = new System.Drawing.Point(301, 278);
             this.jobGroupBox.Name = "jobGroupBox";
             this.jobGroupBox.Size = new System.Drawing.Size(312, 110);
@@ -486,6 +783,7 @@
             this.abandonJobButton.TabIndex = 18;
             this.abandonJobButton.Text = "Abandon Job";
             this.abandonJobButton.UseVisualStyleBackColor = true;
+            this.abandonJobButton.Click += new System.EventHandler(this.abandonJobButton_Click);
             // 
             // comboBox2
             // 
@@ -577,14 +875,14 @@
         private System.Windows.Forms.CheckBox infiniteJuiceCheckBox;
         private System.Windows.Forms.CheckBox infiniteHealthCheckBox;
         private System.Windows.Forms.ComboBox jobComboBox;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button loadJobButton;
         private System.Windows.Forms.Button skipCinematicsButton;
         private System.Windows.Forms.Button fullReloadButton;
         private System.Windows.Forms.GroupBox reloadGroupBox;
         private System.Windows.Forms.Button fastReloadButton;
         private System.Windows.Forms.TextBox healthTextBox;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button setCoinsButton;
+        private System.Windows.Forms.Button setHealthButton;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox jobGroupBox;
