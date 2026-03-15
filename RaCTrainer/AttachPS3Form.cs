@@ -98,8 +98,15 @@ namespace racman
 
         }
 
-        private void attachButton_Click(object sender, EventArgs e)
+        private void AttachGameEvent(bool speedrunMode)
         {
+            if (rpcs3CheckBox.Checked)
+            {
+                func.api = new RPCS3("FUCK");
+                Attach(func.api, speedrunMode);
+                return;
+            }
+
             ip = IPTextBox.Text;
             func.ChangeFileLines("config.txt", Convert.ToString(ip), "ip");
 
@@ -113,7 +120,12 @@ namespace racman
                 }
             }
 
-            Attach(func.api, false);
+            Attach(func.api, speedrunMode);
+        }
+
+        private void attachButton_Click(object sender, EventArgs e)
+        {
+            AttachGameEvent(false);
         }
 
         private void Attach(IPS3API api, Boolean speedrunMode = false)
@@ -327,29 +339,10 @@ namespace racman
             }
         }
 
-        private void AttachRPCS3Button_Click(object sender, EventArgs e)
-        {
-            func.api = new RPCS3("FUCK");
-
-            Attach(func.api);
-        }
-
         private void attachPS3SpeedrunModeButton_Click(object sender, EventArgs e)
         {
-            ip = IPTextBox.Text;
-            func.ChangeFileLines("config.txt", Convert.ToString(ip), "ip");
 
-            func.api = this.useOldAPI ? (IPS3API)new WebMAN(ip) : (IPS3API)new Ratchetron(ip);
-
-            if (!this.useOldAPI)
-            {
-                if (!func.PrepareRatchetron(ip))
-                {
-                    return;
-                }
-            }
-
-            Attach(func.api, true);
+            AttachGameEvent(true);
         }
     }
 }

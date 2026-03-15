@@ -14,6 +14,7 @@ namespace racman
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly3 game;
+        private int webManLoadSubId = -1;
 
         public SLY3Form(sly3 game)
         {
@@ -24,6 +25,11 @@ namespace racman
             mapComboBox.SelectedIndex = 0;
 
             game.SetupInputDisplayMemorySubs();
+
+            if (game.api is Ratchetron)
+            {
+                SubscribeWebManLoadPopup(sly3.addr.isLoading);
+            }
 
             // Setup disconnect/reconnect callbacks for XMB transitions
             if (func.api is Ratchetron r)
@@ -85,6 +91,7 @@ namespace racman
                     
                     // Re-establish memory subscriptions
                     game.SetupInputDisplayMemorySubs();
+                    SubscribeWebManLoadPopup(sly3.addr.isLoading);
                     
                     // Restart input timer if needed
                     if (InputDisplay != null && !InputDisplay.IsDisposed)
@@ -164,6 +171,12 @@ namespace racman
 
             try
             {
+                if (webManLoadSubId != -1)
+                {
+                    game.api.ReleaseSubID(webManLoadSubId);
+                    webManLoadSubId = -1;
+                }
+
                 if (game.api is Ratchetron r)
                 {
                     r.ReleaseAllSubs();
@@ -178,6 +191,35 @@ namespace racman
             Application.Exit();
             
             Environment.Exit(0);
+        }
+
+        private void SubscribeWebManLoadPopup(uint address)
+        {
+            if (webManLoadSubId != -1)
+            {
+                return;
+            }
+
+            int pid = game.api.getCurrentPID();
+            if (pid == 0)
+            {
+                return;
+            }
+
+            webManLoadSubId = game.api.SubMemory(pid, address, 1, IPS3API.MemoryCondition.Changed, (value) =>
+            {
+                if (value != null && value.Length > 0 && value[0] == 3)
+                {
+                    try
+                    {
+                        WebMAN.DisplayVersionPopUp(func.api.GetIP());
+                    }
+                    catch
+                    {
+                        // no-op
+                    }
+                }
+            });
         }
 
         private void HandleDisconnect()
@@ -209,16 +251,7 @@ namespace racman
 
         private void inputDisplayToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (InputDisplay == null || InputDisplay.IsDisposed)
-            {
-                InputDisplay = new InputDisplay();
-                InputDisplay.Show();
-                game.InputsTimer.Start();
-            }
-            else
-            {
-                InputDisplay.Focus();
-            }
+
         }
 
         private void memoryUtilitiesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -360,6 +393,11 @@ namespace racman
         }
 
         private void setHealthButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter_1(object sender, EventArgs e)
         {
 
         }

@@ -392,5 +392,11 @@ namespace racman
             }
             return bytes;
         }
+
+        private void switchGameModeToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            this.Close();
+            Program.AttachPS3Form.Show();
+        }
     }
 }

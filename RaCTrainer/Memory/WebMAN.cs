@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -112,6 +113,37 @@ namespace racman
             // Can't be bothered to implement this for webman
         }
 
+        public void DisplayVersionPopUp(string message = null)
+        {
+            string popupMessage = string.IsNullOrWhiteSpace(message)
+                ? $"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Practice Mode)"
+                : message;
+
+            string encodedMessage = Uri.EscapeDataString(popupMessage);
+            get_data($"http://{ip}/popup.ps3*{encodedMessage}");
+        }
+
+        public static void DisplayVersionPopUp(string ip, string message = null)
+        {
+            string popupMessage = string.IsNullOrWhiteSpace(message)
+                ? $"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Practice Mode)"
+                : message;
+
+            string encodedMessage = Uri.EscapeDataString(popupMessage);
+
+            using (var popupClient = new WebClient())
+            {
+                try
+                {
+                    popupClient.DownloadString($"http://{ip}/popup.ps3*{encodedMessage}");
+                }
+                catch
+                {
+                    // no-op: popup is best effort
+                }
+            }
+        }
+
         public override bool Disconnect()
         {
             return true;
@@ -156,5 +188,6 @@ namespace racman
         {
             throw new NotImplementedException();
         }
+
     }
 }
