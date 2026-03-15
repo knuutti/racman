@@ -394,7 +394,7 @@ namespace racman
 
         private void setHealthButton_Click(object sender, EventArgs e)
         {
-
+            SetHealthFromTextBox();
         }
 
         private void groupBox1_Enter_1(object sender, EventArgs e)
