@@ -20,9 +20,6 @@ namespace racman
             this.game = game;
             InitializeComponent();
 
-            positionsComboBox.Items.AddRange(new object[] { "1", "2", "3", "4", "5" });
-            positionsComboBox.Text = "1";
-
             mapComboBox.Items.AddRange(game.GetMapNames());
             mapComboBox.SelectedIndex = 0;
 
@@ -117,14 +114,10 @@ namespace racman
 
         private void loadPosButton_Click(object sender, EventArgs e)
         {
-            game.selectedPositionIndex = int.Parse(positionsComboBox.Text);
-            game.LoadPosition();
         }
 
         private void savePosButton_Click(object sender, EventArgs e)
         {
-            game.selectedPositionIndex = int.Parse(positionsComboBox.Text);
-            game.SavePosition();
         }
 
         private void coinsTextBox_KeyDown(object sender, KeyEventArgs e)

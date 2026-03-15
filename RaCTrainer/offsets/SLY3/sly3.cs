@@ -81,7 +81,6 @@ namespace racman
     {
         public static Sly3Addresses addr = new Sly3Addresses();
 
-        public string[] mapList;
         public uint mapIndex;
 
         public struct MapData
@@ -297,7 +296,7 @@ namespace racman
                 uint coordsAddress = GetPlayerCoordsAddress();
                 
                 string position = api.ReadMemoryStr(pid, coordsAddress, 12);
-                func.ChangeFileLines("config.txt", position, mapList[mapIndex] + "SavedPos" + selectedPositionIndex);
+                func.ChangeFileLines("config.txt", position, maps[mapIndex].indicator + "SavedPos" + selectedPositionIndex);
             }
             catch (Exception ex)
             {
@@ -309,7 +308,8 @@ namespace racman
         {
             try
             {
-                string position = func.GetConfigData("config.txt", mapList[mapIndex] + "SavedPos" + selectedPositionIndex);
+                Console.WriteLine(maps[mapIndex].indicator + "SavedPos" + selectedPositionIndex);
+                string position = func.GetConfigData("config.txt", maps[mapIndex].indicator + "SavedPos" + selectedPositionIndex);
                 if (position != "")
                 {
                     uint coordsAddress = GetPlayerCoordsAddress();
