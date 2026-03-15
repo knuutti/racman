@@ -240,10 +240,10 @@ namespace racman
         // Function for loading saved run file data from config
         private RunFileData LoadRunFileDataFromConfig(string episodeKey)
         {
-            string mapName = func.GetConfigData("config.txt", episodeKey + "_MapName");
-            string spawnLocationStr = func.GetConfigData("config.txt", episodeKey + "_SpawnLocation");
-            string memoryDataHex = func.GetConfigData("config.txt", episodeKey + "_MemoryData");
-            string memoryAddressStr = func.GetConfigData("config.txt", episodeKey + "_MemoryAddress");
+            string mapName = func.GetConfigData("run_file_config.txt", episodeKey + "_MapName");
+            string spawnLocationStr = func.GetConfigData("run_file_config.txt", episodeKey + "_SpawnLocation");
+            string memoryDataHex = func.GetConfigData("run_file_config.txt", episodeKey + "_MemoryData");
+            string memoryAddressStr = func.GetConfigData("run_file_config.txt", episodeKey + "_MemoryAddress");
 
             if (string.IsNullOrEmpty(mapName) && string.IsNullOrEmpty(memoryDataHex))
             {
