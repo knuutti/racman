@@ -103,7 +103,6 @@ namespace racman
                 return true;
             }
 
-            // Always upload because fuck it
             client.UploadFile($"ftp://{ip}:21/dev_hdd0/tmp/{sprx}", $@"{sprxPath}\{sprx}");
             get_data($"http://{ip}/vshplugin.ps3mapi?prx=%2Fdev_hdd0%2Ftmp%2F{sprx}&load_slot={slot}");
 
@@ -158,7 +157,7 @@ namespace racman
 
         public static string GetConfigData(string filename, string keyword)
         {
-            string[] data = File.ReadAllLines("config.txt");
+            string[] data = File.ReadAllLines(filename);
 
             for (int i = 0; i < data.Length; i++)
             {

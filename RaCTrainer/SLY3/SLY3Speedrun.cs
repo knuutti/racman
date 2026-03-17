@@ -25,6 +25,8 @@ namespace racman
 
             game.SetupInputDisplayMemorySubs();
 
+            CheckRunFileConfig();
+
             // Setup disconnect/reconnect callbacks for XMB transitions
             if (func.api is Ratchetron r)
             {
@@ -311,6 +313,29 @@ namespace racman
                     MessageBox.Show($"Error setting tutorial complete: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void CheckRunFileConfig()
+        {
+            string[] keys = new string[] { "Episode1", "Episode2", "Episode3", "Episode4", "Episode5", "Episode6_NoCE", "Episode6_CE" };
+            foreach (var key in keys)
+            {
+                string gadgetHex = func.GetConfigData("config.txt", key + "_GadgetUnlocks");
+                string bindingHex = func.GetConfigData("config.txt", key + "_GadgetBindings");
+                
+                if (string.IsNullOrEmpty(gadgetHex))
+                {
+                    gadgetHex = func.GetConfigData("run_file_config.txt", key + "_GadgetUnlocks");
+                    func.ChangeFileLines("config.txt", gadgetHex, key + "_GadgetUnlocks");
+                }
+
+                if (string.IsNullOrEmpty(bindingHex))
+                {
+                    bindingHex = func.GetConfigData("run_file_config.txt", key + "_GadgetBindings");
+                    func.ChangeFileLines("config.txt", bindingHex, key + "_GadgetBindings");
+                }
+            }
+            return;
         }
 
         private void LoadRunFileGadgets()
