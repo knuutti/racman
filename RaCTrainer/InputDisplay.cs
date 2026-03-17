@@ -86,6 +86,7 @@ namespace racman
 
         public System.Windows.Forms.Timer timer;
         ControllerSkin controllerSkin;
+        private readonly List<ToolStripMenuItem> skinMenuItems = new List<ToolStripMenuItem>();
 
         public InputDisplay()
         {
@@ -100,6 +101,9 @@ namespace racman
                     skinComboBox.Items.Add(skinName.Replace("controllerskins\\", ""));
                 }
             }
+
+            BuildSkinContextMenu();
+
             // controllerSkin = ControllerSkin.Load(Directory.EnumerateDirectories("controllerskins").First());
             try
             {
@@ -108,6 +112,19 @@ namespace racman
             catch
             {
                 skinComboBox.SelectedIndex = 0;
+            }
+
+            var savedBackColor = func.GetConfigData("config.txt", "InputDisplayBackColor");
+            if (savedBackColor != "")
+            {
+                try
+                {
+                    this.BackColor = Color.FromArgb(Convert.ToInt32(savedBackColor));
+                }
+                catch
+                {
+                    // Ignore invalid color values in config.
+                }
             }
 
             timer = new System.Windows.Forms.Timer();
@@ -178,19 +195,84 @@ namespace racman
 
         private void skinComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var skinName = skinComboBox.Items[skinComboBox.SelectedIndex].ToString();
-
-            controllerSkin = ControllerSkin.Load($"controllerskins\\{skinName}");
-
-            func.ChangeFileLines("config.txt", skinComboBox.SelectedIndex.ToString(), "InputDisplaySkin");
-
-            this.Width = Math.Max(controllerSkin.buttons["base"].spriteWidth + 50, this.Width);
-            this.Height = Math.Max(controllerSkin.buttons["base"].spriteHeight + 50, this.Height);
+            ApplySkinByIndex(skinComboBox.SelectedIndex);
         }
 
         private void InputDisplay_FormClosing(object sender, FormClosingEventArgs e)
         {
             timer.Enabled = false;
+        }
+
+        private void BuildSkinContextMenu()
+        {
+            skinToolStripMenuItem.DropDownItems.Clear();
+            skinMenuItems.Clear();
+
+            for (int i = 0; i < skinComboBox.Items.Count; i++)
+            {
+                var skinName = skinComboBox.Items[i].ToString();
+                var menuItem = new ToolStripMenuItem(skinName)
+                {
+                    Tag = i,
+                    CheckOnClick = true
+                };
+
+                menuItem.Click += SkinMenuItem_Click;
+                skinToolStripMenuItem.DropDownItems.Add(menuItem);
+                skinMenuItems.Add(menuItem);
+            }
+        }
+
+        private void ApplySkinByIndex(int skinIndex)
+        {
+            if (skinIndex < 0 || skinIndex >= skinComboBox.Items.Count)
+            {
+                return;
+            }
+
+            var skinName = skinComboBox.Items[skinIndex].ToString();
+
+            controllerSkin = ControllerSkin.Load($"controllerskins\\{skinName}");
+
+            func.ChangeFileLines("config.txt", skinIndex.ToString(), "InputDisplaySkin");
+
+            this.Width = Math.Max(controllerSkin.buttons["base"].spriteWidth + 50, this.Width);
+            this.Height = Math.Max(controllerSkin.buttons["base"].spriteHeight + 50, this.Height);
+
+            for (int i = 0; i < skinMenuItems.Count; i++)
+            {
+                skinMenuItems[i].Checked = i == skinIndex;
+            }
+        }
+
+        private void SkinMenuItem_Click(object sender, EventArgs e)
+        {
+            if (!(sender is ToolStripMenuItem clickedItem) || clickedItem.Tag == null)
+            {
+                return;
+            }
+
+            int skinIndex = (int)clickedItem.Tag;
+            skinComboBox.SelectedIndex = skinIndex;
+        }
+
+        private void InputDisplay_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                contextMenuStrip1.Show(this, e.Location);
+            }
+        }
+
+        private void backgroundColorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            colorDialog1.Color = this.BackColor;
+
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                this.BackColor = colorDialog1.Color;
+                func.ChangeFileLines("config.txt", this.BackColor.ToArgb().ToString(), "InputDisplayBackColor");
+            }
         }
     }
 }

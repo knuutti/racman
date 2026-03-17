@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -10,39 +10,39 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace racman
 {
-    public class Sly3Addresses : IAddresses
+    public class Sly2Addresses : IAddresses
     {
         // Unused RaC addresses
         public uint boltCount => 0x0;
-        public uint currentPlanet => 0x0; 
-        public uint loadPlanet => 0x0;  
+        public uint currentPlanet => 0x0;
+        public uint loadPlanet => 0x0;
         public uint mobyInstances => 0x0;
         public uint analogOffset => 0x0;
         public uint playerCoords => 0x0;
 
-        public uint inputOffset => 0x5EC5AA;
-        public uint analogOffsetLeft => 0x5EC5F0;
-        public uint analogOffsetRight => 0x5EC61C;
-        public uint coinCount => 0x6CC808;
-        public uint slyCharacterPtr => 0x5ED940;
-        public uint activeCharacterPtr => 0x5EC654;
+        public uint inputOffset => 0x500F76;
+        public uint analogOffsetLeft => 0x500EFC;
+        public uint analogOffsetRight => 0x500EFC;
+        public uint coinCount => 0x7A83B0;
+        public uint slyCharacterPtr => 0x0;
+        public uint activeCharacterPtr => 0x7A830C;
 
-        public uint playerEntityPointer => 0x5EC654;
-        public uint transformOffset => 0x44; 
-        public uint coordsOffsetX => 0x130; 
-        public uint coordsOffsetY => 0x134; 
+        public uint playerEntityPointer => 0x7A830C;
+        public uint transformOffset => 0x44;
+        public uint coordsOffsetX => 0x130;
+        public uint coordsOffsetY => 0x134;
         public uint coordsOffsetZ => 0x138;
 
         // Cinematic skipping addresses
-        public uint dialogueState => 0x39B13F70;
-        public uint dialogueFrameCounter => 0x39B13F54;
-        public uint fmvState => 0x83C8BC;
+        public uint dialogueState => 0x39E4BF70;
+        public uint dialogueFrameCounter => 0x39E4BF54;
+        public uint fmvState => 0x9066FC;
 
-        public uint mapAOB => 0x78D2C8;
-        public uint spawnLocation => 0x78D308;
+        public uint mapAOB => 0x7B4C58;
+        public uint spawnLocation => 0x7B4C98;
 
-        public uint loadType => 0x78D2C4;
-        public uint loadTrigger => 0x78D2C0; // Set to 1 to trigger load
+        public uint loadType => 0x7B4C54;
+        public uint loadTrigger => 0x7B4C50; // Set to 1 to trigger load
 
         public uint gadgetUnlocks => 0x6CC7F8;
         public uint gadgetBindsSly => 0x6CC7B0;
@@ -51,13 +51,13 @@ namespace racman
 
         // Run file specific addresses
         public uint suckValue => 0x589A3C;
-        public uint currentCharacter => 0x5EA000;
+        public uint currentCharacter => 0x7A830C;
         public uint cameraFov => 0x7F8680;
 
         // Autosplitter addresses
         public uint isLoading => 0x6CB603;
-        public uint currentJob => 0x5EB488;
-        public uint currentCheckpoint => 0x5EB48C;
+        public uint currentJob => 0x4FEBF4;
+        public uint currentCheckpoint => 0x4FEBFC;
         public uint currentMap => 0x78D398;
         public uint gameSpeed => 0x5898B8;
 
@@ -77,9 +77,9 @@ namespace racman
         }
     }
 
-    public class sly3 : IGame, IAutosplitterAvailable
+    public class sly2 : IGame, IAutosplitterAvailable
     {
-        public static Sly3Addresses addr = new Sly3Addresses();
+        public static Sly2Addresses addr = new Sly2Addresses();
 
         public uint mapIndex;
 
@@ -88,7 +88,7 @@ namespace racman
             public string naturalName;
             public string indicator;
             public uint defaultWarp;
-            
+
             public MapData(string naturalName, string indicator, uint defaultWarp)
             {
                 this.naturalName = naturalName;
@@ -99,7 +99,7 @@ namespace racman
 
         public MapData[] maps;
 
-        public sly3(IPS3API api) : base(api)
+        public sly2(IPS3API api) : base(api)
         {
             this.maps = new MapData[]
             {
@@ -142,7 +142,7 @@ namespace racman
                 new MapData("Gauntlet", "Y$KFm_gauntlet", 0),
                 new MapData("Inner Sanctum", "Y$KFm_boss", 0)
             };
-            
+
             // For compatibility with base class
             this.planetsList = new string[] { };
         }
@@ -152,13 +152,13 @@ namespace racman
             (addr.isLoading, 1),
             (addr.currentJob, 4),
             (addr.currentCheckpoint, 4),
-            (addr.currentMap, 4), 
+            (addr.currentMap, 4),
             (addr.gameSpeed, 4),
             (addr.slyCharacterPtr, 4),
             (addr.activeCharacterPtr, 4),
             (addr.cameraFov, 4),
             (addr.veniceStarted, 4),
-            (addr.outbackStarted, 4), 
+            (addr.outbackStarted, 4),
             (addr.chinaStarted, 4),
             (addr.pirateStarted, 4),
         };
@@ -204,12 +204,12 @@ namespace racman
 
         protected override void SetupInputDisplayMemorySubsButtons()
         {
-            int buttonMaskSubID = api.SubMemory(pid, sly3.addr.inputOffset, 4, (value) =>
+            int buttonMaskSubID = api.SubMemory(pid, sly2.addr.inputOffset, 4, (value) =>
             {
                 int slyButtonMask = BitConverter.ToInt32(value.Reverse().ToArray(), 0);
-                
+
                 int convertedMask = ConvertSlyButtonsToStandardFormat(slyButtonMask);
-                
+
                 Inputs.RawInputs = convertedMask;
                 Inputs.Mask = Inputs.DecodeMask(convertedMask);
             });
@@ -218,7 +218,7 @@ namespace racman
         private int ConvertSlyButtonsToStandardFormat(int slyMask)
         {
             int standardMask = 0;
-            
+
             if ((slyMask & 0x0001) != 0) standardMask |= 0x100;   // Select
             if ((slyMask & 0x0008) != 0) standardMask |= 0x800;   // Start
             if ((slyMask & 0x0010) != 0) standardMask |= 0x1000;  // Up
@@ -235,14 +235,14 @@ namespace racman
             if ((slyMask & 0x8000) != 0) standardMask |= 0x80;    // Square
             if ((slyMask & 0x0002) != 0) standardMask |= 0x200;  // L3
             if ((slyMask & 0x0004) != 0) standardMask |= 0x400;  // R3
-            
+
             return standardMask;
         }
 
         public void Load()
         {
-            api.WriteMemory(pid, sly3.addr.loadType, (uint)Sly3Addresses.LoadTypes.Normal);
-            api.WriteMemory(pid, sly3.addr.loadTrigger, (uint)1);
+            api.WriteMemory(pid, sly2.addr.loadType, (uint)Sly2Addresses.LoadTypes.Normal);
+            api.WriteMemory(pid, sly2.addr.loadTrigger, (uint)1);
         }
 
         public void LoadMap(int mapIndex)
@@ -252,20 +252,20 @@ namespace racman
                 MessageBox.Show("Invalid map index", "Error");
                 return;
             }
-            
+
             MapData selectedMap = maps[mapIndex];
-            
+
             try
             {
                 byte[] clearBytes = new byte[64];
-                api.WriteMemory(pid, sly3.addr.mapAOB, clearBytes);
+                api.WriteMemory(pid, sly2.addr.mapAOB, clearBytes);
 
                 byte[] indicatorBytes = System.Text.Encoding.ASCII.GetBytes(selectedMap.indicator);
-                api.WriteMemory(pid, sly3.addr.mapAOB, indicatorBytes);
-                
-                api.WriteMemory(pid, sly3.addr.spawnLocation, selectedMap.defaultWarp);
-                
-                api.WriteMemory(pid, sly3.addr.loadTrigger, (uint)1);
+                api.WriteMemory(pid, sly2.addr.mapAOB, indicatorBytes);
+
+                api.WriteMemory(pid, sly2.addr.spawnLocation, selectedMap.defaultWarp);
+
+                api.WriteMemory(pid, sly2.addr.loadTrigger, (uint)Sly2Addresses.LoadTypes.Normal);
             }
             catch (Exception ex)
             {
@@ -280,13 +280,13 @@ namespace racman
 
         private uint GetPlayerCoordsAddress()
         {
-            byte[] playerEntityPtrBytes = api.ReadMemory(pid, sly3.addr.playerEntityPointer, 4);
+            byte[] playerEntityPtrBytes = api.ReadMemory(pid, sly2.addr.playerEntityPointer, 4);
             uint playerEntity = BitConverter.ToUInt32(playerEntityPtrBytes.Reverse().ToArray(), 0);
 
-            byte[] transformPtrBytes = api.ReadMemory(pid, playerEntity + sly3.addr.transformOffset, 4);
+            byte[] transformPtrBytes = api.ReadMemory(pid, playerEntity + sly2.addr.transformOffset, 4);
             uint transformPtr = BitConverter.ToUInt32(transformPtrBytes.Reverse().ToArray(), 0);
 
-            return transformPtr + sly3.addr.coordsOffsetX;
+            return transformPtr + sly2.addr.coordsOffsetX;
         }
 
         public override void SavePosition()
@@ -294,7 +294,7 @@ namespace racman
             try
             {
                 uint coordsAddress = GetPlayerCoordsAddress();
-                
+
                 string position = api.ReadMemoryStr(pid, coordsAddress, 12);
                 func.ChangeFileLines("config.txt", position, maps[mapIndex].indicator + "SavedPos" + selectedPositionIndex);
             }
@@ -313,7 +313,7 @@ namespace racman
                 if (position != "")
                 {
                     uint coordsAddress = GetPlayerCoordsAddress();
-                    
+
                     api.WriteMemory(pid, coordsAddress, 12, position);
                 }
             }
@@ -325,7 +325,7 @@ namespace racman
 
         protected override void SetupInputDisplayMemorySubsAnalogs()
         {
-            int analogLSubID = api.SubMemory(pid, sly3.addr.analogOffsetLeft, 2, (value) =>
+            int analogLSubID = api.SubMemory(pid, sly2.addr.analogOffsetLeft, 2, (value) =>
             {
                 // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
                 if (value[0] == 0 && value[1] == 0)
@@ -341,7 +341,7 @@ namespace racman
                 }
             });
 
-            int analogRSubID = api.SubMemory(pid, sly3.addr.analogOffsetRight, 2, (value) =>
+            int analogRSubID = api.SubMemory(pid, sly2.addr.analogOffsetRight, 2, (value) =>
             {
                 // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
                 if (value[0] == 0 && value[1] == 0)
@@ -356,39 +356,28 @@ namespace racman
                     Inputs.rx = (value[1] - 127) / 127.0f;
                 }
             });
-
-            if (this.api is Ratchetron)
-            {
-                int webManPopUpSubID = api.SubMemory(pid, 0x6CB600, 4, (value) =>
-                {
-                    if (value[0] == 3)
-                    {
-                        WebMAN.DisplayVersionPopUp(func.api.GetIP());
-                    }
-                });
-            }
         }
-        
+
         public void SetCoinCount(int coins)
         {
-            api.WriteMemory(pid, sly3.addr.coinCount, ConvertIntToBytes(coins));
+            api.WriteMemory(pid, sly2.addr.coinCount, ConvertIntToBytes(coins));
         }
 
         public void SetHealth(int health)
         {
             byte[] healthBytes = ConvertIntToBytes(health);
-            var entityPtrBytes = api.ReadMemory(pid, sly3.addr.activeCharacterPtr, 4);
+            var entityPtrBytes = api.ReadMemory(pid, sly2.addr.activeCharacterPtr, 4);
             api.WriteMemory(pid, BitConverter.ToUInt32(entityPtrBytes.Reverse().ToArray(), 0) + 0x168, healthBytes);
         }
 
         public void SetGadgetUnlocks(byte[] gadgetBytes)
         {
-            api.WriteMemory(pid, sly3.addr.gadgetUnlocks, gadgetBytes);
+            api.WriteMemory(pid, sly2.addr.gadgetUnlocks, gadgetBytes);
         }
 
         public byte[] GetGadgetUnlocks()
         {
-            return api.ReadMemory(pid, sly3.addr.gadgetUnlocks, 8);
+            return api.ReadMemory(pid, sly2.addr.gadgetUnlocks, 8);
         }
 
         // Read gadget binding for a character (returns button binding index, -1 if unbound)
@@ -399,8 +388,9 @@ namespace racman
             return BitConverter.ToInt32(bytes.Reverse().ToArray(), 0);
         }
 
-        public void SetGadgetBindings(byte[] bindingBytes) {
-            api.WriteMemory(pid, sly3.addr.gadgetBindsSly, bindingBytes);
+        public void SetGadgetBindings(byte[] bindingBytes)
+        {
+            api.WriteMemory(pid, sly2.addr.gadgetBindsSly, bindingBytes);
         }
 
         // Run file loading helper methods
@@ -411,7 +401,7 @@ namespace racman
             {
                 Array.Reverse(suckBytes);
             }
-            api.WriteMemory(pid, sly3.addr.suckValue, suckBytes);
+            api.WriteMemory(pid, sly2.addr.suckValue, suckBytes);
         }
 
         public void WriteMemoryRegion(uint startAddress, byte[] data)
@@ -432,36 +422,36 @@ namespace racman
             {
                 // Clear the map AOB region first
                 byte[] clearBytes = new byte[64];
-                api.WriteMemory(pid, sly3.addr.mapAOB, clearBytes);
-                
+                api.WriteMemory(pid, sly2.addr.mapAOB, clearBytes);
+
                 // Write the new map name
                 byte[] mapBytes = System.Text.Encoding.ASCII.GetBytes(mapName);
-                api.WriteMemory(pid, sly3.addr.mapAOB, mapBytes);
+                api.WriteMemory(pid, sly2.addr.mapAOB, mapBytes);
             }
         }
 
         public void SetSpawnLocation(uint location)
         {
-            api.WriteMemory(pid, sly3.addr.spawnLocation, location);
+            api.WriteMemory(pid, sly2.addr.spawnLocation, location);
         }
 
         public void SetJobState(int jobId, int cpId, int characterId = -1)
         {
-            
+
             SetActiveCharacter(characterId);
             SetCurrentJob(jobId, cpId);
         }
 
         private void SetCurrentJob(int jobId, int checkpointId)
         {
-            api.WriteMemory(pid, sly3.addr.currentJob, ConvertIntToBytes(jobId));
-            api.WriteMemory(pid, sly3.addr.currentCheckpoint, ConvertIntToBytes(checkpointId));
-            api.WriteMemory(pid, sly3.addr.currentCheckpoint + 0x4, ConvertIntToBytes(checkpointId));
+            api.WriteMemory(pid, sly2.addr.currentJob, ConvertIntToBytes(jobId));
+            api.WriteMemory(pid, sly2.addr.currentCheckpoint, ConvertIntToBytes(checkpointId));
+            api.WriteMemory(pid, sly2.addr.currentCheckpoint + 0x4, ConvertIntToBytes(checkpointId));
         }
 
         private void SetActiveCharacter(int characterId)
         {
-            api.WriteMemory(pid, sly3.addr.currentCharacter, ConvertIntToBytes(characterId));
+            api.WriteMemory(pid, sly2.addr.currentCharacter, ConvertIntToBytes(characterId));
         }
 
         private byte[] ConvertIntToBytes(int value)
@@ -484,22 +474,10 @@ namespace racman
             return bytes;
         }
 
-        public void SetEpisode6NoobMode()
+        public void TriggerGameLoad(uint loadType = (uint)Sly2Addresses.LoadTypes.Normal)
         {
-            api.WriteMemory(pid, 0x6CCDA0, ConvertFloatToBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCDC0, ConvertFloatToBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCD90, ConvertFloatToBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCD80, ConvertFloatToBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCD60, ConvertFloatToBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCDB0, ConvertFloatToBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCDD0, ConvertFloatToBytes(1.0f));
-            api.WriteMemory(pid, 0x6CCD70, ConvertFloatToBytes(1.0f));
-        }
-
-        public void TriggerGameLoad(uint loadType = (uint)Sly3Addresses.LoadTypes.Normal)
-        {
-            api.WriteMemory(pid, sly3.addr.loadType, loadType);
-            api.WriteMemory(pid, sly3.addr.loadTrigger, (uint)1);
+            api.WriteMemory(pid, sly2.addr.loadType, loadType);
+            api.WriteMemory(pid, sly2.addr.loadTrigger, (uint)1);
         }
 
         public byte[] ReadMemoryRegion(uint startAddress, uint size)
@@ -533,15 +511,15 @@ namespace racman
         public void SkipCinematic()
         {
             // Skip FMV
-            if (api.ReadMemory(pid, sly3.addr.fmvState + 0x3, 1)[0] == 0)
+            if (api.ReadMemory(pid, sly2.addr.fmvState + 0x3, 1)[0] == 0)
             {
-                api.WriteMemory(pid, sly3.addr.fmvState, (uint)2);
+                api.WriteMemory(pid, sly2.addr.fmvState, (uint)2);
             }
 
             // Skip dialogue
-            if (api.ReadMemory(pid, sly3.addr.dialogueFrameCounter + 0x3, 1)[0] > 10)
+            if (api.ReadMemory(pid, sly2.addr.dialogueFrameCounter + 0x3, 1)[0] > 10)
             {
-                api.WriteMemory(pid, sly3.addr.dialogueState, (uint)0);
+                api.WriteMemory(pid, sly2.addr.dialogueState, (uint)0);
             }
         }
 
@@ -850,7 +828,7 @@ namespace racman
         public void AbandonJob(string jobName)
         {
             SetJobState(-1, -1);
-            
+
         }
     }
 }

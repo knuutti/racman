@@ -211,6 +211,10 @@ namespace racman
             if (GetBit(gadgetBytes, AllGadgets["Spin Attack 1"].UnlockBitIndex)) spinAttackLevel++;
             if (GetBit(gadgetBytes, AllGadgets["Spin Attack 2"].UnlockBitIndex)) spinAttackLevel++;
             if (GetBit(gadgetBytes, AllGadgets["Spin Attack 3"].UnlockBitIndex)) spinAttackLevel++;
+            if (spinAttackLevel == 0)
+            {
+                spinAttackLevel++;
+            }
             spinAttackLevelSelector.Value = spinAttackLevel;
 
             int pushAttackLevel = 0;

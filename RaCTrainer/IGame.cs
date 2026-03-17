@@ -128,16 +128,6 @@ namespace racman
 
             SetupInputDisplayMemorySubsAnalogs();
 
-            // Why the FUCK is this here?
-            // TODO: Move it. This is a workaround.
-            try
-            {
-                var addr = Addr().currentPlanet;
-                int planetIndexSubID = api.SubMemory(pid, addr, 4, (value) =>
-                {
-                    planetIndex = BitConverter.ToUInt32(value, 0);
-                });
-            } catch { /* nah */ }
         }
 
         protected virtual void SetupInputDisplayMemorySubsButtons()

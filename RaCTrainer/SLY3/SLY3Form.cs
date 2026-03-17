@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 using System.Net.Http;
 using System.Threading;
+using System.Reflection;
 
 namespace racman
 {
@@ -30,21 +31,17 @@ namespace racman
             {
                 r.setDisconnectCallback(() =>
                 {
-                    // Release memory subs
                     if (game.api is Ratchetron ratchetron)
                     {
                         ratchetron.ReleaseAllSubs();
                     }
-
-                    // TODO: Optimize reset time by disconnecting Ratchetron 
-                    // before closing the game
                 });
 
                 r.setReconnectCallback(() =>
                 {
                     int pid = 0;
                     int attempts = 0;
-                    int maxAttempts = 30; // 90 seconds max wait
+                    int maxAttempts = 30;
                     
                     while (pid == 0 && attempts < maxAttempts)
                     {
@@ -91,8 +88,8 @@ namespace racman
                     {
                         game.InputsTimer.Start();
                     }
-                    
-                    game.api.Notify("Sly 3 reconnected!");
+
+                    game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Practice Mode)");
                     Console.WriteLine("Sly 3: Reconnection complete");
                 });
             }
@@ -197,6 +194,10 @@ namespace racman
 
         private void switchGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (game.api is Ratchetron r)
+            {
+                r.ReleaseAllSubs();
+            }
             this.Close();
             Program.AttachPS3Form.Show();
         }
@@ -209,16 +210,7 @@ namespace racman
 
         private void inputDisplayToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (InputDisplay == null || InputDisplay.IsDisposed)
-            {
-                InputDisplay = new InputDisplay();
-                InputDisplay.Show();
-                game.InputsTimer.Start();
-            }
-            else
-            {
-                InputDisplay.Focus();
-            }
+
         }
 
         private void memoryUtilitiesToolStripMenuItem_Click(object sender, EventArgs e)
@@ -321,7 +313,7 @@ namespace racman
 
         private void coinsTextBox_TextChanged(object sender, EventArgs e)
         {
-            SetCoinsFromTextBox();
+            
 
         }
 
@@ -356,10 +348,15 @@ namespace racman
 
         private void healthTextBox_TextChanged(object sender, EventArgs e)
         {
-
+            
         }
 
         private void setHealthButton_Click(object sender, EventArgs e)
+        {
+            SetHealthFromTextBox();
+        }
+
+        private void groupBox1_Enter_1(object sender, EventArgs e)
         {
 
         }

@@ -25,6 +25,8 @@ namespace racman
 
             game.SetupInputDisplayMemorySubs();
 
+            CheckRunFileConfig();
+
             // Setup disconnect/reconnect callbacks for XMB transitions
             if (func.api is Ratchetron r)
             {
@@ -193,6 +195,7 @@ namespace racman
                 
                 if (runFileData == null)
                 {
+                    game.api.Notify("Error loading a run file: Config file not found.");
                     return;
                 }
                 
@@ -240,10 +243,10 @@ namespace racman
         // Function for loading saved run file data from config
         private RunFileData LoadRunFileDataFromConfig(string episodeKey)
         {
-            string mapName = func.GetConfigData("config.txt", episodeKey + "_MapName");
-            string spawnLocationStr = func.GetConfigData("config.txt", episodeKey + "_SpawnLocation");
-            string memoryDataHex = func.GetConfigData("config.txt", episodeKey + "_MemoryData");
-            string memoryAddressStr = func.GetConfigData("config.txt", episodeKey + "_MemoryAddress");
+            string mapName = func.GetConfigData("run_file_config.txt", episodeKey + "_MapName");
+            string spawnLocationStr = func.GetConfigData("run_file_config.txt", episodeKey + "_SpawnLocation");
+            string memoryDataHex = func.GetConfigData("run_file_config.txt", episodeKey + "_MemoryData");
+            string memoryAddressStr = func.GetConfigData("run_file_config.txt", episodeKey + "_MemoryAddress");
 
             if (string.IsNullOrEmpty(mapName) && string.IsNullOrEmpty(memoryDataHex))
             {
@@ -310,6 +313,29 @@ namespace racman
                     MessageBox.Show($"Error setting tutorial complete: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void CheckRunFileConfig()
+        {
+            string[] keys = new string[] { "Episode1", "Episode2", "Episode3", "Episode4", "Episode5", "Episode6_NoCE", "Episode6_CE" };
+            foreach (var key in keys)
+            {
+                string gadgetHex = func.GetConfigData("config.txt", key + "_GadgetUnlocks");
+                string bindingHex = func.GetConfigData("config.txt", key + "_GadgetBindings");
+                
+                if (string.IsNullOrEmpty(gadgetHex))
+                {
+                    gadgetHex = func.GetConfigData("run_file_config.txt", key + "_GadgetUnlocks");
+                    func.ChangeFileLines("config.txt", gadgetHex, key + "_GadgetUnlocks");
+                }
+
+                if (string.IsNullOrEmpty(bindingHex))
+                {
+                    bindingHex = func.GetConfigData("run_file_config.txt", key + "_GadgetBindings");
+                    func.ChangeFileLines("config.txt", bindingHex, key + "_GadgetBindings");
+                }
+            }
+            return;
         }
 
         private void LoadRunFileGadgets()
@@ -391,6 +417,12 @@ namespace racman
                 bytes[i] = (byte)int.Parse(parts[i].ToString());
             }
             return bytes;
+        }
+
+        private void switchGameModeToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            this.Close();
+            Program.AttachPS3Form.Show();
         }
     }
 }
