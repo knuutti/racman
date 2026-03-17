@@ -468,6 +468,9 @@
     <EmbeddedResource Include="RAC3\UYAUnlocks.resx">
       <DependentUpon>UYAUnlocks.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SLY2\SLY2Speedrun.resx">
+      <DependentUpon>SLY2Speedrun.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SLY3\SLY3Form.resx">
       <DependentUpon>SLY3Form.cs</DependentUpon>
     </EmbeddedResource>
