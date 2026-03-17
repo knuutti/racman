@@ -193,6 +193,7 @@ namespace racman
                 
                 if (runFileData == null)
                 {
+                    game.api.Notify("Error loading a run file: Config file not found.");
                     return;
                 }
                 

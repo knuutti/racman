@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 using System.Net.Http;
 using System.Threading;
+using System.Reflection;
 
 namespace racman
 {
@@ -14,7 +15,6 @@ namespace racman
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly3 game;
-        private int webManLoadSubId = -1;
 
         public SLY3Form(sly3 game)
         {
@@ -26,31 +26,22 @@ namespace racman
 
             game.SetupInputDisplayMemorySubs();
 
-            if (game.api is Ratchetron)
-            {
-                SubscribeWebManLoadPopup(sly3.addr.isLoading);
-            }
-
             // Setup disconnect/reconnect callbacks for XMB transitions
             if (func.api is Ratchetron r)
             {
                 r.setDisconnectCallback(() =>
                 {
-                    // Release memory subs
                     if (game.api is Ratchetron ratchetron)
                     {
                         ratchetron.ReleaseAllSubs();
                     }
-
-                    // TODO: Optimize reset time by disconnecting Ratchetron 
-                    // before closing the game
                 });
 
                 r.setReconnectCallback(() =>
                 {
                     int pid = 0;
                     int attempts = 0;
-                    int maxAttempts = 30; // 90 seconds max wait
+                    int maxAttempts = 30;
                     
                     while (pid == 0 && attempts < maxAttempts)
                     {
@@ -91,15 +82,14 @@ namespace racman
                     
                     // Re-establish memory subscriptions
                     game.SetupInputDisplayMemorySubs();
-                    SubscribeWebManLoadPopup(sly3.addr.isLoading);
                     
                     // Restart input timer if needed
                     if (InputDisplay != null && !InputDisplay.IsDisposed)
                     {
                         game.InputsTimer.Start();
                     }
-                    
-                    game.api.Notify("Sly 3 reconnected!");
+
+                    game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Practice Mode)");
                     Console.WriteLine("Sly 3: Reconnection complete");
                 });
             }
@@ -171,12 +161,6 @@ namespace racman
 
             try
             {
-                if (webManLoadSubId != -1)
-                {
-                    game.api.ReleaseSubID(webManLoadSubId);
-                    webManLoadSubId = -1;
-                }
-
                 if (game.api is Ratchetron r)
                 {
                     r.ReleaseAllSubs();
@@ -191,35 +175,6 @@ namespace racman
             Application.Exit();
             
             Environment.Exit(0);
-        }
-
-        private void SubscribeWebManLoadPopup(uint address)
-        {
-            if (webManLoadSubId != -1)
-            {
-                return;
-            }
-
-            int pid = game.api.getCurrentPID();
-            if (pid == 0)
-            {
-                return;
-            }
-
-            webManLoadSubId = game.api.SubMemory(pid, address, 1, IPS3API.MemoryCondition.Changed, (value) =>
-            {
-                if (value != null && value.Length > 0 && value[0] == 3)
-                {
-                    try
-                    {
-                        WebMAN.DisplayVersionPopUp(func.api.GetIP());
-                    }
-                    catch
-                    {
-                        // no-op
-                    }
-                }
-            });
         }
 
         private void HandleDisconnect()
@@ -239,6 +194,10 @@ namespace racman
 
         private void switchGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (game.api is Ratchetron r)
+            {
+                r.ReleaseAllSubs();
+            }
             this.Close();
             Program.AttachPS3Form.Show();
         }
@@ -354,7 +313,7 @@ namespace racman
 
         private void coinsTextBox_TextChanged(object sender, EventArgs e)
         {
-            SetCoinsFromTextBox();
+            
 
         }
 
@@ -389,7 +348,7 @@ namespace racman
 
         private void healthTextBox_TextChanged(object sender, EventArgs e)
         {
-            SetHealthFromTextBox();
+            
         }
 
         private void setHealthButton_Click(object sender, EventArgs e)

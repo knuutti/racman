@@ -356,6 +356,17 @@ namespace racman
                     Inputs.rx = (value[1] - 127) / 127.0f;
                 }
             });
+
+            if (this.api is Ratchetron)
+            {
+                int webManPopUpSubID = api.SubMemory(pid, 0x6CB600, 4, (value) =>
+                {
+                    if (value[0] == 3)
+                    {
+                        WebMAN.DisplayVersionPopUp(func.api.GetIP());
+                    }
+                });
+            }
         }
         
         public void SetCoinCount(int coins)

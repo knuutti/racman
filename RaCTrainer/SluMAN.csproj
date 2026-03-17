@@ -499,7 +499,7 @@
     <Content Include="sluman_icon.ico" />
     <None Include="autosplitters\sly3-autosplitter.asl" />
     <Content Include="defaultSkin.txt" />
-    <Content Include="..\run_file_config.txt">
+    <Content Include="..\RaCTrainer\data\run_file_config.txt">
       <Link>run_file_config.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
