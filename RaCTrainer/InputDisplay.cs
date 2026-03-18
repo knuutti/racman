@@ -184,11 +184,11 @@ namespace racman
 
             DrawSprite(e.Graphics, sprite, basePlot);
 
-            if (Inputs.Mask.Contains(Inputs.Buttons.r3)) DrawSprite(e.Graphics, sprite, r3, Inputs.rx * controllerSkin.analogPitch, Inputs.ry * controllerSkin.analogPitch);
-            else DrawSprite(e.Graphics, sprite, r3Press, Inputs.rx * controllerSkin.analogPitch, Inputs.ry * controllerSkin.analogPitch);
+            if (Inputs.Mask.Contains(Inputs.Buttons.r3)) DrawSprite(e.Graphics, sprite, r3, (int)(Inputs.rx * controllerSkin.analogPitch), (int)(Inputs.ry * controllerSkin.analogPitch));
+            else DrawSprite(e.Graphics, sprite, r3Press, (int)(Inputs.rx * controllerSkin.analogPitch), (int)(Inputs.ry * controllerSkin.analogPitch));
 
-            if (Inputs.Mask.Contains(Inputs.Buttons.l3)) DrawSprite(e.Graphics, sprite, l3, Inputs.lx * controllerSkin.analogPitch, Inputs.ly * controllerSkin.analogPitch);
-            else DrawSprite(e.Graphics, sprite, l3Press, Inputs.lx * controllerSkin.analogPitch, Inputs.ly * controllerSkin.analogPitch);
+            if (Inputs.Mask.Contains(Inputs.Buttons.l3)) DrawSprite(e.Graphics, sprite, l3, (int)(Inputs.lx * controllerSkin.analogPitch), (int)(Inputs.ly * controllerSkin.analogPitch));
+            else DrawSprite(e.Graphics, sprite, l3Press, (int)(Inputs.lx * controllerSkin.analogPitch), (int)(Inputs.ly * controllerSkin.analogPitch));
 
             if (Inputs.Mask.Contains(Inputs.Buttons.left)) DrawSprite(e.Graphics, sprite, dpadLeft);
             if (Inputs.Mask.Contains(Inputs.Buttons.right)) DrawSprite(e.Graphics, sprite, dpadRight);
