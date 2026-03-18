@@ -24,8 +24,9 @@ namespace racman
             InitializeComponent();
 
             game.SetupInputDisplayMemorySubs();
+            game.speedrunMode = true;
 
-            CheckRunFileConfig();
+            game.CheckRunFileConfig();
 
             // Setup disconnect/reconnect callbacks for XMB transitions
             if (func.api is Ratchetron r)
@@ -315,29 +316,6 @@ namespace racman
             }
         }
 
-        private void CheckRunFileConfig()
-        {
-            string[] keys = new string[] { "Episode1", "Episode2", "Episode3", "Episode4", "Episode5", "Episode6_NoCE", "Episode6_CE" };
-            foreach (var key in keys)
-            {
-                string gadgetHex = func.GetConfigData("config.txt", key + "_GadgetUnlocks");
-                string bindingHex = func.GetConfigData("config.txt", key + "_GadgetBindings");
-                
-                if (string.IsNullOrEmpty(gadgetHex))
-                {
-                    gadgetHex = func.GetConfigData("run_file_config.txt", key + "_GadgetUnlocks");
-                    func.ChangeFileLines("config.txt", gadgetHex, key + "_GadgetUnlocks");
-                }
-
-                if (string.IsNullOrEmpty(bindingHex))
-                {
-                    bindingHex = func.GetConfigData("run_file_config.txt", key + "_GadgetBindings");
-                    func.ChangeFileLines("config.txt", bindingHex, key + "_GadgetBindings");
-                }
-            }
-            return;
-        }
-
         private void LoadRunFileGadgets()
         {
             string episodeKey = GetEpisodeKey(runFileComboBox.SelectedItem.ToString());
@@ -421,6 +399,10 @@ namespace racman
 
         private void switchGameModeToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
+            if (game.api is Ratchetron r)
+            {
+                r.ReleaseAllSubs();
+            }
             this.Close();
             Program.AttachPS3Form.Show();
         }

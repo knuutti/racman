@@ -25,6 +25,10 @@ namespace racman
             mapComboBox.SelectedIndex = 0;
 
             game.SetupInputDisplayMemorySubs();
+            game.SetupWebManPopUp();
+            game.speedrunMode = false;
+
+            game.CheckRunFileConfig();
 
             // Setup disconnect/reconnect callbacks for XMB transitions
             if (func.api is Ratchetron r)
