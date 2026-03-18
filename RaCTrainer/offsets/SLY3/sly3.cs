@@ -82,6 +82,7 @@ namespace racman
         public static Sly3Addresses addr = new Sly3Addresses();
 
         public uint mapIndex;
+        public bool speedrunMode;
 
         public struct MapData
         {
@@ -356,7 +357,10 @@ namespace racman
                     Inputs.rx = (value[1] - 127) / 127.0f;
                 }
             });
+        }
 
+        public void SetupWebManPopUp()
+        {
             if (this.api is Ratchetron)
             {
                 int webManPopUpSubID = api.SubMemory(pid, 0x6CB600, 4, (value) =>
@@ -851,6 +855,29 @@ namespace racman
         {
             SetJobState(-1, -1);
             
+        }
+
+        public void CheckRunFileConfig()
+        {
+            string[] keys = new string[] { "Episode1", "Episode2", "Episode3", "Episode4", "Episode5", "Episode6_NoCE", "Episode6_CE" };
+            foreach (var key in keys)
+            {
+                string gadgetHex = func.GetConfigData("config.txt", key + "_GadgetUnlocks");
+                string bindingHex = func.GetConfigData("config.txt", key + "_GadgetBindings");
+
+                if (string.IsNullOrEmpty(gadgetHex))
+                {
+                    gadgetHex = func.GetConfigData("run_file_config.txt", key + "_GadgetUnlocks");
+                    func.ChangeFileLines("config.txt", gadgetHex, key + "_GadgetUnlocks");
+                }
+
+                if (string.IsNullOrEmpty(bindingHex))
+                {
+                    bindingHex = func.GetConfigData("run_file_config.txt", key + "_GadgetBindings");
+                    func.ChangeFileLines("config.txt", bindingHex, key + "_GadgetBindings");
+                }
+            }
+            return;
         }
     }
 }
