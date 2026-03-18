@@ -6,6 +6,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace racman
 {
@@ -113,16 +114,6 @@ namespace racman
             // Can't be bothered to implement this for webman
         }
 
-        public void DisplayVersionPopUp(string message = null)
-        {
-            string popupMessage = string.IsNullOrWhiteSpace(message)
-                ? $"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Practice Mode)"
-                : message;
-
-            string encodedMessage = Uri.EscapeDataString(popupMessage);
-            get_data($"http://{ip}/popup.ps3*{encodedMessage}");
-        }
-
         public static void DisplayVersionPopUp(string ip, string message = null)
         {
             string popupMessage = string.IsNullOrWhiteSpace(message)
@@ -131,17 +122,17 @@ namespace racman
 
             string encodedMessage = Uri.EscapeDataString(popupMessage);
 
-            using (var popupClient = new WebClient())
-            {
-                try
-                {
-                    popupClient.DownloadString($"http://{ip}/popup.ps3*{encodedMessage}");
-                }
-                catch
-                {
-                    // no-op: popup is best effort
-                }
-            }
+            SendWebRequest($"http://{ip}/popup.ps3*{encodedMessage}");
+        }
+
+        public static void TurnOffPS3(string ip)
+        {
+            SendWebRequest($"http://{ip}/shutdown.ps3");
+        }
+
+        public static void RebootPS3(string ip)
+        {
+            SendWebRequest($"http://{ip}/reboot.ps3");
         }
 
         public override bool Disconnect()
@@ -187,6 +178,21 @@ namespace racman
         public override void WriteFile(string remotePath, string filePath)
         {
             throw new NotImplementedException();
+        }
+
+        private static void SendWebRequest(string url)
+        {
+            using (var popupClient = new WebClient())
+            {
+                try
+                {
+                    popupClient.DownloadString(url);
+                }
+                catch
+                {
+                    MessageBox.Show($"Error sending request to WebMAN. Tried to call for URL {url}", "WebMAN Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
         }
 
     }

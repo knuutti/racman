@@ -86,13 +86,6 @@ namespace racman
         public static string game;
         public static string gameName;
 
-        private int pleaseStartTheGame = 1;
-
-        private string[] startGameText = {
-                "You need to start the game first."
-        };
-
-
         private void AttachPS3Form_Load(object sender, EventArgs e)
         {
 
@@ -148,136 +141,18 @@ namespace racman
 
             if (pid == 0)
             {
-                MessageBox.Show(startGameText[pleaseStartTheGame - 1], "Game is not running");
-
-                if (pleaseStartTheGame < startGameText.Length)
-                {
-                    pleaseStartTheGame += 1;
-                }
-
+                MessageBox.Show("Start the game before attaching SluMAN.", "Game is not running");
                 return;
             }
 
-            if (game == "BCES01503")
-            {
-                var diskGameSelector = new DiskGameSelector();
-                if (diskGameSelector.ShowDialog() == DialogResult.OK)
-                {
-                    switch (diskGameSelector.GetSelectedVersion())
-                    {
-                        case 0:
-                            game = "NPEA00385"; // RAC 1
-                            gameName = "RAC 1";
-                            break;
-                        case 1:
-                            game = "NPEA00386"; // RAC 2
-                            gameName = "RAC 2";
-                            break;
-                        case 2:
-                            game = "NPEA00387"; // RAC 3
-                            gameName = "RAC 3";
-                            break;
-                    }
-                }
-                else
-                {
-                    return;
-                }
-            } // if disk version was found, the following code can be executed as if this check never happened
-
-            if (game == "NPEA00385")
-            {
-                Hide();
-                func.api.Notify("RaCMAN connected!");
-                RAC1Form rac1 = new RAC1Form(new rac1(func.api));
-                gameName = "RAC 1";
-                rac1.ShowDialog();
-            }
-            else if (game == "BORD00001")
-            {
-                func.api.Notify("RaCMAN connected!");
-                RaC1MpVersionForm formVersion = new RaC1MpVersionForm();
-                formVersion.ShowDialog();
-                Hide();
-                switch (formVersion.multiplayerType)
-                {
-                    default:
-                        {
-                            RAC1Form rac1 = new RAC1Form(new rac1(func.api));
-                            rac1.ShowDialog();
-                            break;
-                        }
-                    case "Default":
-                        {
-                            RAC1Form rac1 = new RAC1Form(new rac1(func.api));
-                            rac1.ShowDialog();
-                            break;
-                        }
-                    case "Randomizer":
-                        {
-                            RAC1MpForm rac1mp = new RAC1MpForm(new rac1(func.api));
-                            rac1mp.ShowDialog();
-                            break;
-                        }
-                }
-                gameName = "RAC 1 Multiplayer";
-            }
-            else if (game == "NPEA00386")
-            {
-                Hide();
-                func.api.Notify("RaCMAN connected!");
-                RAC2Form rac2 = new RAC2Form(new rac2(func.api));
-                gameName = "RAC 2";
-                rac2.ShowDialog();
-            }
-            else if (game == "NPJA40002")
-            {
-                Hide();
-                func.api.Notify("RaCMAN connected!");
-                RAC2JPForm rac2jp = new RAC2JPForm(new rac2jp(func.api));
-                gameName = "RAC 2 (JP)";
-                rac2jp.ShowDialog();
-            }
-            else if (game == "NPEA00387")
-            {
-                Hide();
-                func.api.Notify("RaCMAN connected!");
-                RAC3Form rac3 = new RAC3Form(new rac3(func.api));
-                gameName = "RAC 3";
-                rac3.ShowDialog();
-            }
-            else if (game == "NPEA00423")
-            {
-                Hide();
-                func.api.Notify("RaCMAN connected!");
-                RAC4Form rac4 = new RAC4Form(new rac4(func.api));
-                gameName = "RAC 4";
-                rac4.ShowDialog();
-            }
-            else if (game == "NPUA80966" || game == "NPEA00453" || game == "BCES00511" || game == "BCES00726")
-            {
-                Hide();
-                func.api.Notify("RaCMAN connected!");
-                ACITForm acit = new ACITForm(new acit(func.api));
-                gameName = "ACIT";
-                acit.ShowDialog();
-            }
-            else if (game == "NPEA00452")
-            {
-                Hide();
-                func.api.Notify("RaCMAN connected!");
-                TODForm tod = new TODForm(new tod(func.api));
-                gameName = "ToD (PAL DL)";
-                tod.ShowDialog();
-            }
-            else if (game == "NPEA00343") // Sly 3 (PAL, Digital)
+            if (game == "NPEA00343") // Sly 3 (PAL, Digital)
             {
                 if (speedrunMode)
                 {
                     Hide();
                     func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Speedrun Mode)");
                     SLY3Speedrun sly3 = new SLY3Speedrun(new sly3(func.api));
-                    gameName = "SLY 3 (PAL)";
+                    gameName = "SLY 3 (PAL, PSN)";
                     sly3.ShowDialog();
                 }
                 else
@@ -285,8 +160,23 @@ namespace racman
                     Hide();
                     func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Practice Mode)");
                     SLY3Form sly3 = new SLY3Form(new sly3(func.api));
-                    gameName = "SLY 3 (PAL)";
+                    gameName = "SLY 3 (PAL, PSN)";
                     sly3.ShowDialog();
+                }
+            }
+            else if (game == "NPHA80175") // Sly 2 (KOR, Digital)
+            {
+                if (speedrunMode)
+                {
+                    Hide();
+                    func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Speedrun Mode)");
+                    SLY2Speedrun sly2 = new SLY2Speedrun(new sly2(func.api));
+                    gameName = "SLY 2 (KOR, PSN)";
+                    sly2.ShowDialog();
+                }
+                else
+                {
+                    
                 }
             }
             else

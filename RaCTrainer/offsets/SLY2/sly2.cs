@@ -22,7 +22,7 @@ namespace racman
 
         public uint inputOffset => 0x500F76;
         public uint analogOffsetLeft => 0x500EFC;
-        public uint analogOffsetRight => 0x500EFC;
+        public uint analogOffsetRight => 0x500F30;
         public uint coinCount => 0x7A83B0;
         public uint slyCharacterPtr => 0x0;
         public uint activeCharacterPtr => 0x7A830C;
@@ -325,36 +325,24 @@ namespace racman
 
         protected override void SetupInputDisplayMemorySubsAnalogs()
         {
-            int analogLSubID = api.SubMemory(pid, sly2.addr.analogOffsetLeft, 2, (value) =>
+            int analogLSubID = api.SubMemory(pid, sly2.addr.analogOffsetLeft, 8, (value) =>
             {
-                // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
-                if (value[0] == 0 && value[1] == 0)
+                // Pressing D-pad also moves the stick in memory
+                if ((Inputs.RawInputs & 0xF000) != 0)
                 {
-                    // Default to neutral position when disconnected
-                    Inputs.ly = 0.0f;
-                    Inputs.lx = 0.0f;
+                    Inputs.ly = 0;
+                    Inputs.lx = 0;
+                    return;
                 }
-                else
-                {
-                    Inputs.ly = (value[0] - 127) / 127.0f;
-                    Inputs.lx = (value[1] - 127) / 127.0f;
-                }
+
+                Inputs.ly = -1 * BitConverter.ToSingle(value, 0);
+                Inputs.lx = BitConverter.ToSingle(value, 4);
             });
 
-            int analogRSubID = api.SubMemory(pid, sly2.addr.analogOffsetRight, 2, (value) =>
+            int analogRSubID = api.SubMemory(pid, sly2.addr.analogOffsetRight, 8, (value) =>
             {
-                // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
-                if (value[0] == 0 && value[1] == 0)
-                {
-                    // Default to neutral position when disconnected
-                    Inputs.ry = 0.0f;
-                    Inputs.rx = 0.0f;
-                }
-                else
-                {
-                    Inputs.ry = (value[0] - 127) / 127.0f;
-                    Inputs.rx = (value[1] - 127) / 127.0f;
-                }
+                Inputs.ry = -1 * BitConverter.ToSingle(value, 0);
+                Inputs.rx = BitConverter.ToSingle(value, 4);
             });
         }
 

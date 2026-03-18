@@ -406,5 +406,27 @@ namespace racman
             this.Close();
             Program.AttachPS3Form.Show();
         }
+
+        private void powerOffPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                r.ReleaseAllSubs();
+                WebMAN.TurnOffPS3(func.api.GetIP());
+                this.Close();
+                Program.AttachPS3Form.Show();
+            }
+        }
+
+        private void rebootPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                r.ReleaseAllSubs();
+                WebMAN.RebootPS3(func.api.GetIP()); 
+                this.Close();
+                Program.AttachPS3Form.Show();
+            }
+        }
     }
 }

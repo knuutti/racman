@@ -1,25 +1,29 @@
-﻿using racman;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
+using System.Net.Http;
+using System.Reflection;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
+using Timer = System.Windows.Forms.Timer;
 
-namespace SluMAN.SLY2
+namespace racman
 {
     public partial class SLY2Speedrun : Form
     {
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly2 game;
-        private int webManLoadSubId = -1;
-        public SLY2Speedrun()
+        public AutosplitterHelper autosplitter;
+
+        public SLY2Speedrun(sly2 game)
         {
+            this.game = game;
             InitializeComponent();
+            game.SetupInputDisplayMemorySubs();
+
         }
 
         private void SLY2Speedrun_Load(object sender, EventArgs e)
