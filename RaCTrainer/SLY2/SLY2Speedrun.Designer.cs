@@ -34,9 +34,9 @@
             this.inputDisplayButton = new System.Windows.Forms.Button();
             this.autosplitterCheckbox = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.alwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
-            this.loadRunFileButton = new System.Windows.Forms.Button();
             this.runFileComboBox = new System.Windows.Forms.ComboBox();
+            this.loadRunFileButton = new System.Windows.Forms.Button();
+            this.alwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.gadgetsButton = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -95,27 +95,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Load run file";
             // 
-            // alwaysOnTopCheckBox
-            // 
-            this.alwaysOnTopCheckBox.AutoSize = true;
-            this.alwaysOnTopCheckBox.Location = new System.Drawing.Point(11, 102);
-            this.alwaysOnTopCheckBox.Margin = new System.Windows.Forms.Padding(2);
-            this.alwaysOnTopCheckBox.Name = "alwaysOnTopCheckBox";
-            this.alwaysOnTopCheckBox.Size = new System.Drawing.Size(98, 17);
-            this.alwaysOnTopCheckBox.TabIndex = 4;
-            this.alwaysOnTopCheckBox.Text = "Always On Top";
-            this.alwaysOnTopCheckBox.UseVisualStyleBackColor = true;
-            this.alwaysOnTopCheckBox.CheckedChanged += new System.EventHandler(this.alwaysOnTopCheckBox_CheckedChanged);
-            // 
-            // loadRunFileButton
-            // 
-            this.loadRunFileButton.Location = new System.Drawing.Point(135, 25);
-            this.loadRunFileButton.Name = "loadRunFileButton";
-            this.loadRunFileButton.Size = new System.Drawing.Size(73, 35);
-            this.loadRunFileButton.TabIndex = 0;
-            this.loadRunFileButton.Text = "Load";
-            this.loadRunFileButton.UseVisualStyleBackColor = true;
-            // 
             // runFileComboBox
             // 
             this.runFileComboBox.FormattingEnabled = true;
@@ -133,6 +112,28 @@
             this.runFileComboBox.Size = new System.Drawing.Size(110, 21);
             this.runFileComboBox.TabIndex = 1;
             this.runFileComboBox.Text = "Select run file...";
+            // 
+            // loadRunFileButton
+            // 
+            this.loadRunFileButton.Location = new System.Drawing.Point(135, 25);
+            this.loadRunFileButton.Name = "loadRunFileButton";
+            this.loadRunFileButton.Size = new System.Drawing.Size(73, 35);
+            this.loadRunFileButton.TabIndex = 0;
+            this.loadRunFileButton.Text = "Load";
+            this.loadRunFileButton.UseVisualStyleBackColor = true;
+            this.loadRunFileButton.Click += new System.EventHandler(this.loadRunFileButton_Click);
+            // 
+            // alwaysOnTopCheckBox
+            // 
+            this.alwaysOnTopCheckBox.AutoSize = true;
+            this.alwaysOnTopCheckBox.Location = new System.Drawing.Point(11, 102);
+            this.alwaysOnTopCheckBox.Margin = new System.Windows.Forms.Padding(2);
+            this.alwaysOnTopCheckBox.Name = "alwaysOnTopCheckBox";
+            this.alwaysOnTopCheckBox.Size = new System.Drawing.Size(98, 17);
+            this.alwaysOnTopCheckBox.TabIndex = 4;
+            this.alwaysOnTopCheckBox.Text = "Always On Top";
+            this.alwaysOnTopCheckBox.UseVisualStyleBackColor = true;
+            this.alwaysOnTopCheckBox.CheckedChanged += new System.EventHandler(this.alwaysOnTopCheckBox_CheckedChanged);
             // 
             // gadgetsButton
             // 

@@ -242,6 +242,29 @@ namespace racman
             api.WriteMemory(pid, sly2.addr.loadTrigger, (uint)1);
         }
 
+        public void CheckRunFileConfig()
+        {
+            string[] keys = new string[] { "Episode1", "Episode2", "Episode3", "Episode4", "Episode5", "Episode6", "Episode7", "Episode8" };
+            foreach (var key in keys)
+            {
+                string gadgetHex = func.GetConfigData("config.txt", key + "_Sly2GadgetUnlocks");
+                string bindingHex = func.GetConfigData("config.txt", key + "_Sly2GadgetBindings");
+
+                if (string.IsNullOrEmpty(gadgetHex))
+                {
+                    gadgetHex = func.GetConfigData("data/s2_run_file_config.txt", key + "_Sly2GadgetUnlocks");
+                    func.ChangeFileLines("config.txt", gadgetHex, key + "_Sly2GadgetUnlocks");
+                }
+
+                if (string.IsNullOrEmpty(bindingHex))
+                {
+                    bindingHex = func.GetConfigData("data/s2_run_file_config.txt", key + "_Sly2GadgetBindings");
+                    func.ChangeFileLines("config.txt", bindingHex, key + "_Sly2GadgetBindings");
+                }
+            }
+            return;
+        }
+
         public void LoadMap(int mapIndex)
         {
             if (mapIndex < 0 || mapIndex >= maps.Length)
