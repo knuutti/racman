@@ -857,6 +857,8 @@ namespace racman
             
         }
 
+        // Checking if user has gadgets configs in config.txt
+        // If not, copy the defaults
         public void CheckRunFileConfig()
         {
             string[] keys = new string[] { "Episode1", "Episode2", "Episode3", "Episode4", "Episode5", "Episode6_NoCE", "Episode6_CE" };
@@ -867,13 +869,13 @@ namespace racman
 
                 if (string.IsNullOrEmpty(gadgetHex))
                 {
-                    gadgetHex = func.GetConfigData("run_file_config.txt", key + "_GadgetUnlocks");
+                    gadgetHex = func.GetConfigData("data/s3_run_file_config.txt", key + "_GadgetUnlocks");
                     func.ChangeFileLines("config.txt", gadgetHex, key + "_GadgetUnlocks");
                 }
 
                 if (string.IsNullOrEmpty(bindingHex))
                 {
-                    bindingHex = func.GetConfigData("run_file_config.txt", key + "_GadgetBindings");
+                    bindingHex = func.GetConfigData("data/s3_run_file_config.txt", key + "_GadgetBindings");
                     func.ChangeFileLines("config.txt", bindingHex, key + "_GadgetBindings");
                 }
             }
