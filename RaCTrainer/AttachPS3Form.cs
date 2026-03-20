@@ -176,7 +176,15 @@ namespace racman
                 }
                 else
                 {
-                    
+                    var dialogResult = MessageBox.Show("There is no Practice Mode yet for Sly 2, but do you want to enter Speedrun Mode?", "No Sly 2 Practice Mode", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        Hide();
+                        func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Speedrun Mode)");
+                        SLY2Speedrun sly2 = new SLY2Speedrun(new sly2(func.api));
+                        gameName = "SLY 2 (KOR, PSN)";
+                        sly2.ShowDialog();
+                    }
                 }
             }
             else
