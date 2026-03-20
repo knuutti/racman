@@ -324,6 +324,18 @@
     <Compile Include="RAC4\RAC4Form.Designer.cs">
       <DependentUpon>RAC4Form.cs</DependentUpon>
     </Compile>
+    <Compile Include="SLY2\Sly2Gadgets.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SLY2\Sly2Gadgets.Designer.cs">
+      <DependentUpon>Sly2Gadgets.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SLY2\Sly2Practice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SLY2\Sly2Practice.Designer.cs">
+      <DependentUpon>Sly2Practice.cs</DependentUpon>
+    </Compile>
     <Compile Include="SLY2\SLY2Speedrun.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -468,6 +480,9 @@
     <EmbeddedResource Include="RAC3\UYAUnlocks.resx">
       <DependentUpon>UYAUnlocks.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SLY2\Sly2Gadgets.resx">
+      <DependentUpon>Sly2Gadgets.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SLY2\SLY2Speedrun.resx">
       <DependentUpon>SLY2Speedrun.cs</DependentUpon>
     </EmbeddedResource>
@@ -502,8 +517,12 @@
     <Content Include="sluman_icon.ico" />
     <None Include="autosplitters\sly3-autosplitter.asl" />
     <Content Include="defaultSkin.txt" />
-    <Content Include="..\RaCTrainer\data\run_file_config.txt">
-      <Link>run_file_config.txt</Link>
+    <Content Include="..\data\s3_run_file_config.txt">
+      <Link>data/s3_run_file_config.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\data\s2_run_file_config.txt">
+      <Link>data/s2_run_file_config.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ds3drip.ico" />

@@ -20,52 +20,47 @@ namespace racman
         public uint analogOffset => 0x0;
         public uint playerCoords => 0x0;
 
+        // Inputs
         public uint inputOffset => 0x500F76;
         public uint analogOffsetLeft => 0x500EFC;
-        public uint analogOffsetRight => 0x500EFC;
-        public uint coinCount => 0x7A83B0;
-        public uint slyCharacterPtr => 0x0;
-        public uint activeCharacterPtr => 0x7A830C;
+        public uint analogOffsetRight => 0x500F30;
 
-        public uint playerEntityPointer => 0x7A830C;
+        // Pointers
+        public uint slyCharacterPtr => 0x502100;
+        public uint activeCharacterPtr => 0x49E290;
+
+        // Offsets
         public uint transformOffset => 0x44;
         public uint coordsOffsetX => 0x130;
         public uint coordsOffsetY => 0x134;
         public uint coordsOffsetZ => 0x138;
 
-        // Cinematic skipping addresses
+
+        // Utility
+        public uint coinCount => 0x7A83B0; 
+        public uint currentCharacter => 0x7A830C;
+        public uint cameraFov => 0x49E054;
+        public uint loadingState => 0x7A7200;
+        public uint currentJobId => 0x4FEBF4;
+        public uint currentCheckpointId => 0x4FEBFC;
+        public uint currentMapId => 0x7B4CE0;
+        public uint gameSpeed => 0x49DF9C;
+
+        // Cutscene skipping
         public uint dialogueState => 0x39E4BF70;
         public uint dialogueFrameCounter => 0x39E4BF54;
         public uint fmvState => 0x9066FC;
 
         public uint mapAOB => 0x7B4C58;
         public uint spawnLocation => 0x7B4C98;
-
         public uint loadType => 0x7B4C54;
-        public uint loadTrigger => 0x7B4C50; // Set to 1 to trigger load
+        public uint loadTrigger => 0x7B4C50; 
 
-        public uint gadgetUnlocks => 0x6CC7F8;
-        public uint gadgetBindsSly => 0x6CC7B0;
-        public uint gadgetBindsBentley => 0x6CC7BC;
-        public uint gadgetBindsMurray => 0x6CC7C8;
-
-        // Run file specific addresses
-        public uint suckValue => 0x589A3C;
-        public uint currentCharacter => 0x7A830C;
-        public uint cameraFov => 0x7F8680;
-
-        // Autosplitter addresses
-        public uint isLoading => 0x6CB603;
-        public uint currentJob => 0x4FEBF4;
-        public uint currentCheckpoint => 0x4FEBFC;
-        public uint currentMap => 0x78D398;
-        public uint gameSpeed => 0x5898B8;
-
-        // Episode 1 specific addresses
-        public uint veniceStarted => 0x6CE0B4;
-        public uint outbackStarted => 0x6CEA80;
-        public uint chinaStarted => 0x6D0288;
-        public uint pirateStarted => 0x6D1110;
+        // Gadgets
+        public uint gadgetUnlocks => 0x7A83A8;
+        public uint gadgetBindsSly => 0x7A836C;
+        public uint gadgetBindsBentley => 0x7A8384;
+        public uint gadgetBindsMurray => 0x7A839C;
 
         public enum LoadTypes : uint
         {
@@ -103,44 +98,50 @@ namespace racman
         {
             this.maps = new MapData[]
             {
-                new MapData("Main Menu", "Y$KFdvd_menu", 0),
-                new MapData("Hazard Room", "Y$KFi_trainer", 424),
-                new MapData("Venice Hub", "Y$KFv_ext", 44438),
-                new MapData("Canal Chase", "Y$KFv_canal", 0),
-                new MapData("Coffee House", "Y$KFv_apt", 0),
-                new MapData("Opera House", "Y$KFv_gauntlet", 0),
-                new MapData("Police Station", "Y$KFv_interpol", 0),
-                new MapData("Outback Hub", "Y$KFo_ext", 44438),
-                new MapData("Ayer's Rock", "Y$KFo_quarry", 0),
-                new MapData("Oil Field", "Y$KFo_arena", 0),
-                new MapData("Cave 1", "Y$KFo_cave_a", 0),
-                new MapData("Cave 2", "Y$KFo_cave_b", 0),
-                new MapData("Cave 3", "Y$KFo_cave_murray", 0),
-                new MapData("Lemonade Bar", "Y$KFo_bar", 0),
-                new MapData("Holland Hub", "Y$KFh_ext", 44438),
-                new MapData("Hotel", "Y$KFh_hotel", 0),
-                new MapData("Black Baron's Hangar", "Y$KFh_hangar_b", 0),
-                new MapData("Cooper Gang Hangar", "Y$KFh_hangar_c", 0),
-                new MapData("Team Belgium's Hangar", "Y$KFh_hangar_a", 0),
-                new MapData("Sewer", "Y$KFh_sewer", 0),
-                new MapData("Dogfight Arena", "Y$KFh_dogfight", 0),
-                new MapData("China Hub", "Y$KFc_ext", 44438),
-                new MapData("Intro", "Y$KFc_intro", 0),
-                new MapData("Flashback", "Y$KFc_flashback", 0),
-                new MapData("Tsao's Battleground", "Y$KFc_forest", 0),
-                new MapData("Panda King's House", "Y$KFc_apt", 0),
-                new MapData("Tsao's Business Center", "Y$KFc_hall_a", 0),
-                new MapData("Palace", "Y$KFc_hall_b", 0),
-                new MapData("Treasure Temple", "Y$KFc_tilt_hall", 0),
-                new MapData("Pirate Hub", "Y$KFp_ext", 44438),
-                new MapData("Sailing Map", "Y$KFp_at_sea", 0),
-                new MapData("Underwater Shipwreck", "Y$KFp_dive", 0),
-                new MapData("Dagger Island", "Y$KFp_island_map", 0),
-                new MapData("Kaine Island", "Y$KFm_ext", 15022),
-                new MapData("Underwater", "Y$KFm_underwater", 0),
-                new MapData("Cooper Vault", "Y$KFm_vault", 0),
-                new MapData("Gauntlet", "Y$KFm_gauntlet", 0),
-                new MapData("Inner Sanctum", "Y$KFm_boss", 0)
+                new MapData("Museum", "Y$KFjb_intro", 0),
+                new MapData("DVD Menu", "Y$KFdvd_menu", 0),
+                new MapData("Paris Hub", "Y$KFf_nightclub_exterior", 0),
+                new MapData("Wine Cellar", "Y$KFf_nightclub_cellar", 0),
+                new MapData("Disco", "Y$KFf_nightclub_disco", 0),
+                new MapData("Print Room", "Y$KFf_nightclub_heist", 0),
+                new MapData("Theater", "Y$KFf_nightclub_moulinrouge", 0),
+                new MapData("Pump Room", "Y$KFf_nightclub_waterpump", 0),
+                new MapData("Palace Hub", "Y$KFi_palace_ext", 0),
+                new MapData("Hotel", "Y$KFi_palace_int", 0),
+                new MapData("Basement", "Y$KFi_palace_basement", 0),
+                new MapData("Ballroom", "Y$KFi_palace_ballroom", 0),
+                new MapData("Temple Hub", "Y$KFi_temple_ext", 0),
+                new MapData("Temple Interior", "Y$KFi_temple_int", 0),
+                new MapData("Prison Hub", "Y$KFp_prison_ext", 0),
+                new MapData("Jail", "Y$KFp_prison_int", 0),
+                new MapData("Prison Vault", "Y$KFp_prison_vault", 0),
+                new MapData("Castle Hub", "Y$KFp_castle_ext", 0),
+                new MapData("Castle Interior", "Y$KFp_castle_int", 0),
+                new MapData("Waterrails", "Y$KFp_castle_waterrails", 0),
+                new MapData("Guardbreak", "Y$KFp_castle_guardbreak", 0),
+                new MapData("Wolftomb", "Y$KFp_castle_wolftomb", 0),
+                new MapData("Heist", "Y$KFp_castle_heist", 0),
+                new MapData("Ewoktrainer", "Y$KFp_castle_ewoktrainer", 0),
+                new MapData("Ewoktomb", "Y$KFp_castle_ewoktomb", 0),
+                new MapData("Ewokhall", "Y$KFp_castle_ewokhall", 0),
+                new MapData("Ewokwater", "Y$KFp_castle_ewokwater", 0),
+                new MapData("Canada Hub", "Y$KFc_train_ext", 0),
+                new MapData("Cabins", "Y$KFc_train_cabins", 0),
+                new MapData("Train A", "Y$KFc_train_a", 0),
+                new MapData("Train B", "Y$KFc_train_b", 0),
+                new MapData("Train C", "Y$KFc_train_c", 0),
+                new MapData("Sawmill Hub", "Y$KFc_sawmill_ext", 0),
+                new MapData("Mulch", "Y$KFc_sawmill_mulch", 0),
+                new MapData("Burn", "Y$KFc_sawmill_burn", 0),
+                new MapData("Lighthouse", "Y$KFc_sawmill_lighthouse", 0),
+                new MapData("Bearcave", "Y$KFc_sawmill_bearcave", 0),
+                new MapData("Bison's Saw", "Y$KFc_sawmill_boss", 0),
+                new MapData("Blimp Hub", "Y$KFa_blimp_ext", 0),
+                new MapData("Arpeggio's Blimp", "Y$KFa_blimp_int", 0),
+                new MapData("Engine 1", "Y$KFa_blimp_engine_room_murray", 0),
+                new MapData("Engine 2", "Y$KFa_blimp_engine_room_bentley", 0),
+                new MapData("Engine 3", "Y$KFa_blimp_engine_room_jt", 0),
+                new MapData("Clock-La", "Y$KFa_blimp_boss_final", 0),
             };
 
             // For compatibility with base class
@@ -149,18 +150,14 @@ namespace racman
 
         public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
         {
-            (addr.isLoading, 1),
-            (addr.currentJob, 4),
-            (addr.currentCheckpoint, 4),
-            (addr.currentMap, 4),
+            (addr.loadingState, 1),
+            (addr.currentJobId, 4),
+            (addr.currentCheckpointId, 4),
+            (addr.currentMapId, 4),
             (addr.gameSpeed, 4),
             (addr.slyCharacterPtr, 4),
             (addr.activeCharacterPtr, 4),
             (addr.cameraFov, 4),
-            (addr.veniceStarted, 4),
-            (addr.outbackStarted, 4),
-            (addr.chinaStarted, 4),
-            (addr.pirateStarted, 4),
         };
 
         public override void ResetLevelFlags() { }
@@ -213,6 +210,8 @@ namespace racman
                 Inputs.RawInputs = convertedMask;
                 Inputs.Mask = Inputs.DecodeMask(convertedMask);
             });
+
+            RegisterInputDisplaySub(buttonMaskSubID);
         }
 
         private int ConvertSlyButtonsToStandardFormat(int slyMask)
@@ -243,6 +242,29 @@ namespace racman
         {
             api.WriteMemory(pid, sly2.addr.loadType, (uint)Sly2Addresses.LoadTypes.Normal);
             api.WriteMemory(pid, sly2.addr.loadTrigger, (uint)1);
+        }
+
+        public void CheckRunFileConfig()
+        {
+            string[] keys = new string[] { "Episode1", "Episode2", "Episode3", "Episode4", "Episode5", "Episode6", "Episode7", "Episode8" };
+            foreach (var key in keys)
+            {
+                string gadgetHex = func.GetConfigData("config.txt", key + "_Sly2GadgetUnlocks");
+                string bindingHex = func.GetConfigData("config.txt", key + "_Sly2GadgetBindings");
+
+                if (string.IsNullOrEmpty(gadgetHex))
+                {
+                    gadgetHex = func.GetConfigData("data/s2_run_file_config.txt", key + "_Sly2GadgetUnlocks");
+                    func.ChangeFileLines("config.txt", gadgetHex, key + "_Sly2GadgetUnlocks");
+                }
+
+                if (string.IsNullOrEmpty(bindingHex))
+                {
+                    bindingHex = func.GetConfigData("data/s2_run_file_config.txt", key + "_Sly2GadgetBindings");
+                    func.ChangeFileLines("config.txt", bindingHex, key + "_Sly2GadgetBindings");
+                }
+            }
+            return;
         }
 
         public void LoadMap(int mapIndex)
@@ -280,7 +302,7 @@ namespace racman
 
         private uint GetPlayerCoordsAddress()
         {
-            byte[] playerEntityPtrBytes = api.ReadMemory(pid, sly2.addr.playerEntityPointer, 4);
+            byte[] playerEntityPtrBytes = api.ReadMemory(pid, sly2.addr.activeCharacterPtr, 4);
             uint playerEntity = BitConverter.ToUInt32(playerEntityPtrBytes.Reverse().ToArray(), 0);
 
             byte[] transformPtrBytes = api.ReadMemory(pid, playerEntity + sly2.addr.transformOffset, 4);
@@ -325,37 +347,28 @@ namespace racman
 
         protected override void SetupInputDisplayMemorySubsAnalogs()
         {
-            int analogLSubID = api.SubMemory(pid, sly2.addr.analogOffsetLeft, 2, (value) =>
+            int analogLSubID = api.SubMemory(pid, sly2.addr.analogOffsetLeft, 8, (value) =>
             {
-                // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
-                if (value[0] == 0 && value[1] == 0)
+                // Pressing D-pad also moves the stick in memory
+                if ((Inputs.RawInputs & 0xF000) != 0)
                 {
-                    // Default to neutral position when disconnected
-                    Inputs.ly = 0.0f;
-                    Inputs.lx = 0.0f;
+                    Inputs.ly = 0;
+                    Inputs.lx = 0;
+                    return;
                 }
-                else
-                {
-                    Inputs.ly = (value[0] - 127) / 127.0f;
-                    Inputs.lx = (value[1] - 127) / 127.0f;
-                }
+
+                Inputs.ly = -1 * BitConverter.ToSingle(value, 0);
+                Inputs.lx = BitConverter.ToSingle(value, 4);
             });
 
-            int analogRSubID = api.SubMemory(pid, sly2.addr.analogOffsetRight, 2, (value) =>
+            int analogRSubID = api.SubMemory(pid, sly2.addr.analogOffsetRight, 8, (value) =>
             {
-                // When disconnected, memory reads as 0. Normal center is 127, so check for 0s
-                if (value[0] == 0 && value[1] == 0)
-                {
-                    // Default to neutral position when disconnected
-                    Inputs.ry = 0.0f;
-                    Inputs.rx = 0.0f;
-                }
-                else
-                {
-                    Inputs.ry = (value[0] - 127) / 127.0f;
-                    Inputs.rx = (value[1] - 127) / 127.0f;
-                }
+                Inputs.ry = -1 * BitConverter.ToSingle(value, 0);
+                Inputs.rx = BitConverter.ToSingle(value, 4);
             });
+
+            RegisterInputDisplaySub(analogLSubID);
+            RegisterInputDisplaySub(analogRSubID);
         }
 
         public void SetCoinCount(int coins)
@@ -390,18 +403,18 @@ namespace racman
 
         public void SetGadgetBindings(byte[] bindingBytes)
         {
-            api.WriteMemory(pid, sly2.addr.gadgetBindsSly, bindingBytes);
-        }
+            // bindingBytes contains: 12 bytes Sly + 12 bytes Bentley + 12 bytes Murray
+            byte[] slyBindings = new byte[12];
+            byte[] bentleyBindings = new byte[12];
+            byte[] murrayBindings = new byte[12];
 
-        // Run file loading helper methods
-        public void SetSuckValue(float value)
-        {
-            byte[] suckBytes = BitConverter.GetBytes(value);
-            if (!BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(suckBytes);
-            }
-            api.WriteMemory(pid, sly2.addr.suckValue, suckBytes);
+            Array.Copy(bindingBytes, 0, slyBindings, 0, 12);
+            Array.Copy(bindingBytes, 12, bentleyBindings, 0, 12);
+            Array.Copy(bindingBytes, 24, murrayBindings, 0, 12);
+
+            api.WriteMemory(pid, sly2.addr.gadgetBindsSly, slyBindings);
+            api.WriteMemory(pid, sly2.addr.gadgetBindsBentley, bentleyBindings);
+            api.WriteMemory(pid, sly2.addr.gadgetBindsMurray, murrayBindings);
         }
 
         public void WriteMemoryRegion(uint startAddress, byte[] data)
@@ -444,9 +457,9 @@ namespace racman
 
         private void SetCurrentJob(int jobId, int checkpointId)
         {
-            api.WriteMemory(pid, sly2.addr.currentJob, ConvertIntToBytes(jobId));
-            api.WriteMemory(pid, sly2.addr.currentCheckpoint, ConvertIntToBytes(checkpointId));
-            api.WriteMemory(pid, sly2.addr.currentCheckpoint + 0x4, ConvertIntToBytes(checkpointId));
+            api.WriteMemory(pid, sly2.addr.currentJobId, ConvertIntToBytes(jobId));
+            api.WriteMemory(pid, sly2.addr.currentCheckpointId, ConvertIntToBytes(checkpointId));
+            api.WriteMemory(pid, sly2.addr.currentCheckpointId + 0x4, ConvertIntToBytes(checkpointId));
         }
 
         private void SetActiveCharacter(int characterId)

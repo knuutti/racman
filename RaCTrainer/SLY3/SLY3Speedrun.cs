@@ -13,6 +13,9 @@ namespace racman
 {
     public partial class SLY3Speedrun : Form
     {
+        private const string PrefersAutosplitterKey = "prefersAutosplitter";
+        private const string PrefersAlwaysOnTopKey = "prefersAlwaysOnTop";
+
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly3 game;
@@ -22,6 +25,8 @@ namespace racman
         {
             this.game = game;
             InitializeComponent();
+
+            ApplySavedPreferences();
 
             game.SetupInputDisplayMemorySubs();
             game.speedrunMode = true;
@@ -110,6 +115,15 @@ namespace racman
             }
         }
 
+        private void ApplySavedPreferences()
+        {
+            var prefersAutosplitter = bool.TryParse(func.GetConfigData("config.txt", PrefersAutosplitterKey), out bool autosplitterEnabled) && autosplitterEnabled;
+            var prefersAlwaysOnTop = bool.TryParse(func.GetConfigData("config.txt", PrefersAlwaysOnTopKey), out bool alwaysOnTopEnabled) && alwaysOnTopEnabled;
+
+            autosplitterCheckbox.Checked = prefersAutosplitter;
+            alwaysTopButton.Checked = prefersAlwaysOnTop;
+        }
+
         private void inputDisplayButton_Click(object sender, EventArgs e)
         {
             if (InputDisplay == null || InputDisplay.IsDisposed)
@@ -126,13 +140,16 @@ namespace racman
 
         private void AutosplitterCheckbox_CheckedChanged(object sender, EventArgs e)
         {
+            func.ChangeFileLines("config.txt", autosplitterCheckbox.Checked ? "true" : "false", PrefersAutosplitterKey);
+
             if (!autosplitterCheckbox.Checked)
             {
-                autosplitter.Stop();
+                autosplitter?.Stop();
                 autosplitter = null;
             }
             else
             {
+                autosplitter?.Stop();
                 autosplitter = new AutosplitterHelper();
                 autosplitter.StartAutosplitterForGame(this.game);
             }
@@ -164,6 +181,8 @@ namespace racman
 
         private void alwaysTopButton_CheckedChanged(object sender, EventArgs e)
         {
+            func.ChangeFileLines("config.txt", alwaysTopButton.Checked ? "true" : "false", PrefersAlwaysOnTopKey);
+
             if (!alwaysTopButton.Checked)
             {
                 this.TopMost = false;
@@ -244,10 +263,10 @@ namespace racman
         // Function for loading saved run file data from config
         private RunFileData LoadRunFileDataFromConfig(string episodeKey)
         {
-            string mapName = func.GetConfigData("run_file_config.txt", episodeKey + "_MapName");
-            string spawnLocationStr = func.GetConfigData("run_file_config.txt", episodeKey + "_SpawnLocation");
-            string memoryDataHex = func.GetConfigData("run_file_config.txt", episodeKey + "_MemoryData");
-            string memoryAddressStr = func.GetConfigData("run_file_config.txt", episodeKey + "_MemoryAddress");
+            string mapName = func.GetConfigData("data/s3_run_file_config.txt", episodeKey + "_MapName");
+            string spawnLocationStr = func.GetConfigData("data/s3_run_file_config.txt", episodeKey + "_SpawnLocation");
+            string memoryDataHex = func.GetConfigData("data/s3_run_file_config.txt", episodeKey + "_MemoryData");
+            string memoryAddressStr = func.GetConfigData("data/s3_run_file_config.txt", episodeKey + "_MemoryAddress");
 
             if (string.IsNullOrEmpty(mapName) && string.IsNullOrEmpty(memoryDataHex))
             {
@@ -405,6 +424,37 @@ namespace racman
             }
             this.Close();
             Program.AttachPS3Form.Show();
+        }
+
+        private void powerOffPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to turn off your PS3?", "Power Off PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    r.ReleaseAllSubs();
+                    WebMAN.TurnOffPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
+               
+            }
+        }
+
+        private void rebootPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to reboot your PS3?", "Reboot PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    r.ReleaseAllSubs();
+                    WebMAN.RebootPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
+            }
         }
     }
 }
