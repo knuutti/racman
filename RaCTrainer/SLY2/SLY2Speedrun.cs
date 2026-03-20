@@ -323,9 +323,9 @@ namespace racman
                 case "Episode 3": return "Episode3";
                 case "Episode 4": return "Episode4";
                 case "Episode 5": return "Episode5";
-                case "Episode 6": return "Episode5";
-                case "Episode 7": return "Episode5";
-                case "Episode 8": return "Episode5";
+                case "Episode 6": return "Episode6";
+                case "Episode 7": return "Episode7";
+                case "Episode 8": return "Episode8";
                 default: return "Episode1";
             }
         }
