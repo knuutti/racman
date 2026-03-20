@@ -214,6 +214,8 @@ namespace racman
                 Inputs.RawInputs = convertedMask;
                 Inputs.Mask = Inputs.DecodeMask(convertedMask);
             });
+
+            RegisterInputDisplaySub(buttonMaskSubID);
         }
 
         private int ConvertSlyButtonsToStandardFormat(int slyMask)
@@ -357,6 +359,9 @@ namespace racman
                     Inputs.rx = (value[1] - 127) / 127.0f;
                 }
             });
+
+            RegisterInputDisplaySub(analogLSubID);
+            RegisterInputDisplaySub(analogRSubID);
         }
 
         public void SetupWebManPopUp()
