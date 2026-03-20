@@ -398,7 +398,18 @@ namespace racman
 
         public void SetGadgetBindings(byte[] bindingBytes)
         {
-            api.WriteMemory(pid, sly2.addr.gadgetBindsSly, bindingBytes);
+            // bindingBytes contains: 12 bytes Sly + 12 bytes Bentley + 12 bytes Murray
+            byte[] slyBindings = new byte[12];
+            byte[] bentleyBindings = new byte[12];
+            byte[] murrayBindings = new byte[12];
+
+            Array.Copy(bindingBytes, 0, slyBindings, 0, 12);
+            Array.Copy(bindingBytes, 12, bentleyBindings, 0, 12);
+            Array.Copy(bindingBytes, 24, murrayBindings, 0, 12);
+
+            api.WriteMemory(pid, sly2.addr.gadgetBindsSly, slyBindings);
+            api.WriteMemory(pid, sly2.addr.gadgetBindsBentley, bentleyBindings);
+            api.WriteMemory(pid, sly2.addr.gadgetBindsMurray, murrayBindings);
         }
 
         public void WriteMemoryRegion(uint startAddress, byte[] data)
