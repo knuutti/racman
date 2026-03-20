@@ -14,6 +14,9 @@ namespace racman
 {
     public partial class SLY2Speedrun : Form
     {
+        private const string PrefersAutosplitterKey = "prefersAutosplitter";
+        private const string PrefersAlwaysOnTopKey = "prefersAlwaysOnTop";
+
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly2 game;
@@ -23,6 +26,9 @@ namespace racman
         {
             this.game = game;
             InitializeComponent();
+
+            ApplySavedPreferences();
+
             game.SetupInputDisplayMemorySubs();
             game.CheckRunFileConfig();
 
@@ -108,6 +114,15 @@ namespace racman
 
         }
 
+        private void ApplySavedPreferences()
+        {
+            var prefersAutosplitter = bool.TryParse(func.GetConfigData("config.txt", PrefersAutosplitterKey), out bool autosplitterEnabled) && autosplitterEnabled;
+            var prefersAlwaysOnTop = bool.TryParse(func.GetConfigData("config.txt", PrefersAlwaysOnTopKey), out bool alwaysOnTopEnabled) && alwaysOnTopEnabled;
+
+            autosplitterCheckbox.Checked = prefersAutosplitter;
+            alwaysOnTopCheckBox.Checked = prefersAlwaysOnTop;
+        }
+
         private void inputDisplayButton_Click(object sender, EventArgs e)
         {
             if (InputDisplay == null || InputDisplay.IsDisposed)
@@ -124,6 +139,8 @@ namespace racman
 
         private void alwaysOnTopCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            func.ChangeFileLines("config.txt", alwaysOnTopCheckBox.Checked ? "true" : "false", PrefersAlwaysOnTopKey);
+
             if (!alwaysOnTopCheckBox.Checked)
             {
                 this.TopMost = false;
@@ -137,13 +154,16 @@ namespace racman
 
         private void autosplitterCheckbox_CheckedChanged(object sender, EventArgs e)
         {
+            func.ChangeFileLines("config.txt", autosplitterCheckbox.Checked ? "true" : "false", PrefersAutosplitterKey);
+
             if (!autosplitterCheckbox.Checked)
             {
-                autosplitter.Stop();
+                autosplitter?.Stop();
                 autosplitter = null;
             }
             else
             {
+                autosplitter?.Stop();
                 autosplitter = new AutosplitterHelper();
                 autosplitter.StartAutosplitterForGame(this.game);
             }
