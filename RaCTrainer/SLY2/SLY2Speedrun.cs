@@ -354,5 +354,51 @@ namespace racman
             }
             return bytes;
         }
+
+        private void toolsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void switchGameModeItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                r.ReleaseAllSubs();
+            }
+            this.Close();
+            Program.AttachPS3Form.Show();
+        }
+
+        private void powerOffPS3Item_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to turn off your PS3?", "Power Off PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    r.ReleaseAllSubs();
+                    WebMAN.TurnOffPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
+
+            }
+        }
+
+        private void rebootPS3Item_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to reboot your PS3?", "Reboot PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    r.ReleaseAllSubs();
+                    WebMAN.RebootPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
+            }
+        }
     }
 }
