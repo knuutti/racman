@@ -1,0 +1,505 @@
+state("SluMAN") {}
+
+startup
+{	
+    settings.Add("EPISODE_1", false, "Episode 1");
+    settings.Add("EPISODE_2", false, "Episode 2");
+    settings.Add("EPISODE_3", false, "Episode 3");
+    settings.Add("EPISODE_4", false, "Episode 4");
+    settings.Add("EPISODE_5", false, "Episode 5");
+    settings.Add("EPISODE_6", false, "Episode 6");
+    settings.Add("EPISODE_7", false, "Episode 7");
+    settings.Add("EPISODE_8", false, "Episode 8");
+    settings.Add("ANY", false, "Any%");
+}
+
+init
+{
+    System.IO.MemoryMappedFiles.MemoryMappedFile mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.OpenExisting("racman-autosplitter");
+    System.IO.MemoryMappedFiles.MemoryMappedViewStream stream = mmf.CreateViewStream();
+    vars.reader = new System.IO.BinaryReader(stream);
+    
+    vars.reader.BaseStream.Position = 0;
+
+    vars.splitPending = false;
+    vars.splitPendingTime = DateTime.Now;
+
+    current.isLoading = vars.reader.ReadByte();
+    current.jobId = vars.reader.ReadUInt32();
+    current.checkpointId = vars.reader.ReadUInt32();
+    current.mapId = vars.reader.ReadUInt32();
+    current.gameSpeed = vars.reader.ReadSingle();
+    current.slyCharacterPointer = vars.reader.ReadUInt32();
+    current.activeCharacterPointer = vars.reader.ReadUInt32();
+    current.cameraFov = vars.reader.ReadSingle();
+}
+
+update
+{
+    vars.reader.BaseStream.Position = 0;
+
+    current.isLoading = vars.reader.ReadByte();
+    current.jobId = vars.reader.ReadUInt32();
+    current.checkpointId = vars.reader.ReadUInt32();
+    current.mapId = vars.reader.ReadUInt32();
+    current.gameSpeed = vars.reader.ReadSingle();
+    current.slyCharacterPointer = vars.reader.ReadUInt32();
+    current.activeCharacterPointer = vars.reader.ReadUInt32();
+    current.cameraFov = vars.reader.ReadSingle();
+
+    if (current.isLoading != old.isLoading)
+    {
+        print("isLoading: " + current.isLoading);
+    }
+}
+
+start
+{
+    return false;
+}
+
+isLoading
+{
+    return current.isLoading != 3;
+}
+
+onReset
+{
+    vars.splitPending = false;
+    vars.splitPendingTime = DateTime.Now;
+    vars.kaineStarted = false;
+    vars.hollandStarted = false;
+}
+
+split
+{
+    if (vars.splitPending == true)
+    {
+        if (vars.splitPendingTime < DateTime.Now)
+        {
+            vars.splitPending = false;
+            return true;
+        }
+        return false;
+    }
+
+    if (settings["ANY"])
+    {
+        if (old.currentCheckpoint == 2029 && current.currentCheckpoint != 2029 && current.currentJob == 1798) 
+        { 
+            // The Cooper Vault
+            return true; 
+        }
+
+        if (old.currentCheckpoint == 4618 && current.currentCheckpoint != 4618) 
+        { 
+            // Hazard Room
+            vars.splitPending = true; 
+        }
+
+        if (current.veniceStarted == 1 && old.veniceStarted == 0 && current.currentMap == 3 && current.isLoading == 3) 
+        { 
+            // Start Episode 1
+            return true; 
+        }
+
+        if (current.outbackStarted == 1 && old.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) 
+        { 
+            // Start Episode 2
+            return true; 
+        }
+
+        if (vars.hollandStarted == false && old.cameraFov == 0.95f && current.cameraFov != 0.95f && current.cameraFov != 1.0f && current.currentMap == 15) 
+        { 
+            // Start Episode 3
+            vars.hollandStarted = true;
+            return true; 
+        }
+
+        if (current.chinaStarted == 3 && old.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) 
+        { 
+            // Start Episode 4
+            return true; 
+        }
+
+        if (current.pirateStarted == 3 && old.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) 
+        { 
+            // Start Episode 5
+            return true; 
+        }
+        if (current.currentCheckpoint == 4369 && old.currentCheckpoint != 4369) 
+        { 
+            // Start Episode 6
+            return true; 
+        }
+
+        if (old.currentCheckpoint == 3454 && current.currentCheckpoint != 3454) 
+        { 
+            // King of Fire
+            return true;
+        }
+    }
+
+    if (settings["EPISODE_1"] || settings["ANY"])
+    { 
+        if (current.gameSpeed == 0 && old.gameSpeed == 1) 
+        {
+            if (current.currentCheckpoint == 2035) 
+            { 
+                // Canal Chase
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2358) 
+            { 
+                // Into the Depths
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2215) 
+            { 
+                // Tar Ball
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2197) 
+            { 
+                // Turf War!
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2434) 
+            { 
+                // Guard Duty
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2252) 
+            { 
+                // Run n Bomb
+                vars.splitPending = true; 
+            }
+        }
+
+        if (current.currentCheckpoint == 1820 && old.currentCheckpoint != 1820) 
+        { 
+            // Operation: Tar Be Gone!
+            return true; 
+        }
+        else if (current.currentCheckpoint == 2165 && old.currentCheckpoint != 2165) 
+        { 
+            // Police HQ
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 2305 && old.currentCheckpoint != 2305) 
+        {
+            // Octavio Snap 
+            vars.splitPending = true; 
+        }
+        
+    }
+
+    if (settings["EPISODE_2"] || settings["ANY"])
+    {
+        if (current.gameSpeed == 0 && old.gameSpeed == 1) 
+        {
+            if (current.currentCheckpoint == 2032) 
+            { 
+                // Searching for the Guru
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2648) 
+            { 
+                // Spelunking
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2862) 
+            { 
+                // Dark Caves
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2033) 
+            { 
+                // Big Truck
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2720) 
+            { 
+                // Unleash the Guru
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2688) 
+            { 
+                // The Claw
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2037) 
+            { 
+                // Lemon Rage
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2820) 
+            { 
+                // Hungry Croc
+                vars.splitPending = true; 
+            }
+        }
+
+        if (current.currentCheckpoint == 2944 && old.currentCheckpoint == 2942) {
+            // Operation: Moon Crash (1st outcome)
+            return true;
+        }
+        else if (current.currentCheckpoint == 2942 && old.currentCheckpoint == 2944) {
+            // Operation: Moon Crash (2nd outcome)
+            return true;
+        }
+    }
+
+    if (settings["EPISODE_3"] || settings["ANY"])
+    {
+        if (current.gameSpeed == 0 && old.gameSpeed == 1) 
+        {
+            if (current.currentCheckpoint == 3175) 
+            { 
+                // ACES Semi-finals
+                vars.splitPending = true;
+            }
+            else if (current.currentCheckpoint == 3040 && current.cameraFov == 1.0f)
+            {
+                // Hidden Flight Roster
+                vars.splitPending = true;
+            }
+            else if (vars.cooperHangarDefenceDone == 1)
+            {
+                vars.cooperHangarDefenceDone = 2;
+                vars.splitPending = true;
+            }
+            else if (current.currentCheckpoint == 3223) 
+            {
+                // Windmill Firewall
+                vars.splitPending = true;
+            }
+            else if (current.currentCheckpoint == 3123) 
+            { 
+                // Frame Team Iceland 
+                vars.splitPending = true; 
+            } 
+            else if (current.currentCheckpoint == 2043) 
+            {
+                // Beauty and the Beast
+                vars.splitPending = true;
+            }
+        }
+
+        if (current.currentCheckpoint == 1822 && old.currentCheckpoint != 1822)  
+        {
+            // Operation: Turbo Dominant Eagle
+            return true;
+        }
+        else if (current.currentCheckpoint != 3080 && old.currentCheckpoint == 3080) 
+        { 
+            // Frame Team Belgium
+            vars.splitPending = true;
+        } 
+        else if (current.currentCheckpoint == 3040 && old.currentCheckpoint != 3040) 
+        { 
+            // Hidden Flight Roster
+            vars.hiddenFlightRosterDone = true;
+            return false;
+        } 
+        else if (vars.cooperHangarDefenceDone == 0 && vars.splitPending == false && current.currentCheckpoint == 3158) 
+        { 
+            // Cooper Hangar Defence
+            vars.cooperHangarDefenceDone = 1;
+            return false;
+        } 
+        else if (old.currentCheckpoint == 3244 && current.currentCheckpoint != 3244) 
+        { 
+            // Giant Wolf Massacre
+            vars.splitPending = true;
+        } 
+    }
+
+    if (settings["EPISODE_4"] || settings["ANY"])
+    {
+
+        if (vars.getAJobDone == true)
+        {
+            // Get a Job
+            if (current.currentJob != 3471) 
+            { 
+                vars.getAJobDone = false; 
+                return true;
+            }
+            return false;
+        }
+
+        if (current.gameSpeed == 0 && old.gameSpeed == 1) 
+        {
+            if (current.currentCheckpoint == 3554) 
+            {
+                // Tearful Reunion 
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 3644) 
+            {
+                // Laptop Retrieval 
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2038) 
+            {
+                // Vampiric Demise 
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 3729) 
+            {
+                // A Battery of Peril 
+                vars.splitPending = true; 
+            }
+        }
+
+        if (old.currentCheckpoint == 3525 && current.currentCheckpoint != 3525) 
+        { 
+            // Get a Job (set flag)
+            vars.getAJobDone = true;
+            return false;
+        }
+
+        if (current.currentCheckpoint == 1823 && old.currentCheckpoint != 1823) 
+        {
+             // Operation: Wedding Crasher
+            return true;
+        }
+
+        if (current.currentCheckpoint == 3603 && old.currentCheckpoint != 3603) 
+        { 
+            // Grapple-Cam Break-In
+            vars.splitPending = true;
+        }
+        else if (current.currentCheckpoint == 3704 && old.currentCheckpoint != 3704) 
+        { 
+            // Down the Line
+            vars.splitPending = true; 
+        }
+    }
+
+    if (settings["EPISODE_5"] || settings["ANY"])
+    {
+        if (current.gameSpeed == 0 && old.gameSpeed == 1) 
+        {
+            if (current.currentCheckpoint == 4083) 
+            { 
+                // Jollyboat of Destruction
+                vars.splitPending = true;
+            }
+            else if (current.currentCheckpoint == 2040) 
+            {
+                // X Marks the Spot 
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 2044) 
+            { 
+                // Crusher from the Depths
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 4134) 
+            { 
+                // Deep Sea Danger
+                vars.splitPending = true; 
+            }
+            else if (current.currentCheckpoint == 4157) 
+            { 
+                // Battle on the High Seas
+                vars.splitPending = true; 
+            }
+        }
+
+        if (current.currentCheckpoint == 4221 && old.currentCheckpoint != 4221) 
+        {
+            // Operation: Reverse Double-Cross
+            return true;
+        }
+        if (old.currentCheckpoint == 4083 && current.currentCheckpoint != 4083) 
+        { 
+            // Jollyboat of Destruction (2nd outcome)
+            vars.splitPending = true;
+        }
+        else if (current.currentCheckpoint == 3923 && old.currentCheckpoint != 3923) 
+        {
+            // The Talk of the Pirates 
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 4001 && old.currentCheckpoint != 4001) 
+        {
+            // Dynamic Duo 
+            vars.splitPending = true; 
+        }
+    }
+
+    if (settings["EPISODE_6"] || settings["ANY"])
+    {
+        if (current.currentCheckpoint == 1825 && old.currentCheckpoint != 1825) 
+        {
+            // Final Legacy
+            return true;
+        }
+        else if (current.currentCheckpoint == 1843 && old.currentCheckpoint != 1843) 
+        { 
+            // Carmelita to the Rescue
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1844 && old.currentCheckpoint != 1844) 
+        { 
+            // A Deadly Bite
+            vars.splitPending = true; 
+            }
+        else if (current.currentCheckpoint == 1845 && old.currentCheckpoint != 1845) 
+        { 
+            // The Dark Current
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1846 && old.currentCheckpoint != 1846) 
+        { 
+            // Bump-Charge-Jump
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1847 && old.currentCheckpoint != 1847) 
+        { 
+            // Danger in the Skies
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1848 && old.currentCheckpoint != 1848) 
+        { 
+            // The Ancestors Gauntlet
+            vars.splitPending = true; 
+        }
+        else if (current.currentCheckpoint == 1849 && old.currentCheckpoint != 1849) 
+        { 
+            // Stand Your Ground
+            vars.splitPending = true; 
+        }
+    }
+
+    if (vars.splitPending == true) { vars.splitPendingTime = DateTime.Now.AddMilliseconds(1283);}
+    
+    return false;
+}
+
+reset
+{
+    if (settings["EPISODE_1"] && current.veniceStarted == 0 && current.currentMap == 3)
+    {
+        return true;
+    }
+    
+    if (settings["EPISODE_2"] && current.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+
+    if (settings["EPISODE_4"] && current.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+
+    if (settings["EPISODE_5"] && current.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+
+}
