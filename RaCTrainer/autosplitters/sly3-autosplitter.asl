@@ -63,11 +63,6 @@ update
     current.outbackStarted = vars.reader.ReadUInt32();
     current.chinaStarted = vars.reader.ReadUInt32();
     current.pirateStarted = vars.reader.ReadUInt32();
-
-    if (current.isLoading != old.isLoading)
-    {
-        print("isLoading: " + current.isLoading);
-    }
 }
 
 start

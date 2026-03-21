@@ -40,11 +40,13 @@ namespace racman
         public uint coinCount => 0x7A83B0; 
         public uint currentCharacter => 0x7A830C;
         public uint cameraFov => 0x49E054;
-        public uint loadingState => 0x7A7200;
+        public uint cameraParameter => 0x49E07C;
+        public uint loadingState => 0x7A7203;
         public uint currentJobId => 0x4FEBF4;
-        public uint currentCheckpointId => 0x4FEBFC;
+        public uint currentCheckpointId => 0x4FEBF8;
         public uint currentMapId => 0x7B4CE0;
-        public uint gameSpeed => 0x49DF9C;
+        public uint gameSpeed => 0x49DF80;
+        public uint pauseMenuState => 0x4FFE84;
 
         // Cutscene skipping
         public uint dialogueState => 0x39E4BF70;
@@ -61,6 +63,9 @@ namespace racman
         public uint gadgetBindsSly => 0x7A836C;
         public uint gadgetBindsBentley => 0x7A8384;
         public uint gadgetBindsMurray => 0x7A839C;
+
+        // Values for autosplitter
+        public uint parisStarted => 0x7A9D84;
 
         public enum LoadTypes : uint
         {
@@ -158,6 +163,9 @@ namespace racman
             (addr.slyCharacterPtr, 4),
             (addr.activeCharacterPtr, 4),
             (addr.cameraFov, 4),
+            (addr.cameraParameter, 4),
+            (addr.pauseMenuState, 4),
+            (addr.parisStarted, 4),
         };
 
         public override void ResetLevelFlags() { }
