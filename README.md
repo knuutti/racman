@@ -12,6 +12,8 @@ SluMAN also provides a Speedrun Mode, that provides the runners with an input di
 
 ## Setup
 To use SluMAN, follow these steps:
+### Install SluMAN
+Get the latest version of SluMAN from here: [Download](https://github.com/knuutti/SluMAN/releases/latest). Download the SluMAN.zip file and extract it to a destination you want. 
 ### PS3 setup
 First, make sure you have `webMAN MOD` installed on a jailbroken PS3 using either a console with custom firmware or a HEN-enabled console.
 It's important that you have the full version of webMAN MOD, which can be done by holding L1 while running the installer.
