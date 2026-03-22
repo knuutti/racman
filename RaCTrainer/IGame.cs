@@ -25,8 +25,6 @@ namespace racman
     public abstract class IGame
     {
         public IPS3API api { get; }
-        private readonly List<int> inputDisplaySubIDs = new List<int>();
-        private readonly object inputDisplaySubLock = new object();
 
         public uint planetIndex;
         public bool inputCheck = true;
@@ -126,7 +124,6 @@ namespace racman
 
         public virtual void SetupInputDisplayMemorySubs()
         {
-            ClearInputDisplayMemorySubs();
 
             SetupInputDisplayMemorySubsButtons();
 
@@ -134,48 +131,6 @@ namespace racman
 
         }
 
-        public virtual void ClearInputDisplayMemorySubs()
-        {
-            int[] subsToRelease;
-
-            lock (inputDisplaySubLock)
-            {
-                subsToRelease = inputDisplaySubIDs.ToArray();
-                inputDisplaySubIDs.Clear();
-            }
-
-            foreach (int subID in subsToRelease)
-            {
-                try
-                {
-                    api.ReleaseSubID(subID);
-                }
-                catch
-                {
-                    // A dropped connection can make release fail; a fresh setup still follows.
-                }
-            }
-
-            Inputs.RawInputs = 0;
-            Inputs.Mask = Inputs.DecodeMask(0);
-            Inputs.rx = 0.0f;
-            Inputs.ry = 0.0f;
-            Inputs.lx = 0.0f;
-            Inputs.ly = 0.0f;
-        }
-
-        protected void RegisterInputDisplaySub(int subID)
-        {
-            if (subID < 0)
-            {
-                return;
-            }
-
-            lock (inputDisplaySubLock)
-            {
-                inputDisplaySubIDs.Add(subID);
-            }
-        }
 
         protected virtual void SetupInputDisplayMemorySubsButtons()
         {
@@ -184,8 +139,6 @@ namespace racman
                 Inputs.RawInputs = BitConverter.ToInt32(value, 0);
                 Inputs.Mask = Inputs.DecodeMask(Inputs.RawInputs);
             });
-
-            RegisterInputDisplaySub(buttonMaskSubID);
         }
 
         protected virtual void SetupInputDisplayMemorySubsAnalogs()
@@ -207,11 +160,6 @@ namespace racman
             {
                 Inputs.ly = BitConverter.ToSingle(value, 0);
             });
-
-            RegisterInputDisplaySub(analogRYSubID);
-            RegisterInputDisplaySub(analogRXSubID);
-            RegisterInputDisplaySub(analogLYSubID);
-            RegisterInputDisplaySub(analogLXSubID);
         }
 
         public virtual void GetPlayerCoordinates()

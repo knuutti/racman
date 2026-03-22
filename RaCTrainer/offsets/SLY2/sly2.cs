@@ -210,8 +210,6 @@ namespace racman
                 Inputs.RawInputs = convertedMask;
                 Inputs.Mask = Inputs.DecodeMask(convertedMask);
             });
-
-            RegisterInputDisplaySub(buttonMaskSubID);
         }
 
         private int ConvertSlyButtonsToStandardFormat(int slyMask)
@@ -366,9 +364,6 @@ namespace racman
                 Inputs.ry = -1 * BitConverter.ToSingle(value, 0);
                 Inputs.rx = BitConverter.ToSingle(value, 4);
             });
-
-            RegisterInputDisplaySub(analogLSubID);
-            RegisterInputDisplaySub(analogRSubID);
         }
 
         public void SetCoinCount(int coins)
