@@ -12,6 +12,7 @@ startup
     settings.Add("EPISODE_5", false, "Episode 5");
     settings.Add("EPISODE_6", false, "Episode 6");
     settings.Add("ANY", false, "Any%");
+    settings.Add("GAUNTLET", false, "Ultimate Gauntlet");
 }
 
 init
@@ -45,6 +46,7 @@ init
     current.outbackStarted = vars.reader.ReadUInt32();
     current.chinaStarted = vars.reader.ReadUInt32();
     current.pirateStarted = vars.reader.ReadUInt32();
+    current.mtcTimerValue = vars.reader.ReadSingle();
 }
 
 update
@@ -63,6 +65,8 @@ update
     current.outbackStarted = vars.reader.ReadUInt32();
     current.chinaStarted = vars.reader.ReadUInt32();
     current.pirateStarted = vars.reader.ReadUInt32();
+    current.mtcTimerValue = vars.reader.ReadSingle();
+
 }
 
 start
@@ -97,13 +101,30 @@ start
     { 
         return true; 
     }
+    else if (settings["GAUNTLET"] && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
 
     return false;
 }
 
 isLoading
 {
+    if (settings["GAUNTLET"]) 
+    { 
+        return true; 
+    }
     return current.isLoading != 3;
+    
+}
+
+gameTime
+{
+    if (settings["GAUNTLET"] && current.mtcTimerValue < old.mtcTimerValue)
+    {
+        return TimeSpan.FromSeconds(Math.Floor(100*15*60*(1-current.mtcTimerValue))/100);
+    }
 }
 
 onReset
@@ -124,6 +145,20 @@ split
             return true;
         }
         return false;
+    }
+
+    if (settings["GAUNTLET"])
+    {
+        if (current.currentCheckpoint == 4500 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
+        if (current.currentCheckpoint == 4502 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
+        if (current.currentCheckpoint == 4504 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
+        if (current.currentCheckpoint == 4506 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
+        if (current.currentCheckpoint == 4508 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
+        if (current.currentCheckpoint == 4510 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
+        if (current.currentCheckpoint == 4512 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
+        if (current.currentCheckpoint == 4514 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
+        if (current.currentCheckpoint == 4516 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
+        if (current.currentCheckpoint == 4519 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
     }
 
     if (settings["ANY"])

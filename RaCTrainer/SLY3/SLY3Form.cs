@@ -202,6 +202,14 @@ namespace racman
             {
                 r.ReleaseAllSubs();
             }
+            if (InputDisplay != null && !InputDisplay.IsDisposed)
+            {
+                InputDisplay.Close();
+            }
+            if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
+            {
+                GadgetsWindow.Close();
+            }
             this.Close();
             Program.AttachPS3Form.Show();
         }
@@ -360,9 +368,14 @@ namespace racman
             SetHealthFromTextBox();
         }
 
-        private void groupBox1_Enter_1(object sender, EventArgs e)
-        {
 
+
+        private void SLY3Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (Program.AttachPS3Form.Visible == false)
+            {
+                Program.AttachPS3Form.Close();
+            }
         }
     }
 }

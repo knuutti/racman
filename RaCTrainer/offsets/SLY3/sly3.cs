@@ -60,6 +60,7 @@ namespace racman
         public uint currentCheckpoint => 0x5EB48C;
         public uint currentMap => 0x78D398;
         public uint gameSpeed => 0x5898B8;
+        public uint mtcTimerValue => 0x7DAB2C;
 
         // Episode 1 specific addresses
         public uint veniceStarted => 0x6CE0B4;
@@ -162,6 +163,7 @@ namespace racman
             (addr.outbackStarted, 4), 
             (addr.chinaStarted, 4),
             (addr.pirateStarted, 4),
+            (addr.mtcTimerValue, 4),
         };
 
         public override void ResetLevelFlags() { }
