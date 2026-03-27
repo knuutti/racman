@@ -45,6 +45,7 @@ init
     current.trainStarted = vars.reader.ReadUInt32();
     current.sawmillStarted = vars.reader.ReadUInt32();
     current.blimpStarted = vars.reader.ReadUInt32();
+    current.parisCinemaState = vars.reader.ReadUInt32();
 }
 
 update
@@ -69,6 +70,7 @@ update
     current.trainStarted = vars.reader.ReadUInt32();
     current.sawmillStarted = vars.reader.ReadUInt32();
     current.blimpStarted = vars.reader.ReadUInt32();
+    current.parisCinemaState = vars.reader.ReadUInt32();
 }
 
 start
@@ -91,7 +93,7 @@ start
         vars.splitPendingTime = DateTime.Now.AddMilliseconds(133);
         return false; 
     }
-    if (settings["EPISODE_1"] && current.parisStarted == 0 && current.mapId == 2 && current.activeCharacterPointer != 0 && current.pauseMenuState == 0)
+    if (settings["EPISODE_1"] && current.parisStarted == 0 && current.parisCinemaState == 3 && current.mapId == 2 && current.activeCharacterPointer != 0 && current.pauseMenuState == 0)
     {
         return true;
     }
@@ -156,12 +158,12 @@ split
 
     if (settings["ANY"])
     {
-        if (current.mapId == 0 && current.checkPointId == 1584 && current.pauseMenuState == 4 && current.gameSpeed == 1.0f)
+        if (current.mapId == 0 && current.checkpointId == 1584 && current.pauseMenuState == 4 && old.pauseMenuState == 7 && current.gameSpeed == 1.0f)
         {
             // Cairo
             return true;
         }
-        if (current.parisStarted == 0 && current.mapId == 2 && current.activeCharacterPointer != 0 && current.pauseMenuState == 0)
+        if (current.parisStarted == 0 && current.parisCinemaState == 3 && current.mapId == 2 && current.activeCharacterPointer != 0 && old.activeCharacterPointer == 0 && current.pauseMenuState == 0)
         {
             return true;
         }

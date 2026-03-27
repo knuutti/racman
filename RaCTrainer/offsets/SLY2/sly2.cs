@@ -72,6 +72,7 @@ namespace racman
         public uint trainStarted => 0x7ABF28; // 2 = CC not started, 3 = CC started
         public uint sawmillStarted => 0x7AC818;
         public uint blimpStarted => 0x7AD150;
+        public uint parisCinemaState => 0x7A9AC0;
         public uint rajanHealth => 0x35C2AE2C;
 
         public enum LoadTypes : uint
@@ -180,6 +181,7 @@ namespace racman
             (addr.trainStarted, 4),
             (addr.sawmillStarted, 4),
             (addr.blimpStarted, 4),
+            (addr.parisCinemaState, 4),
         };
 
         public override void ResetLevelFlags() { }
