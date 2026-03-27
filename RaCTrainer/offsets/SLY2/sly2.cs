@@ -66,6 +66,13 @@ namespace racman
 
         // Values for autosplitter
         public uint parisStarted => 0x7A9D84;
+        public uint templeStarted => 0x7AA9F0;
+        public uint prisonStarted => 0x7AB38C;
+        public uint castleStarted => 0x7ABBE8;
+        public uint trainStarted => 0x7ABF28; // 2 = CC not started, 3 = CC started
+        public uint sawmillStarted => 0x7AC818;
+        public uint blimpStarted => 0x7AD150;
+        public uint rajanHealth => 0x35C2AE2C;
 
         public enum LoadTypes : uint
         {
@@ -166,6 +173,13 @@ namespace racman
             (addr.cameraParameter, 4),
             (addr.pauseMenuState, 4),
             (addr.parisStarted, 4),
+            (addr.rajanHealth, 4),
+            (addr.templeStarted, 4),
+            (addr.prisonStarted, 4),
+            (addr.castleStarted, 4),
+            (addr.trainStarted, 4),
+            (addr.sawmillStarted, 4),
+            (addr.blimpStarted, 4),
         };
 
         public override void ResetLevelFlags() { }

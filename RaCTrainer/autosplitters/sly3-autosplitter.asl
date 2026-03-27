@@ -5,14 +5,18 @@ state("SluMAN") {}
 
 startup
 {	
+    
+    settings.Add("ANY", false, "Any%");
     settings.Add("EPISODE_1", false, "Episode 1");
     settings.Add("EPISODE_2", false, "Episode 2");
     settings.Add("EPISODE_3", false, "Episode 3");
     settings.Add("EPISODE_4", false, "Episode 4");
     settings.Add("EPISODE_5", false, "Episode 5");
     settings.Add("EPISODE_6", false, "Episode 6");
-    settings.Add("ANY", false, "Any%");
     settings.Add("GAUNTLET", false, "Ultimate Gauntlet");
+    settings.Add("OCTAVIO", false, "Octavio's Last Stand");
+    settings.Add("ROCKRUN", false, "Rock Run");
+    settings.Add("CARMELITA", false, "Carmelita Climb");
 }
 
 init
@@ -576,6 +580,11 @@ reset
     }
 
     if (settings["EPISODE_5"] && current.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) 
+    { 
+        return true; 
+    }
+
+    if (settings["GAUNTLET"] && current.currentCheckpoint == 4495 && current.mtcTimerValue == 1.0f) 
     { 
         return true; 
     }

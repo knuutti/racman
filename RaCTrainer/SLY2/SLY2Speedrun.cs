@@ -446,5 +446,13 @@ namespace racman
             DisconnectGame();
             ReconnectGame();
         }
+
+        private void SLY2Speedrun_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (Program.AttachPS3Form.Visible == false)
+            {
+                Program.AttachPS3Form.Close();
+            }
+        }
     }
 }
