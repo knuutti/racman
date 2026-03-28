@@ -4,13 +4,16 @@ You can find the old SluMAN repository from [here](https://github.com/knuutti/Sl
 
 SluMAN is speedrun tool for Sly Cooper games for PS3 and RPCS3. SluMAN is designed to help speedrunners practice the games by providing custom features that are not place in the vanilla game. 
 
-SluMAN also provides a Speedrun Mode, that provides the runners with an input display, autosplitter amd run file loading (exact features might differ between games)
+SluMAN also provides a Speedrun Mode, that provides the runners with an input display, autosplitter and run file loading (exact features might differ between games)
 
 ## Supported games
+- Sly 2: Band of Thieves (NPHA80175)
 - Sly 3: Honor Among Thieves (NPEA00343)
 
 ## Setup
 To use SluMAN, follow these steps:
+### Install SluMAN
+Get the latest version of SluMAN from here: [Download](https://github.com/knuutti/SluMAN/releases/latest). Download the SluMAN.zip file and extract it to a destination you want. 
 ### PS3 setup
 First, make sure you have `webMAN MOD` installed on a jailbroken PS3 using either a console with custom firmware or a HEN-enabled console.
 It's important that you have the full version of webMAN MOD, which can be done by holding L1 while running the installer.
