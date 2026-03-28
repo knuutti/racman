@@ -201,5 +201,43 @@ namespace racman
                 autosplitter.StartAutosplitterForGame(this.game);
             }
         }
+
+        private void powerOffPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to turn off your PS3?", "Power Off PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    DisconnectGame();
+                    WebMAN.TurnOffPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
+
+            }
+        }
+
+        private void rebootPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to reboot your PS3?", "Reboot PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    DisconnectGame();
+                    WebMAN.RebootPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
+            }
+        }
+
+        private void switchGameModeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DisconnectGame();
+            this.Close();
+            Program.AttachPS3Form.Show();
+        }
     }
 }
