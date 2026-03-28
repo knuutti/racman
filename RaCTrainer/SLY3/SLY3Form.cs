@@ -398,6 +398,7 @@ namespace racman
             if (Program.AttachPS3Form.Visible == false)
             {
                 Program.AttachPS3Form.Close();
+                Environment.Exit(0);
             }
         }
     }
