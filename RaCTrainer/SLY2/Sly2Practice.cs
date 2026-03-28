@@ -12,6 +12,8 @@ namespace racman
 {
     public partial class Sly2Practice : Form
     {
+        private const string PrefersAlwaysOnTopKey = "prefersAlwaysOnTop";
+
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly2 game;
@@ -24,6 +26,8 @@ namespace racman
 
             mapComboBox.Items.AddRange(game.GetMapNames());
             mapComboBox.SelectedIndex = 0;
+
+            ApplySavedPreferences();
 
             game.SetupInputDisplayMemorySubs();
             game.SetupWebManPopUp();
@@ -155,9 +159,6 @@ namespace racman
             {
                 Console.WriteLine($"Error during disconnect: {ex.Message}");
             }
-
-            Application.Exit();
-            Environment.Exit(0);
         }
 
         private void skipCinematicsButton_Click(object sender, EventArgs e)
@@ -186,16 +187,41 @@ namespace racman
 
         private void reloadButton_Click(object sender, EventArgs e)
         {
+            switch (reloadAsCharacterComboBox.SelectedIndex)
+            {
+                case 1:
+                    game.SetActiveCharacter(7);
+                    break;
+                case 2:
+                    game.SetActiveCharacter(8);
+                    break;
+                case 3:
+                    game.SetActiveCharacter(9);
+                    break;
+            }
             game.TriggerGameLoad((uint)0);
         }
 
         private void killButton_Click(object sender, EventArgs e)
         {
-
+            switch (reloadAsCharacterComboBox.SelectedIndex)
+            {
+                case 0:
+                    game.SetActiveCharacter(7);
+                    break;
+                case 1:
+                    game.SetActiveCharacter(8);
+                    break;
+                case 2:
+                    game.SetActiveCharacter(9);
+                    break;
+            }
+            game.KillActiveCharacter();
         }
 
         private void alwaysOnTopCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            func.ChangeFileLines("config.txt", alwaysOnTopCheckBox.Checked ? "true" : "false", PrefersAlwaysOnTopKey);
             if (!alwaysOnTopCheckBox.Checked)
             {
                 this.TopMost = false;
@@ -309,6 +335,12 @@ namespace racman
             }
         }
 
+        private void ApplySavedPreferences()
+        {
+            var prefersAlwaysOnTop = bool.TryParse(func.GetConfigData("config.txt", PrefersAlwaysOnTopKey), out bool alwaysOnTopEnabled) && alwaysOnTopEnabled;
+            alwaysOnTopCheckBox.Checked = prefersAlwaysOnTop;
+        }
+
         private void SetHealthFromTextBox()
         {
             var healthText = healthTextBox.Text;
@@ -336,6 +368,11 @@ namespace racman
         private void loadMapButton_Click(object sender, EventArgs e)
         {
             game.LoadMap(mapComboBox.SelectedIndex);
+        }
+
+        private void loadJobButton_Click(object sender, EventArgs e)
+        {
+            game.LoadJob(jobComboBox.Text);
         }
     }
 }

@@ -528,6 +528,10 @@
       <Link>data/s2_run_file_config.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\data\s2_job_config.txt">
+      <Link>data/s2_job_config.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="ds3drip.ico" />
     <Content Include="ds3w.png" />
     <Content Include="ds3b.png" />

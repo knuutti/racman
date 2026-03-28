@@ -12,6 +12,8 @@ namespace racman
 {
     public partial class SLY3Form : Form
     {
+        private const string PrefersAlwaysOnTopKey = "prefersAlwaysOnTop";
+
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly3 game;
@@ -38,6 +40,12 @@ namespace racman
             }
 
             this.gameNameId = gameNameId;
+        }
+
+        private void ApplySavedPreferences()
+        {
+            var prefersAlwaysOnTop = bool.TryParse(func.GetConfigData("config.txt", PrefersAlwaysOnTopKey), out bool alwaysOnTopEnabled) && alwaysOnTopEnabled;
+            alwaysOnTopCheckBox.Checked = prefersAlwaysOnTop;
         }
 
         private void inputDisplayButton_Click(object sender, EventArgs e)
@@ -226,6 +234,7 @@ namespace racman
 
         private void alwaysOnTopCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            func.ChangeFileLines("config.txt", alwaysOnTopCheckBox.Checked ? "true" : "false", PrefersAlwaysOnTopKey);
             if (!alwaysOnTopCheckBox.Checked)
             {
                 this.TopMost = false;

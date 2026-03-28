@@ -162,7 +162,7 @@ namespace racman
                     game.SetMapName(runFileData.MapName);
                 }
 
-                game.SetSpawnLocation(runFileData.SpawnLocation);
+                game.SetSpawnLocation((int)runFileData.SpawnLocation);
 
                 LoadRunFileGadgets();
 
