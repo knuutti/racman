@@ -184,5 +184,22 @@ namespace racman
                 Environment.Exit(0);
             }
         }
+
+        private void autosplitterCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            func.ChangeFileLines("config.txt", autosplitterCheckbox.Checked ? "true" : "false", PrefersAutosplitterKey);
+
+            if (!autosplitterCheckbox.Checked)
+            {
+                autosplitter?.Stop();
+                autosplitter = null;
+            }
+            else
+            {
+                autosplitter?.Stop();
+                autosplitter = new AutosplitterHelper();
+                autosplitter.StartAutosplitterForGame(this.game);
+            }
+        }
     }
 }

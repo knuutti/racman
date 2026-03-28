@@ -64,6 +64,7 @@
             this.autosplitterCheckbox.TabIndex = 10;
             this.autosplitterCheckbox.Text = "Autosplitter";
             this.autosplitterCheckbox.UseVisualStyleBackColor = true;
+            this.autosplitterCheckbox.CheckedChanged += new System.EventHandler(this.autosplitterCheckbox_CheckedChanged);
             // 
             // inputDisplayButton
             // 
@@ -104,31 +105,31 @@
             // switchGameModeToolStripMenuItem
             // 
             this.switchGameModeToolStripMenuItem.Name = "switchGameModeToolStripMenuItem";
-            this.switchGameModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.switchGameModeToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.switchGameModeToolStripMenuItem.Text = "Switch Game/Mode";
             // 
             // inputDisplayToolStripMenuItem
             // 
             this.inputDisplayToolStripMenuItem.Name = "inputDisplayToolStripMenuItem";
-            this.inputDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.inputDisplayToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.inputDisplayToolStripMenuItem.Text = "Input Display";
             this.inputDisplayToolStripMenuItem.Click += new System.EventHandler(this.inputDisplayToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(176, 6);
             // 
             // powerOffPS3ToolStripMenuItem
             // 
             this.powerOffPS3ToolStripMenuItem.Name = "powerOffPS3ToolStripMenuItem";
-            this.powerOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.powerOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.powerOffPS3ToolStripMenuItem.Text = "Power Off (PS3)";
             // 
             // rebootPS3ToolStripMenuItem
             // 
             this.rebootPS3ToolStripMenuItem.Name = "rebootPS3ToolStripMenuItem";
-            this.rebootPS3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rebootPS3ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.rebootPS3ToolStripMenuItem.Text = "Reboot (PS3)";
             // 
             // Sly1Speedrun
