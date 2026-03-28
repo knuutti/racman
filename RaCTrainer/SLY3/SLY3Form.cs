@@ -209,11 +209,59 @@ namespace racman
 
         private void fastReloadButton_Click(object sender, EventArgs e)
         {
+            switch (reloadAsCharacterComboBox.SelectedIndex)
+            {
+                case 1:
+                    game.SetActiveCharacter(24);
+                    break;
+                case 2:
+                    game.SetActiveCharacter(25);
+                    break;
+                case 3:
+                    game.SetActiveCharacter(26);
+                    break;
+                case 4:
+                    game.SetActiveCharacter(28);
+                    break;
+                case 5:
+                    game.SetActiveCharacter(29);
+                    break;
+                case 6:
+                    game.SetActiveCharacter(30);
+                    break;
+                case 7:
+                    game.SetActiveCharacter(31);
+                    break;
+            }
             game.TriggerGameLoad((uint)0);
         }
 
         private void fullReloadButton_Click(object sender, EventArgs e)
         {
+            switch (reloadAsCharacterComboBox.SelectedIndex)
+            {
+                case 1:
+                    game.SetActiveCharacter(24);
+                    break;
+                case 2:
+                    game.SetActiveCharacter(25);
+                    break;
+                case 3:
+                    game.SetActiveCharacter(26);
+                    break;
+                case 4:
+                    game.SetActiveCharacter(28);
+                    break;
+                case 5:
+                    game.SetActiveCharacter(29);
+                    break;
+                case 6:
+                    game.SetActiveCharacter(30);
+                    break;
+                case 7:
+                    game.SetActiveCharacter(31);
+                    break;
+            }
             game.TriggerGameLoad();
         }
 

@@ -468,7 +468,7 @@ namespace racman
             api.WriteMemory(pid, sly3.addr.currentCheckpoint + 0x4, ConvertIntToBytes(checkpointId));
         }
 
-        private void SetActiveCharacter(int characterId)
+        public void SetActiveCharacter(int characterId)
         {
             api.WriteMemory(pid, sly3.addr.currentCharacter, ConvertIntToBytes(characterId));
         }
@@ -830,10 +830,10 @@ namespace racman
                 case " [TAG] Connor Cooper": LoadJobHelper(4494, 4516, 4, "Y$KFm_gauntlet"); break;
                 case "Stand Your Ground": LoadJobHelper(4520, 1848, 134, "Y$KFm_vault"); break;
                 case " [SYG] Checkpoint #1": LoadJobHelper(4520, 4531, 4, "Y$KFm_vault"); break;
-                case " [SYG] Checkpoint #2": LoadJobHelper(4520, 4534, 4, "Y$KFm_vault"); break;
-                case " [SYG] Place the treasures": LoadJobHelper(4520, 4538, 4, "Y$KFm_vault"); break;
+                case " [SYG] Checkpoint #2": LoadJobHelper(4520, 4534, 134, "Y$KFm_vault"); break;
+                case " [SYG] Place the treasures": LoadJobHelper(4520, 4538, 134, "Y$KFm_vault"); break;
                 case "Final Legacy": LoadJobHelper(4558, 1849, 134, "Y$KFm_boss"); break;
-                case " [FL] Carmelita section": LoadJobHelper(4558, 2041, 4, "Y$KFm_boss"); break;
+                case " [FL] Carmelita section": LoadJobHelper(4558, 2041, 134, "Y$KFm_boss"); break;
                 case "Sly Tutorial #1": LoadJobHelper(4590, 4592, 134, "Y$KFi_trainer"); break;
                 case "Sly Tutorial #2": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
                 case "Sly Tutorial #3": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
@@ -852,7 +852,7 @@ namespace racman
             // TODO: DAG logic
 
             SetJobState(jobId, checkpointId);
-            TriggerGameLoad((uint)loadMode);
+            TriggerGameLoad((uint)134);
             return;
         }
 
