@@ -13,10 +13,16 @@ startup
     settings.Add("EPISODE_4", false, "Episode 4");
     settings.Add("EPISODE_5", false, "Episode 5");
     settings.Add("EPISODE_6", false, "Episode 6");
-    settings.Add("GAUNTLET", false, "Ultimate Gauntlet");
+    settings.Add("AIRTIME", false, "Air Time");
     settings.Add("OCTAVIO", false, "Octavio's Last Stand");
     settings.Add("ROCKRUN", false, "Rock Run");
+    settings.Add("PRESSURE", false, "Pressure Brawl");
     settings.Add("CARMELITA", false, "Carmelita Climb");
+    settings.Add("GOINGOUT", false, "Going Out On A Wind");
+    settings.Add("AIRCHINA", false, "Big Air in China");
+    settings.Add("BEAST", false, "Beauty versus the Beast");
+    settings.Add("GAUNTLET", false, "Ultimate Gauntlet");
+    settings.Add("DRM", false, "Battle Against Time");
 }
 
 init
@@ -31,6 +37,11 @@ init
     vars.splitPendingTime = DateTime.Now;
     vars.kaineStarted = false;
     vars.hollandStarted = false;
+
+    vars.airTimeChanged = false;
+    vars.currentAirTimeSection = 0;
+    vars.totalAirTime = 0.0f;
+    vars.currentAirTime = 0.0f;
 
     vars.getAJobDone = false;
     vars.frameTeamBelgiumDone = false;
@@ -51,6 +62,8 @@ init
     current.chinaStarted = vars.reader.ReadUInt32();
     current.pirateStarted = vars.reader.ReadUInt32();
     current.mtcTimerValue = vars.reader.ReadSingle();
+    current.characterId = vars.reader.ReadUInt32();
+    current.pauseLocked = vars.reader.ReadUInt32();
 }
 
 update
@@ -70,7 +83,28 @@ update
     current.chinaStarted = vars.reader.ReadUInt32();
     current.pirateStarted = vars.reader.ReadUInt32();
     current.mtcTimerValue = vars.reader.ReadSingle();
+    current.characterId = vars.reader.ReadUInt32();
+    current.pauseLocked = vars.reader.ReadUInt32();
 
+    if (settings["AIRTIME"])
+    {
+        if (current.currentCheckpoint != 2215)
+        {
+            vars.currentAirTime = Math.Floor(100*45*(1-old.mtcTimerValue))/100;   
+        }
+        if (current.currentJob == 2199 && current.mtcTimerValue > old.mtcTimerValue && vars.currentAirTimeSection < 5)
+        {
+            vars.totalAirTime += vars.currentAirTime;
+            vars.airTimeChanged = true;
+            vars.currentAirTimeSection += 1;
+            vars.currentAirTime = 0.0f;
+        }
+        else if (current.currentCheckpoint == 2215 && old.currentCheckpoint != 2215)
+        {
+            vars.totalAirTime = 6*Math.Floor(100*45*(1-current.mtcTimerValue))/100;
+            vars.currentAirTime = 0.0f;
+        }
+    }
 }
 
 start
@@ -109,13 +143,49 @@ start
     { 
         return true; 
     }
+    else if (settings["OCTAVIO"] && current.currentCheckpoint == 2528 && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
+    else if (settings["ROCKRUN"] && current.currentCheckpoint == 2606 && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
+    else if (settings["CARMELITA"] && current.currentCheckpoint == 2934 && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
+    else if (settings["PRESSURE"] && current.currentCheckpoint == 2779 && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
+    else if (settings["GOINGOUT"] && current.currentCheckpoint == 3325 && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
+    else if (settings["AIRCHINA"] && current.currentCheckpoint == 3466 && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
+    else if (settings["BEAST"] && current.currentCheckpoint == 4369 && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
+    else if (settings["DRM"] && current.currentCheckpoint == 4564 && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
+    else if (settings["AIRTIME"] && current.currentCheckpoint == 2202 && current.mtcTimerValue < 1.0f && old.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
 
     return false;
 }
 
 isLoading
 {
-    if (settings["GAUNTLET"]) 
+    if (settings["GAUNTLET"] || settings["OCTAVIO"] || settings["ROCKRUN"] || settings["CARMELITA"] || settings["PRESSURE"] || settings["GOINGOUT"] || settings["AIRCHINA"] || settings["BEAST"] || settings["DRM"] || settings["AIRTIME"]) 
     { 
         return true; 
     }
@@ -125,9 +195,57 @@ isLoading
 
 gameTime
 {
-    if (settings["GAUNTLET"] && current.mtcTimerValue < old.mtcTimerValue)
+    if (settings["GAUNTLET"] && current.currentJob == 4494 && current.mtcTimerValue < old.mtcTimerValue)
     {
         return TimeSpan.FromSeconds(Math.Floor(100*15*60*(1-current.mtcTimerValue))/100);
+    }
+    else if (settings["OCTAVIO"] && current.currentJob == 2448 && current.mtcTimerValue < old.mtcTimerValue)
+    {
+        return TimeSpan.FromSeconds(Math.Floor(100*4.5*60*(1-current.mtcTimerValue))/100);
+    }
+    else if (settings["ROCKRUN"] && current.currentJob == 2605 && current.mtcTimerValue < old.mtcTimerValue)
+    {
+        return TimeSpan.FromSeconds(Math.Floor(100*2*60*(1-current.mtcTimerValue))/100);
+    }
+    else if (settings["CARMELITA"] && current.currentJob == 2867 && current.mtcTimerValue < old.mtcTimerValue)
+    {
+        return TimeSpan.FromSeconds(Math.Floor(100*45*(1-current.mtcTimerValue))/100);
+    }
+    else if (settings["PRESSURE"] && current.currentJob == 2756 && current.mtcTimerValue < old.mtcTimerValue)
+    {
+        return TimeSpan.FromSeconds(Math.Floor(100*60*3*(1-current.mtcTimerValue))/100);
+    }
+    else if (settings["GOINGOUT"] && current.currentJob == 3281 && current.mtcTimerValue < old.mtcTimerValue)
+    {
+        return TimeSpan.FromSeconds(Math.Floor(100*210*(1-current.mtcTimerValue))/100);
+    }
+    else if (settings["AIRCHINA"] && current.currentJob == 3464 && current.mtcTimerValue < old.mtcTimerValue)
+    {
+        return TimeSpan.FromSeconds(Math.Floor(100*120*(1-current.mtcTimerValue))/100);
+    }
+    else if (settings["BEAST"] && current.currentJob == 4342 && current.mtcTimerValue < old.mtcTimerValue)
+    {
+        return TimeSpan.FromSeconds(Math.Floor(100*100*(1-current.mtcTimerValue))/100);
+    }
+    else if (settings["DRM"] && current.currentJob == 4558 && current.mtcTimerValue < old.mtcTimerValue)
+    {
+        return TimeSpan.FromSeconds(Math.Floor(100*180*(1-current.mtcTimerValue))/100);
+    }
+    else if (settings["AIRTIME"] && current.currentJob == 2199)
+    {
+        if (current.currentCheckpoint == 2215 && old.currentCheckpoint != 2215)
+        {
+            if (old.currentCheckpoint != 2215)
+            {
+                vars.airTimeChanged = true;
+            }
+            return TimeSpan.FromSeconds(Math.Floor(100*45*6*(1-current.mtcTimerValue))/100);
+        }
+        else if (current.currentCheckpoint < 2215)
+        {
+            return TimeSpan.FromSeconds(vars.totalAirTime+vars.currentAirTime);
+        }
+        
     }
 }
 
@@ -137,6 +255,10 @@ onReset
     vars.splitPendingTime = DateTime.Now;
     vars.kaineStarted = false;
     vars.hollandStarted = false;
+    vars.airTimeChanged = false;
+    vars.totalAirTime = 0.0f;
+    vars.currentAirTime = 0.0f;
+    vars.currentAirTimeSection = 0;
 }
 
 split
@@ -164,6 +286,68 @@ split
         if (current.currentCheckpoint == 4516 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
         if (current.currentCheckpoint == 4519 && old.currentCheckpoint != current.currentCheckpoint) {return true;}
     }
+
+    if (settings["OCTAVIO"])
+    {
+        if (current.currentCheckpoint == 2531 && old.currentCheckpoint != 2531) { return true; }
+        if (current.currentCheckpoint == 2531 && old.cameraFov == 1.1f && current.cameraFov == 0.48f) { return true; }
+        if (current.currentCheckpoint == 1820 && old.currentCheckpoint != 1820) { return true; }
+    }
+
+    if (settings["ROCKRUN"])
+    {
+        if (current.currentCheckpoint == 2608 && old.currentCheckpoint != 2608) { return true; }
+        if (current.currentCheckpoint == 2612 && old.currentCheckpoint != 2612) { return true; }
+        if (current.currentCheckpoint == 2615 && old.currentCheckpoint != 2615) { return true; }
+        if (current.currentCheckpoint == 2617 && old.currentCheckpoint != 2617) { return true; }
+        if (current.currentCheckpoint == 2032 && old.currentCheckpoint != 2032) { return true; }
+    }
+
+    if (settings["CARMELITA"])
+    {
+        if (current.currentCheckpoint == 2944 && old.currentCheckpoint != 2944) { return true; }
+        if (current.currentCheckpoint == 2942 && old.currentCheckpoint != 2942) { return true; }
+    }
+
+    if (settings["PRESSURE"])
+    {
+        if (current.currentCheckpoint == 2781 && current.characterId != old.characterId) { return true; }
+        if (current.currentCheckpoint == 2788 && old.currentCheckpoint != 2788) { return true; }
+    }
+
+    if (settings["GOINGOUT"])
+    {
+        if (current.currentCheckpoint == 3325 && current.pauseLocked == 1 && old.pauseLocked == 0) { return true; }
+        if (current.currentCheckpoint == 1822 && old.currentCheckpoint != 1822) { return true; }
+    }
+
+    if (settings["AIRCHINA"])
+    {
+        if (current.currentCheckpoint == 3467 && old.currentCheckpoint != 3467) { return true; }
+        if (current.currentCheckpoint == 3468 && old.currentCheckpoint != 3468) { return true; }
+        if (current.currentCheckpoint == 3470 && old.currentCheckpoint != 3470) { return true; }
+    }
+
+    if (settings["BEAST"])
+    {
+        if (current.currentCheckpoint == 4369 && current.pauseLocked == 1 && old.pauseLocked == 0) { return true; }
+        if (current.currentCheckpoint == 4382 && old.currentCheckpoint != 4382) { return true; }
+    }
+
+    if (settings["DRM"])
+    {
+        if (current.currentCheckpoint == 2041 && old.currentCheckpoint != 2041) { return true; }
+    }
+
+    if (settings["AIRTIME"])
+    {
+        if (vars.airTimeChanged == true)
+        {
+            vars.airTimeChanged = false;
+            return true;
+        }
+    }
+
 
     if (settings["ANY"])
     {

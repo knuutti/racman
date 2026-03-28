@@ -19,9 +19,10 @@ namespace racman
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly3 game;
+        public string gameNameId;
         public AutosplitterHelper autosplitter;
 
-        public SLY3Speedrun(sly3 game)
+        public SLY3Speedrun(sly3 game, string gameNameId = "NPEA00343")
         {
             this.game = game;
             InitializeComponent();
@@ -29,16 +30,17 @@ namespace racman
             ApplySavedPreferences();
 
             game.SetupInputDisplayMemorySubs();
-            game.speedrunMode = true;
 
             game.CheckRunFileConfig();
 
             if (func.api is Ratchetron r)
             {
-                r.setDisconnectCallback(() => { DisconnectGame(); });
+                r.setDisconnectCallback(() => { DisconnectGame(false); });
 
                 r.setReconnectCallback(() => { ReconnectGame(); });
             }
+
+            this.gameNameId = gameNameId;
         }
 
         private void ApplySavedPreferences()
@@ -388,18 +390,23 @@ namespace racman
             }
         }
 
-        private void DisconnectGame()
+        private void DisconnectGame(bool closeInputDisplay = true)
         {
             if (game.api is Ratchetron ratchetron)
             {
+                if (autosplitter != null)
+                {
+                    autosplitter.Stop();
+                    autosplitter = null;
+                }
                 ratchetron.ReleaseAllSubs();
             }
-            CloseAdditionalWindows();
+            CloseAdditionalWindows(closeInputDisplay);
         }
 
-        private void CloseAdditionalWindows()
+        private void CloseAdditionalWindows(bool closeInputDisplay = true)
         {
-            if (InputDisplay != null && !InputDisplay.IsDisposed)
+            if (closeInputDisplay && InputDisplay != null && !InputDisplay.IsDisposed)
             {
                 InputDisplay.Close();
             }
@@ -422,6 +429,11 @@ namespace racman
 
                 try
                 {
+                    if (game.api.getGameTitleID() != this.gameNameId)
+                    {
+                        Console.WriteLine("Different game detected.");
+                        return;
+                    }
                     pid = game.api.getCurrentPID();
                     if (pid != 0)
                     {
@@ -453,7 +465,7 @@ namespace racman
             Thread.Sleep(2000);
 
             // Re-establish memory subscriptions
-            game.SetupInputDisplayMemorySubs();
+            game.SetupInputDisplayMemorySubs(false);
 
             // Restart input timer if needed
             if (InputDisplay != null && !InputDisplay.IsDisposed)
@@ -465,7 +477,6 @@ namespace racman
             if (autosplitterCheckbox.Checked)
             {
                 Console.WriteLine("Sly 3: Restarting autosplitter...");
-                autosplitter.Stop();
                 autosplitter = new AutosplitterHelper();
                 autosplitter.StartAutosplitterForGame(this.game);
             }

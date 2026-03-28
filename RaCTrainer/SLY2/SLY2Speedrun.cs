@@ -20,11 +20,13 @@ namespace racman
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly2 game;
+        public string gameNameId;
         public AutosplitterHelper autosplitter;
 
-        public SLY2Speedrun(sly2 game)
+        public SLY2Speedrun(sly2 game, string gameNameId = "NPHA80175")
         {
             this.game = game;
+            this.gameNameId = gameNameId;
             InitializeComponent();
 
             ApplySavedPreferences();
@@ -36,7 +38,7 @@ namespace racman
             {
                 r.setDisconnectCallback(() =>
                 {
-                    DisconnectGame();
+                    DisconnectGame(false);
                 });
 
                 r.setReconnectCallback(() =>
@@ -355,18 +357,23 @@ namespace racman
             }
         }
 
-        private void DisconnectGame()
+        private void DisconnectGame(bool closeInputDisplay = true)
         {
             if (game.api is Ratchetron ratchetron)
             {
+                if (autosplitter != null)
+                {
+                    autosplitter.Stop();
+                    autosplitter = null;
+                }
                 ratchetron.ReleaseAllSubs();
             }
-            CloseAdditionalWindows();
+            CloseAdditionalWindows(closeInputDisplay);
         }
 
-        private void CloseAdditionalWindows()
+        private void CloseAdditionalWindows(bool closeInputDisplay = true)
         {
-            if (InputDisplay != null && !InputDisplay.IsDisposed)
+            if (closeInputDisplay && InputDisplay != null && !InputDisplay.IsDisposed)
             {
                 InputDisplay.Close();
             }
@@ -389,6 +396,12 @@ namespace racman
 
                 try
                 {
+                    if (game.api.getGameTitleID() != this.gameNameId)
+                    {
+                        Console.WriteLine("Different game loaded.");
+                        return;
+                    }
+                    Console.WriteLine(game.api.getGameTitleID());
                     pid = game.api.getCurrentPID();
                     if (pid != 0)
                     {
@@ -420,7 +433,6 @@ namespace racman
             Thread.Sleep(2000);
 
             // Re-establish memory subscriptions
-            game.SetupInputDisplayMemorySubs();
 
             // Restart input timer if needed
             if (InputDisplay != null && !InputDisplay.IsDisposed)
@@ -431,14 +443,16 @@ namespace racman
             // Restart autosplitter if it was running
             if (autosplitterCheckbox.Checked)
             {
-                Console.WriteLine("Sly 2: Restarting autosplitter...");
-                autosplitter.Stop();
+                Console.WriteLine("Restarting autosplitter...");
                 autosplitter = new AutosplitterHelper();
                 autosplitter.StartAutosplitterForGame(this.game);
+                Console.WriteLine("Autosplitter restarted successfully.");
             }
 
+            game.SetupInputDisplayMemorySubs(false);
+
             game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Speedrun Mode)");
-            Console.WriteLine("Sly 2: Reconnection complete");
+            Console.WriteLine("Game reconnected.");
         }
 
         private void refreshMemorySubsPS3ToolStripMenuItem_Click(object sender, EventArgs e)
