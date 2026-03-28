@@ -164,27 +164,31 @@ namespace racman
                     sly3.ShowDialog();
                 }
             }
-            else if (game == "NPHA80175") // Sly 2 (KOR, Digital)
+            else if (game == "NPUA80663")
+            {
+                Hide();
+                func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Speedrun Mode)");
+                Sly1Speedrun sly1 = new Sly1Speedrun(new sly1(func.api));
+                gameName = "SLY 1 (NTSC, PSN)";
+                sly1.ShowDialog();
+            }
+            else if (sly2.SupportsGameId(game))
             {
                 if (speedrunMode)
                 {
                     Hide();
                     func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Speedrun Mode)");
-                    SLY2Speedrun sly2 = new SLY2Speedrun(new sly2(func.api));
-                    gameName = "SLY 2 (KOR, PSN)";
-                    sly2.ShowDialog();
+                    SLY2Speedrun sly2Speedrun = new SLY2Speedrun(new sly2(func.api, game), game);
+                    gameName = sly2.GetDisplayName(game);
+                    sly2Speedrun.ShowDialog();
                 }
                 else
                 {
-                    var dialogResult = MessageBox.Show("There is no Practice Mode yet for Sly 2, but do you want to enter Speedrun Mode?", "No Sly 2 Practice Mode", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes)
-                    {
-                        Hide();
-                        func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Speedrun Mode)");
-                        SLY2Speedrun sly2 = new SLY2Speedrun(new sly2(func.api));
-                        gameName = "SLY 2 (KOR, PSN)";
-                        sly2.ShowDialog();
-                    }
+                    Hide();
+                    func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Practice Mode)");
+                    Sly2Practice sly2Practice = new Sly2Practice(new sly2(func.api, game), game);
+                    gameName = sly2.GetDisplayName(game);
+                    sly2Practice.ShowDialog();
                 }
             }
             else

@@ -49,7 +49,7 @@ init
     vars.cooperHangarDefenceDone = 0;
     vars.hiddenFlightRosterDone = false;
 
-    current.isLoading = vars.reader.ReadByte();
+    current.isLoading = vars.reader.ReadUInt32();
     current.currentJob = vars.reader.ReadUInt32();
     current.currentCheckpoint = vars.reader.ReadUInt32();
     current.currentMap = vars.reader.ReadUInt32();
@@ -70,7 +70,7 @@ update
 {
     vars.reader.BaseStream.Position = 0;
 
-    current.isLoading = vars.reader.ReadByte();
+    current.isLoading = vars.reader.ReadUInt32();
     current.currentJob = vars.reader.ReadUInt32();
     current.currentCheckpoint = vars.reader.ReadUInt32();
     current.currentMap = vars.reader.ReadUInt32();
@@ -748,29 +748,5 @@ split
 
 reset
 {
-    if (settings["EPISODE_1"] && current.veniceStarted == 0 && current.currentMap == 3)
-    {
-        return true;
-    }
-    
-    if (settings["EPISODE_2"] && current.outbackStarted == 0 && current.currentMap == 8 && current.isLoading == 3) 
-    { 
-        return true; 
-    }
-
-    if (settings["EPISODE_4"] && current.chinaStarted == 1 && current.currentMap == 23 && current.isLoading == 3) 
-    { 
-        return true; 
-    }
-
-    if (settings["EPISODE_5"] && current.pirateStarted == 1 && current.currentMap == 31 && current.isLoading == 3) 
-    { 
-        return true; 
-    }
-
-    if (settings["GAUNTLET"] && current.currentCheckpoint == 4495 && current.mtcTimerValue == 1.0f) 
-    { 
-        return true; 
-    }
 
 }

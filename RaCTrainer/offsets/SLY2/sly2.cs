@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,6 +13,179 @@ namespace racman
 {
     public class Sly2Addresses : IAddresses
     {
+        private class AddressValues
+        {
+            public uint inputOffset;
+            public uint analogOffsetLeft;
+            public uint analogOffsetRight;
+
+            public uint slyCharacterPtr;
+            public uint activeCharacterPtr;
+
+            public uint transformOffset;
+            public uint coordsOffsetX;
+            public uint coordsOffsetY;
+            public uint coordsOffsetZ;
+
+            public uint coinCount;
+            public uint currentCharacter;
+            public uint cameraFov;
+            public uint cameraParameter;
+            public uint loadingState;
+            public uint currentJobId;
+            public uint currentCheckpointId;
+            public uint currentMapId;
+            public uint gameSpeed;
+            public uint pauseMenuState;
+
+            public uint dialogueState;
+            public uint dialogueFrameCounter;
+            public uint fmvState;
+
+            public uint mapAOB;
+            public uint spawnLocation;
+            public uint loadType;
+            public uint loadTrigger;
+
+            public uint gadgetUnlocks;
+            public uint gadgetBindsSly;
+            public uint gadgetBindsBentley;
+            public uint gadgetBindsMurray;
+
+            public uint parisStarted;
+            public uint templeStarted;
+            public uint prisonStarted;
+            public uint castleStarted;
+            public uint trainStarted;
+            public uint sawmillStarted;
+            public uint blimpStarted;
+            public uint parisCinemaState;
+            public uint rajanHealth;
+
+            public AddressValues Clone()
+            {
+                return (AddressValues)MemberwiseClone();
+            }
+        }
+
+        public const string GameIdKOR = "NPHA80175";
+        public const string GameIdPAL = "NPEA00342";
+        public const string DefaultGameId = GameIdKOR;
+
+        private static readonly Dictionary<string, AddressValues> gameVersions = CreateGameVersions();
+
+        private readonly string gameId;
+        private readonly AddressValues values;
+
+        public string GameId => gameId;
+
+        public Sly2Addresses(string gameId = DefaultGameId)
+        {
+            string normalizedGameId = NormalizeGameId(gameId);
+
+            if (!gameVersions.TryGetValue(normalizedGameId, out values))
+            {
+                normalizedGameId = DefaultGameId;
+                values = gameVersions[DefaultGameId];
+            }
+
+            this.gameId = normalizedGameId;
+        }
+
+        public static bool IsSupportedGameId(string gameId)
+        {
+            return gameVersions.ContainsKey(NormalizeGameId(gameId));
+        }
+
+        public static string GetDisplayName(string gameId)
+        {
+            switch (NormalizeGameId(gameId))
+            {
+                case GameIdKOR:
+                    return "SLY 2 (KOR, PSN)";
+                case GameIdPAL:
+                    return "SLY 2 (EU, PSN)";
+                default:
+                    return "SLY 2";
+            }
+        }
+
+        private static string NormalizeGameId(string gameId)
+        {
+            return string.IsNullOrWhiteSpace(gameId) ? DefaultGameId : gameId.Trim().ToUpperInvariant();
+        }
+
+        private static Dictionary<string, AddressValues> CreateGameVersions()
+        {
+            var versions = new Dictionary<string, AddressValues>(StringComparer.OrdinalIgnoreCase);
+
+            var kor = new AddressValues
+            {
+                inputOffset = 0x500F76,
+                analogOffsetLeft = 0x500EFC,
+                analogOffsetRight = 0x500F30,
+
+                slyCharacterPtr = 0x502100,
+                activeCharacterPtr = 0x49E290,
+
+                transformOffset = 0x44,
+                coordsOffsetX = 0x130,
+                coordsOffsetY = 0x134,
+                coordsOffsetZ = 0x138,
+
+                coinCount = 0x7A83B0,
+                currentCharacter = 0x7A830C,
+                cameraFov = 0x49E054,
+                cameraParameter = 0x49E07C,
+                loadingState = 0x7A7200,
+                currentJobId = 0x4FEBF4,
+                currentCheckpointId = 0x4FEBF8,
+                currentMapId = 0x7B4CE0,
+                gameSpeed = 0x49DF80,
+                pauseMenuState = 0x4FFE84,
+
+                dialogueState = 0x39E4BF70,
+                dialogueFrameCounter = 0x39E4BF54,
+                fmvState = 0x9066FC,
+
+                mapAOB = 0x7B4C58,
+                spawnLocation = 0x7B4C98,
+                loadType = 0x7B4C54,
+                loadTrigger = 0x7B4C50,
+
+                gadgetUnlocks = 0x7A83A8,
+                gadgetBindsSly = 0x7A836C,
+                gadgetBindsBentley = 0x7A8384,
+                gadgetBindsMurray = 0x7A839C,
+
+                parisStarted = 0x7A9D84,
+                templeStarted = 0x7AA9F0,
+                prisonStarted = 0x7AB38C,
+                castleStarted = 0x7ABBE8,
+                trainStarted = 0x7ABF28,
+                sawmillStarted = 0x7AC818,
+                blimpStarted = 0x7AD150,
+                parisCinemaState = 0x7A9AC0,
+                rajanHealth = 0x35C2AE2C,
+            };
+
+            versions[GameIdKOR] = kor;
+
+            // PAL addresses
+            var pal = kor.Clone();
+            pal.coinCount = 0x7A8330;
+            pal.loadTrigger = 0x7B4BD0;
+            pal.mapAOB = 0x7B4BD8;
+            pal.spawnLocation = 0x7B4C68;
+            pal.inputOffset = 0x500EF6;
+            pal.analogOffsetLeft = 0x500E7C;
+            pal.analogOffsetRight = 0x500EB0;
+
+            versions[GameIdPAL] = pal;
+
+            return versions;
+        }
+
         // Unused RaC addresses
         public uint boltCount => 0x0;
         public uint currentPlanet => 0x0;
@@ -21,59 +195,59 @@ namespace racman
         public uint playerCoords => 0x0;
 
         // Inputs
-        public uint inputOffset => 0x500F76;
-        public uint analogOffsetLeft => 0x500EFC;
-        public uint analogOffsetRight => 0x500F30;
+        public uint inputOffset => values.inputOffset;
+        public uint analogOffsetLeft => values.analogOffsetLeft;
+        public uint analogOffsetRight => values.analogOffsetRight;
 
         // Pointers
-        public uint slyCharacterPtr => 0x502100;
-        public uint activeCharacterPtr => 0x49E290;
+        public uint slyCharacterPtr => values.slyCharacterPtr;
+        public uint activeCharacterPtr => values.activeCharacterPtr;
 
         // Offsets
-        public uint transformOffset => 0x44;
-        public uint coordsOffsetX => 0x130;
-        public uint coordsOffsetY => 0x134;
-        public uint coordsOffsetZ => 0x138;
+        public uint transformOffset => values.transformOffset;
+        public uint coordsOffsetX => values.coordsOffsetX;
+        public uint coordsOffsetY => values.coordsOffsetY;
+        public uint coordsOffsetZ => values.coordsOffsetZ;
 
 
         // Utility
-        public uint coinCount => 0x7A83B0; 
-        public uint currentCharacter => 0x7A830C;
-        public uint cameraFov => 0x49E054;
-        public uint cameraParameter => 0x49E07C;
-        public uint loadingState => 0x7A7203;
-        public uint currentJobId => 0x4FEBF4;
-        public uint currentCheckpointId => 0x4FEBF8;
-        public uint currentMapId => 0x7B4CE0;
-        public uint gameSpeed => 0x49DF80;
-        public uint pauseMenuState => 0x4FFE84;
+        public uint coinCount => values.coinCount;
+        public uint currentCharacter => values.currentCharacter;
+        public uint cameraFov => values.cameraFov;
+        public uint cameraParameter => values.cameraParameter;
+        public uint loadingState => values.loadingState;
+        public uint currentJobId => values.currentJobId;
+        public uint currentCheckpointId => values.currentCheckpointId;
+        public uint currentMapId => values.currentMapId;
+        public uint gameSpeed => values.gameSpeed;
+        public uint pauseMenuState => values.pauseMenuState;
 
         // Cutscene skipping
-        public uint dialogueState => 0x39E4BF70;
-        public uint dialogueFrameCounter => 0x39E4BF54;
-        public uint fmvState => 0x9066FC;
+        public uint dialogueState => values.dialogueState;
+        public uint dialogueFrameCounter => values.dialogueFrameCounter;
+        public uint fmvState => values.fmvState;
 
-        public uint mapAOB => 0x7B4C58;
-        public uint spawnLocation => 0x7B4C98;
-        public uint loadType => 0x7B4C54;
-        public uint loadTrigger => 0x7B4C50; 
+        public uint mapAOB => values.mapAOB;
+        public uint spawnLocation => values.spawnLocation;
+        public uint loadType => values.loadType;
+        public uint loadTrigger => values.loadTrigger;
 
         // Gadgets
-        public uint gadgetUnlocks => 0x7A83A8;
-        public uint gadgetBindsSly => 0x7A836C;
-        public uint gadgetBindsBentley => 0x7A8384;
-        public uint gadgetBindsMurray => 0x7A839C;
+        public uint gadgetUnlocks => values.gadgetUnlocks;
+        public uint gadgetBindsSly => values.gadgetBindsSly;
+        public uint gadgetBindsBentley => values.gadgetBindsBentley;
+        public uint gadgetBindsMurray => values.gadgetBindsMurray;
 
         // Values for autosplitter
-        public uint parisStarted => 0x7A9D84;
-        public uint templeStarted => 0x7AA9F0;
-        public uint prisonStarted => 0x7AB38C;
-        public uint castleStarted => 0x7ABBE8;
-        public uint trainStarted => 0x7ABF28; // 2 = CC not started, 3 = CC started
-        public uint sawmillStarted => 0x7AC818;
-        public uint blimpStarted => 0x7AD150;
-        public uint parisCinemaState => 0x7A9AC0;
-        public uint rajanHealth => 0x35C2AE2C;
+        public uint parisStarted => values.parisStarted;
+        public uint templeStarted => values.templeStarted;
+        public uint prisonStarted => values.prisonStarted;
+        public uint castleStarted => values.castleStarted;
+        public uint trainStarted => values.trainStarted; // 2 = CC not started, 3 = CC started
+        public uint sawmillStarted => values.sawmillStarted;
+        public uint blimpStarted => values.blimpStarted;
+        public uint parisCinemaState => values.parisCinemaState;
+        public uint rajanHealth => values.rajanHealth;
 
         public enum LoadTypes : uint
         {
@@ -88,6 +262,16 @@ namespace racman
     public class sly2 : IGame, IAutosplitterAvailable
     {
         public static Sly2Addresses addr = new Sly2Addresses();
+
+        public static bool SupportsGameId(string gameId)
+        {
+            return Sly2Addresses.IsSupportedGameId(gameId);
+        }
+
+        public static string GetDisplayName(string gameId)
+        {
+            return Sly2Addresses.GetDisplayName(gameId);
+        }
 
         public uint mapIndex;
 
@@ -107,54 +291,56 @@ namespace racman
 
         public MapData[] maps;
 
-        public sly2(IPS3API api) : base(api)
+        public sly2(IPS3API api, string gameNameId = null) : base(api)
         {
+            addr = new Sly2Addresses(string.IsNullOrWhiteSpace(gameNameId) ? api.getGameTitleID() : gameNameId);
+
             this.maps = new MapData[]
             {
-                new MapData("Museum", "Y$KFjb_intro", 0),
+                new MapData("Museum", "Y$KFjb_intro", 148457),
                 new MapData("DVD Menu", "Y$KFdvd_menu", 0),
-                new MapData("Paris Hub", "Y$KFf_nightclub_exterior", 0),
-                new MapData("Wine Cellar", "Y$KFf_nightclub_cellar", 0),
-                new MapData("Disco", "Y$KFf_nightclub_disco", 0),
-                new MapData("Print Room", "Y$KFf_nightclub_heist", 0),
-                new MapData("Theater", "Y$KFf_nightclub_moulinrouge", 0),
-                new MapData("Pump Room", "Y$KFf_nightclub_waterpump", 0),
-                new MapData("Palace Hub", "Y$KFi_palace_ext", 0),
-                new MapData("Hotel", "Y$KFi_palace_int", 0),
-                new MapData("Basement", "Y$KFi_palace_basement", 0),
-                new MapData("Ballroom", "Y$KFi_palace_ballroom", 0),
-                new MapData("Temple Hub", "Y$KFi_temple_ext", 0),
-                new MapData("Temple Interior", "Y$KFi_temple_int", 0),
-                new MapData("Prison Hub", "Y$KFp_prison_ext", 0),
-                new MapData("Jail", "Y$KFp_prison_int", 0),
+                new MapData("Paris Hub", "Y$KFf_nightclub_exterior", 27280),
+                new MapData("Wine Cellar", "Y$KFf_nightclub_cellar", 397),
+                new MapData("Disco", "Y$KFf_nightclub_disco", 401),
+                new MapData("Print Room", "Y$KFf_nightclub_heist", 121308),
+                new MapData("Theater", "Y$KFf_nightclub_moulinrouge", 400),
+                new MapData("Pump Room", "Y$KFf_nightclub_waterpump", 399),
+                new MapData("Palace Hub", "Y$KFi_palace_ext", 105705),
+                new MapData("Hotel", "Y$KFi_palace_int", 105779),
+                new MapData("Basement", "Y$KFi_palace_basement", 105764),
+                new MapData("Ballroom", "Y$KFi_palace_ballroom", 105063),
+                new MapData("Temple Hub", "Y$KFi_temple_ext", 96699),
+                new MapData("Temple Interior", "Y$KFi_temple_int", 398),
+                new MapData("Spice Grinder", "Y$KFi_temple_int", 400),
+                new MapData("Prison Hub", "Y$KFp_prison_ext", 76660),
+                new MapData("Jail", "Y$KFp_prison_int", 76806),
                 new MapData("Prison Vault", "Y$KFp_prison_vault", 0),
-                new MapData("Castle Hub", "Y$KFp_castle_ext", 0),
-                new MapData("Castle Interior", "Y$KFp_castle_int", 0),
-                new MapData("Waterrails", "Y$KFp_castle_waterrails", 0),
-                new MapData("Guardbreak", "Y$KFp_castle_guardbreak", 0),
+                new MapData("Castle Hub", "Y$KFp_castle_ext", 59827),
+                new MapData("Waterrails", "Y$KFp_castle_waterrails", 33438),
+                new MapData("Guardbreak", "Y$KFp_castle_guardbreak", 59836),
                 new MapData("Wolftomb", "Y$KFp_castle_wolftomb", 0),
-                new MapData("Heist", "Y$KFp_castle_heist", 0),
-                new MapData("Ewoktrainer", "Y$KFp_castle_ewoktrainer", 0),
-                new MapData("Ewoktomb", "Y$KFp_castle_ewoktomb", 0),
-                new MapData("Ewokhall", "Y$KFp_castle_ewokhall", 0),
-                new MapData("Ewokwater", "Y$KFp_castle_ewokwater", 0),
-                new MapData("Canada Hub", "Y$KFc_train_ext", 0),
-                new MapData("Cabins", "Y$KFc_train_cabins", 0),
-                new MapData("Train A", "Y$KFc_train_a", 0),
-                new MapData("Train B", "Y$KFc_train_b", 0),
-                new MapData("Train C", "Y$KFc_train_c", 0),
-                new MapData("Sawmill Hub", "Y$KFc_sawmill_ext", 0),
-                new MapData("Mulch", "Y$KFc_sawmill_mulch", 0),
-                new MapData("Burn", "Y$KFc_sawmill_burn", 0),
-                new MapData("Lighthouse", "Y$KFc_sawmill_lighthouse", 0),
-                new MapData("Bearcave", "Y$KFc_sawmill_bearcave", 0),
-                new MapData("Bison's Saw", "Y$KFc_sawmill_boss", 0),
-                new MapData("Blimp Hub", "Y$KFa_blimp_ext", 0),
-                new MapData("Arpeggio's Blimp", "Y$KFa_blimp_int", 0),
-                new MapData("Engine 1", "Y$KFa_blimp_engine_room_murray", 0),
-                new MapData("Engine 2", "Y$KFa_blimp_engine_room_bentley", 0),
-                new MapData("Engine 3", "Y$KFa_blimp_engine_room_jt", 0),
-                new MapData("Clock-La", "Y$KFa_blimp_boss_final", 0),
+                new MapData("Heist", "Y$KFp_castle_heist", 59889),
+                new MapData("Ewoktrainer", "Y$KFp_castle_ewoktrainer", 393),
+                new MapData("Ewoktomb", "Y$KFp_castle_ewoktomb", 393),
+                new MapData("Ewokhall", "Y$KFp_castle_ewokhall", 393),
+                new MapData("Ewokwater", "Y$KFp_castle_ewokwater", 393),
+                new MapData("Canada Hub", "Y$KFc_train_ext", 49327),
+                new MapData("Cabins", "Y$KFc_train_cabins", 49224),
+                new MapData("Train A", "Y$KFc_train_a", 393),
+                new MapData("Train B", "Y$KFc_train_b", 393),
+                new MapData("Train C", "Y$KFc_train_c", 393),
+                new MapData("Sawmill Hub", "Y$KFc_sawmill_ext", 33583),
+                new MapData("Mulch", "Y$KFc_sawmill_mulch", 392),
+                new MapData("Burn", "Y$KFc_sawmill_burn", 393),
+                new MapData("Lighthouse", "Y$KFc_sawmill_lighthouse", 33551),
+                new MapData("Bearcave", "Y$KFc_sawmill_bearcave", 33438),
+                new MapData("Bison's Saw", "Y$KFc_sawmill_boss", 393),
+                new MapData("Blimp Hub", "Y$KFa_blimp_ext", 17451),
+                new MapData("Arpeggio's Blimp", "Y$KFa_blimp_int", 17372),
+                new MapData("Engine 1", "Y$KFa_blimp_engine_room_murray", 393),
+                new MapData("Engine 2", "Y$KFa_blimp_engine_room_bentley", 393),
+                new MapData("Engine 3", "Y$KFa_blimp_engine_room_jt", 393),
+                new MapData("Clock-La", "Y$KFa_blimp_boss_final", 11233),
             };
 
             // For compatibility with base class
@@ -163,7 +349,7 @@ namespace racman
 
         public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
         {
-            (addr.loadingState, 1),
+            (addr.loadingState, 4),
             (addr.currentJobId, 4),
             (addr.currentCheckpointId, 4),
             (addr.currentMapId, 4),
@@ -397,9 +583,18 @@ namespace racman
 
         public void SetHealth(int health)
         {
+            var currentCharacterId = api.ReadMemory(pid, sly2.addr.currentCharacter, 4);
+            uint currentCharacterHealth = 0x7A8360;
+            if (currentCharacterId[3] == 8)
+            {
+                currentCharacterHealth = 0x7A8360;
+            }
+            else if (currentCharacterId[3] == 9)
+            {
+                currentCharacterHealth = 0x7A8390;
+            }
             byte[] healthBytes = ConvertIntToBytes(health);
-            var entityPtrBytes = api.ReadMemory(pid, sly2.addr.activeCharacterPtr, 4);
-            api.WriteMemory(pid, BitConverter.ToUInt32(entityPtrBytes.Reverse().ToArray(), 0) + 0x168, healthBytes);
+            api.WriteMemory(pid, currentCharacterHealth, 4, healthBytes);
         }
 
         public void SetGadgetUnlocks(byte[] gadgetBytes)
@@ -462,15 +657,13 @@ namespace racman
             }
         }
 
-        public void SetSpawnLocation(uint location)
+        public void SetSpawnLocation(int location)
         {
-            api.WriteMemory(pid, sly2.addr.spawnLocation, location);
+            api.WriteMemory(pid, sly2.addr.spawnLocation, ConvertIntToBytes(location));
         }
 
-        public void SetJobState(int jobId, int cpId, int characterId = -1)
+        public void SetJobState(int jobId, int cpId)
         {
-
-            SetActiveCharacter(characterId);
             SetCurrentJob(jobId, cpId);
         }
 
@@ -481,7 +674,7 @@ namespace racman
             api.WriteMemory(pid, sly2.addr.currentCheckpointId + 0x4, ConvertIntToBytes(checkpointId));
         }
 
-        private void SetActiveCharacter(int characterId)
+        public void SetActiveCharacter(int characterId)
         {
             api.WriteMemory(pid, sly2.addr.currentCharacter, ConvertIntToBytes(characterId));
         }
@@ -559,308 +752,337 @@ namespace racman
         {
             switch (jobName)
             {
-                case "The Cooper Vault": LoadJobHelper(1798, 1799, 134, "Y$KFm_ext"); break;
-                case " [TCV] Cave": LoadJobHelper(1798, 1800, 4, "Y$KFm_ext"); break;
-                case " [TCV] Top": LoadJobHelper(1798, 1801, 4, "Y$KFm_ext"); break;
-                case " [TCV] Chase": LoadJobHelper(1798, 1803, 4, "Y$KFm_ext"); break;
-                case " [TCV] End": LoadJobHelper(1798, 1804, 4, "Y$KFm_ext"); break;
-                case "Police HQ": LoadJobHelper(2117, 2118, 134, "Y$KFv_ext"); break;
-                case " [PHQ] Exit the vent": LoadJobHelper(2117, 2123, 4, "Y$KFv_interpol"); break;
-                case " [PHQ] Crawl to the key": LoadJobHelper(2117, 2131, 4, "Y$KFv_interpol"); break;
-                case " [PHQ] Crawl back to Dimitri": LoadJobHelper(2117, 2138, 4, "Y$KFv_interpol"); break;
-                case " [PHQ] Pick the lock": LoadJobHelper(2117, 2144, 4, "Y$KFv_interpol"); break;
-                case " [PHQ] Carmelita chase": LoadJobHelper(2117, 2154, 4, "Y$KFv_ext"); break;
-                case "Octavio Snap": LoadJobHelper(2261, 2268, 134, "Y$KFv_ext"); break;
-                case " [OS] After 1st picture": LoadJobHelper(2261, 2273, 4, "Y$KFv_ext"); break;
-                case " [OS] Taking 2nd picture": LoadJobHelper(2261, 2276, 4, "Y$KFv_ext"); break;
-                case " [OS] After 2nd picture": LoadJobHelper(2261, 2278, 4, "Y$KFv_ext"); break;
-                case " [OS] Taking 3rd picture": LoadJobHelper(2261, 2281, 4, "Y$KFv_ext"); break;
-                case " [OS] After 3rd picture": LoadJobHelper(2261, 2283, 4, "Y$KFv_ext"); break;
-                case " [OS] Taking 4th picture": LoadJobHelper(2261, 2287, 4, "Y$KFv_ext"); break;
-                case " [OS] After 4th picture": LoadJobHelper(2261, 2291, 4, "Y$KFv_ext"); break;
-                case " [OS] Ferris Wheel": LoadJobHelper(2261, 2297, 4, "Y$KFv_ext"); break;
-                case "Into the Depths": LoadJobHelper(2314, 2315, 134, "Y$KFv_ext"); break;
-                case " [ItD] Enter the Opera House": LoadJobHelper(2314, 1811, 4, "Y$KFv_gauntlet"); break;
-                case " [ItD] Canal": LoadJobHelper(2314, 2327, 4, "Y$KFv_gauntlet"); break;
-                case " [ItD] First laser door": LoadJobHelper(2314, 2335, 4, "Y$KFv_gauntlet"); break;
-                case " [ItD] Computer Room": LoadJobHelper(2314, 2351, 4, "Y$KFv_gauntlet"); break;
-                case "Canal Chase": LoadJobHelper(2360, 2362, 134, "Y$KFv_ext"); break;
-                case " [CC] Start of the chase": LoadJobHelper(2360, 1805, 4, "Y$KFv_canal"); break;
-                case "Turf War!": LoadJobHelper(2170, 2172, 134, "Y$KFv_ext"); break;
-                case " [TW] Wave #1": LoadJobHelper(2170, 2182, 4, "Y$KFv_ext"); break;
-                case " [TW] Wave #2": LoadJobHelper(2170, 2186, 4, "Y$KFv_ext"); break;
-                case " [TW] Wave #3": LoadJobHelper(2170, 2190, 4, "Y$KFv_ext"); break;
-                case " [TW] Wave #4": LoadJobHelper(2170, 2194, 4, "Y$KFv_ext"); break;
-                case "Tar Ball": LoadJobHelper(2199, 2202, 134, "Y$KFv_ext"); break;
-                case "Run 'n Bomb": LoadJobHelper(2218, 2223, 134, "Y$KFv_ext"); break;
-                case " [RnB] After bomb 1": LoadJobHelper(2218, 2229, 4, "Y$KFv_ext"); break;
-                case " [RnB] Deliever bomb 2": LoadJobHelper(2218, 2232, 4, "Y$KFv_ext"); break;
-                case " [RnB] Climb the tower": LoadJobHelper(2218, 2237, 4, "Y$KFv_ext"); break;
-                case " [RnB] Run to the shop": LoadJobHelper(2218, 2241, 4, "Y$KFv_ext"); break;
-                case " [RnB] Chase Octavio": LoadJobHelper(2218, 2245, 4, "Y$KFv_ext"); break;
-                case "Guard Duty": LoadJobHelper(2382, 2383, 134, "Y$KFv_ext"); break;
-                case " [GD] Enter Coffee House #1": LoadJobHelper(2382, 2391, 4, "Y$KFv_apt"); break;
-                case " [GD] Run to Coffee House #2": LoadJobHelper(2382, 2031, 4, "Y$KFv_ext"); break;
-                case " [GD] Enter Coffee House #2": LoadJobHelper(2382, 2404, 4, "Y$KFv_apt"); break;
-                case " [GD] Run to Coffee House #3": LoadJobHelper(2382, 2411, 4, "Y$KFv_ext"); break;
-                case " [GD] Enter Coffee House #3": LoadJobHelper(2382, 2422, 4, "Y$KFv_apt"); break;
-                case " [GD] Escape the guards": LoadJobHelper(2382, 2429, 4, "Y$KFv_ext"); break;
-                case "OP: Tar Be Gone!": LoadJobHelper(2448, 2453, 134, "Y$KFv_ext"); break;
-                case " [TBG] Enter the Opera House": LoadJobHelper(2448, 2459, 4, "Y$KFv_gauntlet"); break;
-                case " [TBG] Tar Pump room": LoadJobHelper(2448, 2471, 4, "Y$KFv_gauntlet"); break;
-                case " [TBG] Opera Minigame": LoadJobHelper(2448, 2486, 4, "Y$KFv_ext"); break;
-                case " [TBG] Canal Chase": LoadJobHelper(2448, 2505, 4, "Y$KFv_canal"); break;
-                case " [TBG] Boss fight": LoadJobHelper(2448, 2516, 4, "Y$KFv_ext"); break;
-                case "Search for the Guru": LoadJobHelper(2605, 2606, 134, "Y$KFo_ext"); break;
-                case " [SftG] Cave entrance": LoadJobHelper(2605, 2610, 4, "Y$KFo_ext"); break;
-                case " [SftG] Guru's home": LoadJobHelper(2605, 2615, 4, "Y$KFo_ext"); break;
-                case "Spelunking": LoadJobHelper(2623, 2624, 134, "Y$KFo_ext"); break;
-                case " [S] Enter the cave": LoadJobHelper(2623, 2629, 4, "Y$KFo_cave_murray"); break;
-                case " [S] First piston": LoadJobHelper(2623, 2632, 4, "Y$KFo_cave_murray"); break;
-                case " [S] Second pistons": LoadJobHelper(2623, 2636, 4, "Y$KFo_cave_murray"); break;
-                case " [S] Drills": LoadJobHelper(2623, 2640, 4, "Y$KFo_cave_murray"); break;
-                case " [S] Find the Guru": LoadJobHelper(2623, 2648, 4, "Y$KFo_ext"); break;
-                case "Dark Caves": LoadJobHelper(2829, 2833, 134, "Y$KFo_ext"); break;
-                case " [DC] Enter cave #1": LoadJobHelper(2829, 2839, 4, "Y$KFo_cave_a"); break;
-                case " [DC] Escape cave #1": LoadJobHelper(2829, 2846, 4, "Y$KFo_cave_a"); break;
-                case " [DC] Find cave #2 entrance": LoadJobHelper(2829, 2850, 4, "Y$KFo_ext"); break;
-                case " [DC] Enter cave #2": LoadJobHelper(2829, 2852, 4, "Y$KFo_cave_b"); break;
-                case " [DC] Escape cave #2": LoadJobHelper(2829, 2859, 4, "Y$KFo_cave_b"); break;
-                case "Big Truck": LoadJobHelper(2722, 2731, 134, "Y$KFo_ext"); break;
-                case " [BT] Enter Ayer's Rock": LoadJobHelper(2722, 2734, 4, "Y$KFo_quarry"); break;
-                case " [BT] Phase 1": LoadJobHelper(2722, 2737, 4, "Y$KFo_quarry"); break;
-                case " [BT] Climb the tower": LoadJobHelper(2722, 2742, 4, "Y$KFo_quarry"); break;
-                case " [BT] Phase 2": LoadJobHelper(2722, 2742, 4, "Y$KFo_quarry"); break;
-                case " [BT] Release the scorpions": LoadJobHelper(2722, 2033, 4, "Y$KFo_quarry"); break;
-                case "Unleash the Guru": LoadJobHelper(2690, 1807, 134, "Y$KFo_ext"); break;
-                case " [UtG] Find the drills": LoadJobHelper(2690, 2698, 4, "Y$KFo_ext"); break;
-                case " [UtG] Drills": LoadJobHelper(2690, 2704, 4, "Y$KFo_ext"); break;
-                case " [UtG] Generator": LoadJobHelper(2690, 2715, 4, "Y$KFo_ext"); break;
-                case "The Claw": LoadJobHelper(2650, 2654, 134, "Y$KFo_ext"); break;
-                case " [TC] Phase 1": LoadJobHelper(2650, 2656, 4, "Y$KFo_arena"); break;
-                case " [TC] Phase 2": LoadJobHelper(2650, 2668, 4, "Y$KFo_arena"); break;
-                case " [TC] Phase 3": LoadJobHelper(2650, 2678, 4, "Y$KFo_arena"); break;
-                case "Lemon Rage": LoadJobHelper(2756, 2757, 134, "Y$KFo_ext"); break;
-                case " [LR] Enter the bar": LoadJobHelper(2756, 2759, 4, "Y$KFo_bar"); break;
-                case " [LR] Drinking contest": LoadJobHelper(2756, 1806, 4, "Y$KFo_bar"); break;
-                case " [LR] Bar fight": LoadJobHelper(2756, 2779, 4, "Y$KFo_bar"); break;
-                case " [LR] Boss fight": LoadJobHelper(2756, 2788, 4, "Y$KFo_bar"); break;
-                case "Hungry Croc": LoadJobHelper(2804, 2810, 134, "Y$KFo_ext"); break;
-                case " [HC] Feed the Croc": LoadJobHelper(2804, 2814, 4, "Y$KFo_ext"); break;
-                case " [HC] Flashlight guard": LoadJobHelper(2804, 2817, 4, "Y$KFo_ext"); break;
-                case "OP: Moon Crash": LoadJobHelper(2867, 2869, 134, "Y$KFo_ext"); break;
-                case " [MC] Sleep darts": LoadJobHelper(2867, 2891, 4, "Y$KFo_ext"); break;
-                case " [MC] Truck": LoadJobHelper(2867, 2925, 4, "Y$KFo_quarry"); break;
-                case " [MC] Climb": LoadJobHelper(2867, 2934, 4, "Y$KFo_quarry"); break;
-                case "Hidden Flight Roster": LoadJobHelper(3007, 3009, 134, "Y$KFh_hotel"); break;
-                case " [HFR] Exit the hotel": LoadJobHelper(3007, 1818, 4, "Y$KFh_hotel"); break;
-                case " [HFR] Find the castle": LoadJobHelper(3007, 1818, 4, "Y$KFh_ext"); break;
-                case " [HFR] Castle Climb": LoadJobHelper(3007, 3022, 4, "Y$KFh_ext"); break;
-                case " [HFR] Reach the hangar": LoadJobHelper(3007, 3031, 4, "Y$KFh_ext"); break;
-                case " [HFR] Hangar": LoadJobHelper(3007, 3034, 4, "Y$KFh_hangar_b"); break;
-                case "Frame Team Belgium": LoadJobHelper(3049, 3051, 134, "Y$KFh_ext"); break;
-                case " [FTB] Find the pilot": LoadJobHelper(3049, 3053, 4, "Y$KFh_hotel"); break;
-                case " [FTB] Pickpocket": LoadJobHelper(3049, 3058, 4, "Y$KFh_hotel"); break;
-                case " [FTB] Guru section": LoadJobHelper(3049, 3068, 4, "Y$KFh_ext"); break;
-                case " [FTB] Sly section": LoadJobHelper(3049, 3075, 4, "Y$KFh_ext"); break;
-                case "Frame Team Iceland": LoadJobHelper(3085, 3086, 134, "Y$KFh_ext"); break;
-                case " [FTI] Rowing #1": LoadJobHelper(3085, 3088, 4, "Y$KFh_sewer"); break;
-                case " [FTI] Platforming #1": LoadJobHelper(3085, 3090, 4, "Y$KFh_sewer"); break;
-                case " [FTI] Hotel": LoadJobHelper(3085, 3094, 4, "Y$KFh_hotel"); break;
-                case " [FTI] Platforming #2": LoadJobHelper(3085, 3102, 4, "Y$KFh_sewer"); break;
-                case " [FTI] Rowing #2": LoadJobHelper(3085, 3104, 4, "Y$KFh_sewer"); break;
-                case " [FTI] Find the hangar": LoadJobHelper(3085, 3108, 4, "Y$KFh_ext"); break;
-                case " [FTI] Hangar": LoadJobHelper(3085, 3112, 4, "Y$KFh_hangar_a"); break;
-                case "Cooper Hangar Defence": LoadJobHelper(3125, 3126, 134, "Y$KFh_ext"); break;
-                case " [CHD] Muggshot": LoadJobHelper(3125, 3126, 4, "Y$KFh_hangar_c"); break;
-                case " [CHD] Sewers #1": LoadJobHelper(3125, 3140, 4, "Y$KFh_hangar_c"); break;
-                case " [CHD] Sewers #2": LoadJobHelper(3125, 3146, 4, "Y$KFh_hangar_c"); break;
-                case " [CHD] RC Chopper": LoadJobHelper(3125, 3153, 4, "Y$KFh_ext"); break;
-                case "ACES Semi-finals": LoadJobHelper(3167, 3164, 134, "Y$KFh_ext"); break;
-                case " [AS] Dogfight": LoadJobHelper(3167, 1808, 4, "Y$KFh_dogfight"); break;
-                case "Giant Wolf Massacre": LoadJobHelper(3225, 3227, 134, "Y$KFh_ext"); break;
-                case " [GWM] Guru section": LoadJobHelper(3225, 3235, 4, "Y$KFh_ext"); break;
-                case "Windmill Firewall": LoadJobHelper(3187, 3193, 134, "Y$KFh_ext"); break;
-                case " [WF] Hack #1": LoadJobHelper(3187, 3196, 4, "Y$KFh_ext"); break;
-                case " [WF] Find computer #2": LoadJobHelper(3187, 3201, 4, "Y$KFh_ext"); break;
-                case " [WF] Hack #2": LoadJobHelper(3187, 3204, 4, "Y$KFh_ext"); break;
-                case " [WF] Find computer #3": LoadJobHelper(3187, 3209, 4, "Y$KFh_ext"); break;
-                case " [WF] Hack #3": LoadJobHelper(3187, 3212, 4, "Y$KFh_ext"); break;
-                case " [WF] Find computer #4": LoadJobHelper(3187, 3216, 4, "Y$KFh_ext"); break;
-                case " [WF] Hack #4": LoadJobHelper(3187, 3219, 4, "Y$KFh_ext"); break;
-                case "Beauty and the Beast": LoadJobHelper(3248, 3249, 134, "Y$KFh_ext"); break;
-                case " [BatB] Find Muggshot": LoadJobHelper(3248, 3249, 4, "Y$KFh_hotel"); break;
-                case " [BatB] Find Carmelita": LoadJobHelper(3248, 3256, 134, "Y$KFh_ext"); break;
-                case " [BatB] Muggshot fight": LoadJobHelper(3248, 1809, 4, "Y$KFh_ext"); break;
-                case "OP: Turbo Dominant Eagle": LoadJobHelper(3281, 3283, 134, "Y$KFh_ext"); break;
-                case " [TDE] Murray section": LoadJobHelper(3281, 3303, 4, "Y$KFh_ext"); break;
-                case " [TDE] Dogfight": LoadJobHelper(3281, 3317, 4, "Y$KFh_dogfight"); break;
-                case " [TDE] Boss fight": LoadJobHelper(3281, 3325, 4, "Y$KFh_dogfight"); break;
-                case "King of Fire": LoadJobHelper(3403, 3405, 134, "Y$KFc_intro"); break;
-                case " [KoF] Murray": LoadJobHelper(3403, 3406, 4, "Y$KFc_intro"); break;
-                case " [KoF] Penelope": LoadJobHelper(3403, 3411, 4, "Y$KFc_intro"); break;
-                case " [KoF] Sly": LoadJobHelper(3403, 3425, 4, "Y$KFc_intro"); break;
-                case " [KoF] Bentley": LoadJobHelper(3403, 3433, 4, "Y$KFc_intro"); break;
-                case " [KoF] Guru": LoadJobHelper(3403, 3442, 4, "Y$KFc_intro"); break;
-                case " [KoF] Flashback": LoadJobHelper(3403, 3454, 4, "Y$KFc_flashback"); break;
-                case "Get a Job": LoadJobHelper(3471, 3473, 134, "Y$KFc_ext"); break;
-                case " [GaJ] Talk to Tsao": LoadJobHelper(3471, 3473, 4, "Y$KFc_hall_b"); break;
-                case " [GaJ] Picture #1": LoadJobHelper(3471, 3480, 4, "Y$KFc_ext"); break;
-                case " [GaJ] Picture #2": LoadJobHelper(3471, 3487, 4, "Y$KFc_ext"); break;
-                case " [GaJ] Picture #3": LoadJobHelper(3471, 3498, 4, "Y$KFc_ext"); break;
-                case " [GaJ] Pictures of Tsao": LoadJobHelper(3471, 3511, 4, "Y$KFc_hall_b"); break;
-                case "Tearful Reunion": LoadJobHelper(3531, 3536, 134, "Y$KFc_ext"); break;
-                case " [TR] Free the van": LoadJobHelper(3531, 3541, 4, "Y$KFc_ext"); break;
-                case " [TR] Defend Murray #1": LoadJobHelper(3531, 3545, 4, "Y$KFc_ext"); break;
-                case " [TR] Defend Murray #2": LoadJobHelper(3531, 3550, 4, "Y$KFc_ext"); break;
-                case "Grapple-Cam Break-in": LoadJobHelper(3562, 3565, 134, "Y$KFc_ext"); break;
-                case " [GCB] Steal the keys": LoadJobHelper(3562, 3570, 4, "Y$KFc_ext"); break;
-                case " [GCB] Exchange the keys": LoadJobHelper(3562, 3576, 4, "Y$KFc_ext"); break;
-                case " [GCB] Break in the building": LoadJobHelper(3562, 3580, 4, "Y$KFc_ext"); break;
-                case " [GCB] Lure #1": LoadJobHelper(3562, 3584, 4, "Y$KFc_hall_a"); break;
-                case " [GCB] Lure #2": LoadJobHelper(3562, 3590, 4, "Y$KFc_hall_a"); break;
-                case " [GCB] Find the computer": LoadJobHelper(3562, 3595, 4, "Y$KFc_hall_a"); break;
-                case " [GCB] Hack": LoadJobHelper(3562, 3600, 4, "Y$KFc_hall_a"); break;
-                case "Laptop Retrieval": LoadJobHelper(3606, 3607, 134, "Y$KFc_ext"); break;
-                case " [LR] Find the computer": LoadJobHelper(3606, 3609, 4, "Y$KFc_hall_b"); break;
-                case " [LR] Hack": LoadJobHelper(3606, 3613, 4, "Y$KFc_hall_b"); break;
-                case " [LR] Guru section": LoadJobHelper(3606, 3618, 4, "Y$KFc_ext"); break;
-                case " [LR] Tsao #1": LoadJobHelper(3606, 1810, 4, "Y$KFc_forest"); break;
-                case " [LR] Tsao #2": LoadJobHelper(3606, 3639, 4, "Y$KFc_forest"); break;
-                case "Vampiric Demise": LoadJobHelper(3651, 3654, 134, "Y$KFc_ext"); break;
-                case " [VD] Panda King's house": LoadJobHelper(3651, 3654, 4, "Y$KFc_apt"); break;
-                case " [VD] Tutorial": LoadJobHelper(3651, 3662, 4, "Y$KFc_ext"); break;
-                case " [VD] Go to safe #2": LoadJobHelper(3651, 3673, 4, "Y$KFc_ext"); break;
-                case " [VD] Defend Sly #1": LoadJobHelper(3651, 3675, 4, "Y$KFc_ext"); break;
-                case " [VD] Go to safe #3": LoadJobHelper(3651, 3679, 4, "Y$KFc_ext"); break;
-                case " [VD] Defend Sly #2": LoadJobHelper(3651, 3681, 4, "Y$KFc_ext"); break;
-                case " [VD] Find the gravestone": LoadJobHelper(3651, 3685, 4, "Y$KFc_ext"); break;
-                case " [VD] Destroy the gravestone": LoadJobHelper(3651, 3689, 4, "Y$KFc_ext"); break;
-                case "Down the Line": LoadJobHelper(3693, 3694, 134, "Y$KFc_ext"); break;
-                case " [DtL] RC section": LoadJobHelper(3693, 3701, 4, "Y$KFc_ext"); break;
-                case "A Battery of Peril": LoadJobHelper(3705, 3706, 134, "Y$KFc_ext"); break;
-                case " [ABoP] Carmelita": LoadJobHelper(3705, 3709, 4, "Y$KFc_ext"); break;
-                case " [ABoP] Stabilize the battery": LoadJobHelper(3705, 3718, 4, "Y$KFc_ext"); break;
-                case "OP: Wedding Crasher": LoadJobHelper(3733, 3734, 134, "Y$KFc_ext"); break;
-                case " [WC] Open the door": LoadJobHelper(3733, 3735, 4, "Y$KFc_tilt_hall"); break;
-                case " [WC] Reach the computer": LoadJobHelper(3733, 3737, 4, "Y$KFc_tilt_hall"); break;
-                case " [WC] Destroy alarms": LoadJobHelper(3733, 3742, 4, "Y$KFc_tilt_hall"); break;
-                case " [WC] Open the trapdoor": LoadJobHelper(3733, 3779, 4, "Y$KFc_tilt_hall"); break;
-                case " [WC] Go to the palace": LoadJobHelper(3733, 3782, 4, "Y$KFc_ext"); break;
-                case " [WC] Protect vases": LoadJobHelper(3733, 3787, 4, "Y$KFc_hall_b"); break;
-                case " [WC] Lure Carmelita": LoadJobHelper(3733, 3794, 4, "Y$KFc_ext"); break;
-                case " [WC] Dragon fight": LoadJobHelper(3733, 3807, 4, "Y$KFc_ext"); break;
-                case "The Talk of Pirates": LoadJobHelper(3867, 3871, 134, "Y$KFp_ext"); break;
-                case " [TToP] Stone-Jake": LoadJobHelper(3867, 3875, 4, "Y$KFp_ext"); break;
-                case " [TToP] Find the loutenant": LoadJobHelper(3867, 3882, 4, "Y$KFp_ext"); break;
-                case " [TToP] Steal the bootleg": LoadJobHelper(3867, 3884, 4, "Y$KFp_ext"); break;
-                case " [TToP] Find Ned": LoadJobHelper(3867, 3891, 4, "Y$KFp_ext"); break;
-                case " [TToP] Chase Ned": LoadJobHelper(3867, 3895, 4, "Y$KFp_ext"); break;
-                case " [TToP] Return to Pete": LoadJobHelper(3867, 3907, 4, "Y$KFp_ext"); break;
-                case " [TToP] Vinegar Talk": LoadJobHelper(3867, 3911, 4, "Y$KFp_ext"); break;
-                case "Dynamic Duo": LoadJobHelper(3926, 3927, 134, "Y$KFp_ext"); break;
-                case " [DD] Go to Skull Keep": LoadJobHelper(3926, 3944, 4, "Y$KFp_ext"); break;
-                case " [DD] Floating boxes": LoadJobHelper(3926, 3950, 4, "Y$KFp_ext"); break;
-                case " [DD] Beat the guards": LoadJobHelper(3926, 3957, 4, "Y$KFp_ext"); break;
-                case " [DD] Lure Penelope #1": LoadJobHelper(3926, 3977, 4, "Y$KFp_ext"); break;
-                case " [DD] Lure Penelope #2": LoadJobHelper(3926, 3982, 4, "Y$KFp_ext"); break;
-                case " [DD] Lure Penelope #3": LoadJobHelper(3926, 3994, 4, "Y$KFp_ext"); break;
-                case "Jollyboat of Destruction": LoadJobHelper(4055, 4056, 134, "Y$KFp_ext"); break;
-                case " [JoD] Harbor patrol": LoadJobHelper(4055, 4068, 4, "Y$KFp_ext"); break;
-                case " [JoD] Cutter": LoadJobHelper(4055, 4079, 4, "Y$KFp_ext"); break;
-                case "X Marks the Spot": LoadJobHelper(4009, 4011, 134, "Y$KFp_ext"); break;
-                case " [XMtS] Row to the ship": LoadJobHelper(4009, 4015, 4, "Y$KFp_ext"); break;
-                case " [XMtS] Beat the guards": LoadJobHelper(4009, 4019, 4, "Y$KFp_ext"); break;
-                case " [XMtS] Escape the bay": LoadJobHelper(4009, 4023, 4, "Y$KFp_ext"); break;
-                case " [XMtS] Sail to Dagger Isle": LoadJobHelper(4009, 4030, 4, "Y$KFp_at_sea"); break;
-                case " [XMtS] Sink the ship": LoadJobHelper(4009, 4032, 4, "Y$KFp_at_sea"); break;
-                case " [XMtS] Dagger Isle": LoadJobHelper(4009, 4040, 4, "Y$KFp_island_map"); break;
-                case " [XMtS] Statue": LoadJobHelper(4009, 4042, 4, "Y$KFp_island_map"); break;
-                case " [XMtS] Dig up the chest": LoadJobHelper(4009, 2040, 4, "Y$KFp_island_map"); break;
-                case "Crusher from the Depths": LoadJobHelper(4088, 4091, 134, "Y$KFp_at_sea"); break;
-                case " [CftD] Shoot Crusher #1": LoadJobHelper(4088, 4097, 4, "Y$KFp_at_sea"); break;
-                case " [CftD] Shoot the tentacles": LoadJobHelper(4088, 4101, 4, "Y$KFp_at_sea"); break;
-                case " [CftD] Shoot Crusher #2": LoadJobHelper(4088, 4105, 4, "Y$KFp_at_sea"); break;
-                case " [CftD] Cannons": LoadJobHelper(4088, 4109, 4, "Y$KFp_at_sea"); break;
-                case "Deep Sea Danger": LoadJobHelper(4117, 4118, 134, "Y$KFp_at_sea"); break;
-                case " [DSD] Underwater": LoadJobHelper(4117, 4123, 4, "Y$KFp_dive"); break;
-                case " [DSD] Collars": LoadJobHelper(4117, 4125, 4, "Y$KFp_dive"); break;
-                case " [DSD] Fish": LoadJobHelper(4117, 4128, 4, "Y$KFp_dive"); break;
-                case " [DSD] Hammersharks": LoadJobHelper(4117, 4132, 4, "Y$KFp_dive"); break;
-                case "Battle on the High Seas": LoadJobHelper(4136, 4137, 134, "Y$KFp_at_sea"); break;
-                case " [BotHS] Sail to fight #2": LoadJobHelper(4136, 4141, 4, "Y$KFp_at_sea"); break;
-                case " [BotHS] Fight #2": LoadJobHelper(4136, 4145, 4, "Y$KFp_at_sea"); break;
-                case " [BotHS] Sail to fight #3": LoadJobHelper(4136, 4149, 4, "Y$KFp_at_sea"); break;
-                case " [BotHS] Fight #3": LoadJobHelper(4136, 4153, 4, "Y$KFp_at_sea"); break;
-                case "OP: Reverse Double-Cross": LoadJobHelper(4161, 4163, 134, "Y$KFp_ext"); break;
-                case " [RDC] Insult LefWee": LoadJobHelper(4161, 4166, 4, "Y$KFp_ext"); break;
-                case " [RDC] Escape the ship": LoadJobHelper(4161, 4180, 4, "Y$KFp_ext"); break;
-                case " [RDC] Skull Keep": LoadJobHelper(4161, 4185, 4, "Y$KFp_ext"); break;
-                case " [RDC] Crusher": LoadJobHelper(4161, 4192, 4, "Y$KFp_ext"); break;
-                case " [RDC] Boss fight": LoadJobHelper(4161, 4202, 4, "Y$KFp_ext"); break;
-                case "Carmelita to the Rescue": LoadJobHelper(4342, 1842, 134, "Y$KFm_ext"); break;
-                case " [CttR] Talk with Dr. M": LoadJobHelper(4342, 4382, 4, "Y$KFm_ext"); break;
-                case "A Deadly Bite": LoadJobHelper(4384, 1843, 134, "Y$KFm_ext"); break;
-                case " [ADB] Sharks #2": LoadJobHelper(4384, 4396, 4, "Y$KFm_ext"); break;
-                case " [ADB] Sharks #3": LoadJobHelper(4384, 4400, 4, "Y$KFm_ext"); break;
-                case " [ADB] Sharks #4": LoadJobHelper(4384, 4404, 4, "Y$KFm_ext"); break;
-                case " [ADB] Return to the boat": LoadJobHelper(4384, 4408, 4, "Y$KFm_ext"); break;
-                case "The Dark Current": LoadJobHelper(4411, 1844, 134, "Y$KFm_ext"); break;
-                case " [TDC] Pinchers": LoadJobHelper(4411, 4413, 4, "Y$KFm_underwater"); break;
-                case " [TDC] Mutant fish": LoadJobHelper(4411, 4420, 4, "Y$KFm_underwater"); break;
-                case "Bump-Charge-Jump": LoadJobHelper(4427, 1845, 134, "Y$KFm_ext"); break;
-                case " [BCJ] Track #1": LoadJobHelper(4427, 4433, 4, "Y$KFm_ext"); break;
-                case " [BCJ] Track #2": LoadJobHelper(4427, 4439, 4, "Y$KFm_ext"); break;
-                case " [BCJ] Track #3": LoadJobHelper(4427, 4444, 4, "Y$KFm_ext"); break;
-                case "Danger in the Skies": LoadJobHelper(4451, 1846, 134, "Y$KFm_ext"); break;
-                case " [DitS] Turrets": LoadJobHelper(4451, 4453, 4, "Y$KFm_ext"); break;
-                case " [DitS] Bats": LoadJobHelper(4451, 4472, 4, "Y$KFm_ext"); break;
-                case " [DitS] Dogfight": LoadJobHelper(4451, 4478, 4, "Y$KFm_ext"); break;
-                case " [DitS] Paraglide": LoadJobHelper(4451, 4486, 4, "Y$KFm_ext"); break;
-                case "The Ancestors' Gauntlet": LoadJobHelper(4494, 1847, 134, "Y$KFm_vault"); break;
-                case " [TAG] Enter the gauntlet": LoadJobHelper(4494, 4495, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Slytunkhamen Cooper II": LoadJobHelper(4494, 4498, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Sir Galleth Cooper": LoadJobHelper(4494, 4500, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Salim al-Kupar": LoadJobHelper(4494, 4502, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Slaigh MacCooper": LoadJobHelper(4494, 4504, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Rioichi Cooper": LoadJobHelper(4494, 4506, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Henriette Cooper": LoadJobHelper(4494, 4508, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Tennessee Cooper": LoadJobHelper(4494, 4510, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Thaddeus W. Cooper III": LoadJobHelper(4494, 4512, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Otto van Cooper": LoadJobHelper(4494, 4514, 4, "Y$KFm_gauntlet"); break;
-                case " [TAG] Connor Cooper": LoadJobHelper(4494, 4516, 4, "Y$KFm_gauntlet"); break;
-                case "Stand Your Ground": LoadJobHelper(4520, 1848, 134, "Y$KFm_vault"); break;
-                case " [SYG] Checkpoint #1": LoadJobHelper(4520, 4531, 4, "Y$KFm_vault"); break;
-                case " [SYG] Checkpoint #2": LoadJobHelper(4520, 4534, 4, "Y$KFm_vault"); break;
-                case " [SYG] Place the treasures": LoadJobHelper(4520, 4538, 4, "Y$KFm_vault"); break;
-                case "Final Legacy": LoadJobHelper(4558, 1849, 134, "Y$KFm_boss"); break;
-                case " [FL] Carmelita section": LoadJobHelper(4558, 2041, 4, "Y$KFm_boss"); break;
-                case "Sly Tutorial #1": LoadJobHelper(4590, 4592, 134, "Y$KFi_trainer"); break;
-                case "Sly Tutorial #2": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
-                case "Sly Tutorial #3": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
-                case "Sly Tutorial #4": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
-                case "Bentley Tutorial": LoadJobHelper(4609, 4611, 134, "Y$KFi_trainer"); break;
-                case "Murray Tutorial": LoadJobHelper(4725, 4727, 134, "Y$KFi_trainer"); break;
+                case "Cairo Museum Break-in": LoadJobHelper(7, 1696, 1584, 148457, "jb_intro", "EP0_ADDR", "EP0_STAR"); break;
+                case "Satellite Sabotage": LoadJobHelper(7, 1784, 1785, 122409, "f_nightclub_exterior", "EP1_ADDR", "EP1_SATELLITE_START"); break;
+                case "Breaking and Entering": LoadJobHelper(7, 1795, 1797, 397, "f_nightclub_cellar", "EP1_ADDR", "EP1_BREAKING_START"); break;
+                case " [BnE] Sneak": LoadJobHelper(7, 1795, 1804, 122447, "f_nightclub_cellar", "EP1_ADDR", "EP1_BREAKING_SNEAK"); break;
+                case " [BnE] Guards": LoadJobHelper(7, 1795, 1808, 122448, "f_nightclub_cellar", "EP1_ADDR", "EP1_BREAKING_GUARDS"); break;
+                case " [BnE] Photos": LoadJobHelper(7, 1795, 1813, 402, "f_nightclub_heist", "EP1_ADDR", "EP1_BREAKING_PHOTOS"); break;
+                case "Bug Dimitri's Office": LoadJobHelper(7, 1833, 1834, 122459, "f_nightclub_exterior", "EP1_ADDR", "EP1_BUG_START"); break;
+                case " [BDO] Nightclub": LoadJobHelper(7, 1833, 1834, 398, "f_nightclub_disco", "EP1_ADDR", "EP1_BUG_DISCO"); break;
+                case "Follow Dimitri": LoadJobHelper(7, 1841, 1585, 122473, "f_nightclub_exterior", "EP1_ADDR", "EP1_FOLLOW_START"); break;
+                case " [FD] Follow": LoadJobHelper(7, 1841, 1842, 122475, "f_nightclub_exterior", "EP1_ADDR", "EP1_FOLLOW_FOLLOW"); break;
+                case "Waterpump Destruction": LoadJobHelper(9, 1900, -1, 399, "f_nightclub_waterpump", "EP1_ADDR", "EP1_WATERPUMP_START"); break;
+                case "Silence the Alarms": LoadJobHelper(9, 1826, 1586, 122451, "f_nightclub_exterior", "EP1_ADDR", "EP1_SILENCE_START"); break;
+                case "Moonlight Rendezvous": LoadJobHelper(7, 1874, 1875, 122519, "f_nightclub_exterior", "EP1_ADDR", "EP1_MOONLIGHT_START"); break;
+                case "Theater Pickpocketing": LoadJobHelper(7, 1859, -1, 400, "f_nightclub_moulinrouge", "EP1_ADDR", "EP1_THEATER_START"); break;
+                case "Disco Demolitions": LoadJobHelper(8, 1882, -1, 401, "f_nightclub_disco", "EP1_ADDR", "EP1_DISCO_START"); break;
+                case "OP: Thunder Beak": LoadJobHelper(8, 1912, 1913, 27280, "f_nightclub_exterior", "EP1_ADDR", "EP1_OP_START"); break;
+                case " [OTB] Steal the key": LoadJobHelper(7, 1912, 1923, 27280, "f_nightclub_exterior", "EP1_ADDR", "EP1_OP_KEY"); break;
+                case " [OTB] Climb the peacock": LoadJobHelper(7, 1912, 1929, 27280, "f_nightclub_exterior", "EP1_ADDR", "EP1_OP_CLIMB"); break;
+                case " [OTB] Shoot the hook": LoadJobHelper(7, 1912, 1932, 122600, "f_nightclub_exterior", "EP1_ADDR", "EP1_OP_HOOK"); break;
+                case " [OTB] Printing room": LoadJobHelper(7, 1938, 1943, 121308, "f_nightclub_heist", "EP1_ADDR", "EP1_OP_DIMITRI"); break;
+                case " [OTB] Dimitri fight": LoadJobHelper(7, 1938, 1943, 121308, "f_nightclub_heist", "EP1_ADDR", "EP1_OP_FIGHT"); break;
+                case "Recon the Ballroom": LoadJobHelper(7, 2003, 2006, 49223, "i_palace_ext", "EP2_ADDR", "EP2_RECON_START"); break;
+                case " [RtB] Photos": LoadJobHelper(7, 2003, -1, 104738, "i_palace_ballroom", "EP2_ADDR", "EP2_RECON_PHOTO"); break;
+                case "Lower the Drawbridge": LoadJobHelper(7, 2022, 2024, 105705, "i_palace_ext", "EP2_ADDR", "EP2_LOWER_START"); break;
+                case " [LtD] Lever": LoadJobHelper(7, 2022, 2031, 105705, "i_palace_ext", "EP2_ADDR", "EP2_LOWER_LEVER"); break;
+                case "Steal a Tuxedo": LoadJobHelper(7, 2059, 2060, 105779, "i_palace_int", "EP2_ADDR", "EP2_TUX_START"); break;
+                case "Battle the Chopper": LoadJobHelper(9, 2034, 2035, 105722, "i_palace_ext", "EP2_ADDR", "EP2_CHOPPER_START"); break;
+                case " [BtC] Fight": LoadJobHelper(9, 2034, 2038, 105722, "i_palace_ext", "EP2_ADDR", "EP2_CHOPPER_FIGHT"); break;
+                case "Dominate the Dance Floor": LoadJobHelper(7, 2077, 2080, 105063, "i_palace_ballroom", "EP2_ADDR", "EP2_DANCE_START"); break;
+                case "RC Bombing Run": LoadJobHelper(8, 2085, 2087, 49304, "i_palace_ext", "EP2_ADDR", "EP2_RC_START"); break;
+                case " [RBR] Destroy the Jeep": LoadJobHelper(8, 2085, 2089, 49304, "i_palace_ext", "EP2_ADDR", "EP2_RC_JEEP"); break;
+                case "Elephant Rampage": LoadJobHelper(7, 2092, 2094, 105619, "i_palace_ext", "EP2_ADDR", "EP2_ELEPHANT_START"); break;
+                case " [ER] Elephants": LoadJobHelper(7, 2092, 2097, 105619, "i_palace_ext", "EP2_ADDR", "EP2_ELEPHANT_RUBIES"); break;
+                case "Boardroom Brawl": LoadJobHelper(7, 2042, 1589, 105734, "i_palace_ext", "EP2_ADDR", "EP2_BOARDROOM_START"); break;
+                case " [BB] Find the code": LoadJobHelper(7, -1, -1, 105734, "i_palace_basement", "EP2_ADDR", "EP2_BOARDROOM_CODE"); break;
+                case " [BB] Protect Bentley": LoadJobHelper(7, 2042, 1592, 105764, "i_palace_basement", "EP2_ADDR", "EP2_BOARDROOM_PROTECT"); break;
+                case "OP: Hippo Drop": LoadJobHelper(8, 2111, 1593, 76733, "i_palace_ext", "EP2_ADDR", "EP2_OP_START"); break;
+                case " [OHD] First floor": LoadJobHelper(8, 2111, 1593, 76733, "i_palace_ext", "EP2_ADDR", "EP2_OP_BOMB1"); break;
+                case " [OHD] Second floor": LoadJobHelper(8, 2111, 2126, 105827, "i_palace_ext", "EP2_ADDR", "EP2_OP_BOMB2"); break;
+                case " [OHD] Dance": LoadJobHelper(8, 2138, 2139, 105063, "i_palace_ballroom", "EP2_ADDR", "EP2_OP_DANCE"); break;
+                case " [OHD] Protect Murray": LoadJobHelper(8, 2141, 2143, 105685, "i_palace_ext", "EP2_ADDR", "EP2_OP_PROTECT"); break;
+                case "Spice Room Recon": LoadJobHelper(7, 2192, 2193, 403, "i_temple_ext", "EP3_ADDR", "EP3_RECON_START"); break;
+                case " [SRR] Interior": LoadJobHelper(7, 2192, 2194, 398, "i_temple_int", "EP3_ADDR", "EP3_RECON_INTERIOR"); break;
+                case "Freeing the Elephant": LoadJobHelper(7, 2214, -1, 96699, "i_temple_ext", "EP3_ADDR", "EP3_ELEPHANT_START"); break;
+                case "Water Bug Run": LoadJobHelper(7, 2209, 2210, 96698, "i_temple_ext", "EP3_ADDR", "EP3_WATER_START"); break;
+                case "Leading Rajan": LoadJobHelper(8, 2254, 2261, 96737, "i_temple_ext", "EP3_ADDR", "EP3_LEADING_START"); break;
+                case " [LR] Blueprints": LoadJobHelper(8, 2254, 2261, 96737, "i_temple_ext", "EP3_ADDR", "EP3_LEADING_BLUEPRINTS"); break;
+                case "Blow the Dam": LoadJobHelper(8, 2302, 2305, 17505, "i_temple_ext", "EP3_ADDR", "EP3_SPICE_START"); break;
+                case "Spice Grinder Destruction": LoadJobHelper(7, 2286, 2287, 400, "i_temple_int", "EP3_ADDR", "EP3_SPICE_START"); break;
+                case "Neyla's Secret": LoadJobHelper(7, 2235, 2236, 401, "i_temple_ext", "EP3_ADDR", "EP3_NEYLA_START"); break;
+                case " [NS] Keys": LoadJobHelper(7, 2235, 2242, 399, "i_temple_int", "EP3_ADDR", "EP3_NEYLA_KEYS"); break;
+                case "Rip-Off the Ruby": LoadJobHelper(7, 2308, 2309, 96658, "i_temple_ext", "EP3_ADDR", "EP3_RUBY_START"); break;
+                case " [ROtR] Reach the ruby": LoadJobHelper(9, 2308, 2310, 96660, "i_temple_ext", "EP3_ADDR", "EP3_RUBY_MURRAY"); break;
+                case " [ROtR] Carry 1": LoadJobHelper(9, 2308, 2311, 96779, "i_temple_ext", "EP3_ADDR", "EP3_RUBY_PART1"); break;
+                case " [ROtR] Carry 2": LoadJobHelper(9, 2308, 2313, 96665, "i_temple_ext", "EP3_ADDR", "EP3_RUBY_PART2"); break;
+                case "OP: Wet Tiger": LoadJobHelper(9, 2318, 2320, 33676, "i_temple_ext", "EP3_ADDR", "EP3_OP_START"); break;
+                case " [OWT] Protect Murray": LoadJobHelper(8, 2318, 2330, 33676, "i_temple_ext", "EP3_ADDR", "EP3_OP_PROTECT"); break;
+                case " [OWT] Deliver TNT": LoadJobHelper(7, 2318, 2341, 33676, "i_temple_ext", "EP3_ADDR", "EP3_OP_TNT"); break;
+                case " [OWT] Follow Neyla": LoadJobHelper(7, 2346, 2349, 96822, "i_temple_ext", "EP3_ADDR", "EP3_OP_NEYLA"); break;
+                case " [OWT] Rajan fight": LoadJobHelper(9, 2346, 2354, 96835, "i_temple_ext", "EP3_ADDR", "EP3_OP_RAJAN"); break;
+                case "Eavesdrop on Contessa": LoadJobHelper(8, 2411, 2420, 17366, "p_prison_ext", "EP4_ADDR", "EP4_EAVESDROP_START"); break;
+                case "Train Hack": LoadJobHelper(8, 2427, 2433, 76660, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_START"); break;
+                case " [TH] Hack 1": LoadJobHelper(8, 2427, 2435, 59889, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_HACK1"); break;
+                case " [TH] Go to hack 2": LoadJobHelper(8, 2427, 2436, 59889, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_GO2"); break;
+                case " [TH] Hack 2": LoadJobHelper(8, 2427, 2437, 59896, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_HACK2"); break;
+                case " [TH] Go to hack 3": LoadJobHelper(8, 2427, 2438, 59896, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_GO3"); break;
+                case " [TH] Hack 3": LoadJobHelper(8, 2427, 2439, 76668, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_HACK3"); break;
+                case " [TH] Go to hack 4": LoadJobHelper(8, 2427, 2440, 76668, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_GO4"); break;
+                case " [TH] Hack 4": LoadJobHelper(8, 2427, 2441, 76672, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_HACK4"); break;
+                case " [TH] Go to hack 5": LoadJobHelper(8, 2427, 2442, 76672, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_GO5"); break;
+                case " [TH] Hack 5": LoadJobHelper(8, 2427, 2443, 76676, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_HACK5"); break;
+                case " [TH] Go to hack 6": LoadJobHelper(8, 2427, 2444, 76676, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_GO6"); break;
+                case " [TH] Hack 6": LoadJobHelper(8, 2427, 1636, 76676, "p_prison_ext", "EP4_ADDR", "EP4_TRAIN_HACK6"); break;
+                case "Wall Bombing": LoadJobHelper(8, 2447, 2450, 76682, "p_prison_ext", "EP4_ADDR", "EP4_WALL_START"); break;
+                case " [WP] RC Chopper": LoadJobHelper(8, 2447, 2450, 76682, "p_prison_ext", "EP4_ADDR", "EP4_WALL_RC"); break;
+                case " [WP] Return to hideout": LoadJobHelper(7, 2447, 2460, 76691, "p_prison_ext", "EP4_ADDR", "EP4_WALL_SLY"); break;
+                case "Code Capture": LoadJobHelper(7, 2505, 2507, 76753, "p_prison_ext", "EP4_ADDR", "EP4_CODE_START"); break;
+                case " [CC] Picture 2": LoadJobHelper(7, 2505, 2512, 76753, "p_prison_ext", "EP4_ADDR", "EP4_CODE_PIC2"); break;
+                case " [CC] Picture 3": LoadJobHelper(7, 2505, 2527, 76775, "p_prison_ext", "EP4_ADDR", "EP4_CODE_PIC3"); break;
+                case " [CC] Picture 4": LoadJobHelper(7, 2505, 2517, 76764, "p_prison_ext", "EP4_ADDR", "EP4_CODE_PICK4"); break;
+                case "Lightning Action": LoadJobHelper(7, 2473, 2475, 76716, "p_prison_ext", "EP4_ADDR", "EP4_LIGHTNING_START"); break;
+                case " [LA] Rod 1": LoadJobHelper(7, 2473, 2478, 76720, "p_prison_ext", "EP4_ADDR", "EP4_LIGHTNING_ROD1"); break;
+                case " [LA] Rod 2": LoadJobHelper(7, 2473, 2490, 76728, "p_prison_ext", "EP4_ADDR", "EP4_LIGHTNING_ROD2"); break;
+                case " [LA] Rod 3": LoadJobHelper(7, 2473, 2487, 76726, "p_prison_ext", "EP4_ADDR", "EP4_LIGHTNING_ROD3"); break;
+                case " [LA] Rod 4": LoadJobHelper(7, 2473, 2484, 76724, "p_prison_ext", "EP4_ADDR", "EP4_LIGHTNING_ROD4"); break;
+                case "Close to Contessa": LoadJobHelper(7, 2530, 2537, 76776, "p_prison_ext", "EP4_ADDR", "EP4_CONTESSA_START"); break;
+                case " [CtC] Key 2": LoadJobHelper(7, 2530, 2546, 76783, "p_prison_ext", "EP4_ADDR", "EP4_CONTESSA_KEY2"); break;
+                case " [CtC] Tank schedule": LoadJobHelper(7, 2530, 2548, 76784, "p_prison_ext", "EP4_ADDR", "EP4_CONTESSA_SCHEDULE"); break;
+                case "Big House Brawl": LoadJobHelper(7, 2464, 2465, 76697, "p_prison_ext", "EP4_ADDR", "EP4_BRAWL_START"); break;
+                case " [BHB] Prison fight": LoadJobHelper(9, 2464, 2466, 76698, "p_prison_int", "EP4_ADDR", "EP4_BRAWL_FIGHT"); break;
+                case "Disguise Bridge": LoadJobHelper(7, 2494, 2495, 76733, "p_prison_ext", "EP4_ADDR", "EP4_BRIDGE_START"); break;
+                case " [DB] Protect Bentley": LoadJobHelper(7, 2494, 2500, 76744, "p_prison_ext", "EP4_ADDR", "EP4_BRIDGE_PROTECT"); break;
+                case "OP: Trojan Tank": LoadJobHelper(8, -1, -1, 76786, "p_prison_ext", "EP4_ADDR", "EP4_OP_START"); break;
+                case " [OTT] Crawl": LoadJobHelper(7, 2553, 2559, 76794, "p_prison_ext", "EP4_ADDR", "EP4_OP_CRAWL"); break;
+                case " [OTT] Enter prison": LoadJobHelper(7, 2553, 2562, 76622, "p_prison_int", "EP4_ADDR", "EP4_OP_ENTER"); break;
+                case " [OTT] Reach the control panel": LoadJobHelper(7, 2553, -1, 76806, "p_prison_int", "EP4_ADDR", "EP4_OP_SKIP"); break;
+                case " [OTT] Return to Bentley": LoadJobHelper(7, 2553, 2570, 76818, "p_prison_int", "EP4_ADDR", "EP4_OP_RETURN"); break;
+                case " [OTT] Activate hypno-boxes": LoadJobHelper(7, 2553, 2572, 76820, "p_prison_int", "EP4_ADDR", "EP4_OP_HACKS"); break;
+                case " [OTT] Destroy hypno-boxes": LoadJobHelper(7, 2553, 2596, 76844, "p_prison_int", "EP4_ADDR", "EP4_OP_DESTROY"); break;
+                case " [OTT] Lift the gate": LoadJobHelper(9, 2553, 2609, 76853, "p_prison_int", "EP4_ADDR", "EP4_OP_LIFT"); break;
+                case " [OTT] Chase Contessa": LoadJobHelper(9, 2553, 2616, 76859, "p_prison_ext", "EP4_ADDR", "EP4_OP_CHASE"); break;
+                case "Know Your Enemy": LoadJobHelper(7, -1, -1, 49223, "p_castle_ext", "EP5_ADDR", "EP5_ENEMY_START"); break;
+                case " [KYE] Photos": LoadJobHelper(7, 2645, 2646, 49223, "p_castle_ext", "EP5_ADDR", "EP5_ENEMY_START_NOCS"); break;
+                case " [KYE] Education tower": LoadJobHelper(7, 2645, -1, 33438, "p_castle_heist", "EP5_ADDR", "EP5_ENEMY_PHOTOS"); break;
+                case "Kidnap the General": LoadJobHelper(9, -1, -1, 59820, "p_castle_ext", "EP5_ADDR", "EP5_KIDNAP_START"); break;
+                case " [KtG] General": LoadJobHelper(9, 2701, 2702, 59820, "p_castle_ext", "EP5_ADDR", "EP5_KIDNAP_START_NOCS"); break;
+                case "Ghost Capture": LoadJobHelper(7, -1, -1, 59748, "p_castle_ext", "EP5_ADDR", "EP5_GHOST_START"); break;
+                case " [GC] Enter the tomb": LoadJobHelper(7, 2662, 2663, 59748, "p_castle_ext", "EP5_ADDR", "EP5_GHOST_START_NOCS"); break;
+                case " [GC] Tomb": LoadJobHelper(7, 2662, 2664, 105734, "p_castle_wolftomb", "EP5_ADDR", "EP5_GHOST_TOMB"); break;
+                case " [GC] Ghosts": LoadJobHelper(7, 2662, 2668, 59782, "p_castle_ext", "EP5_ADDR", "EP5_GHOST_GHOSTS"); break;
+                case " [GC] Ghosts (No CS)": LoadJobHelper(7, 2662, 2668, 59782, "p_castle_ext", "EP5_ADDR", "EP5_GHOST_GHOSTS_NOCS"); break;
+                case "Mojo Trap Action": LoadJobHelper(8, 2683, 2689, 393, "p_castle_ewoktrainer", "EP5_ADDR", "EP5_MOJO_START"); break;
+                case " [MTA] Crypt 1": LoadJobHelper(8, 2683, 2689, 393, "p_castle_ewoktrainer", "EP5_ADDR", "EP5_MOJO_C1"); break;
+                case " [MTA] Go to crypt 2": LoadJobHelper(8, 2683, 2691, 59810, "p_castle_ext", "EP5_ADDR", "EP5_MOJO_GOC2"); break;
+                case " [MTA] Crypt 2": LoadJobHelper(8, 2683, 2692, 33438, "p_castle_ewokhall", "EP5_ADDR", "EP5_MOJO_C2"); break;
+                case " [MTA] Go to crypt 3": LoadJobHelper(8, 2683, 2694, 59814, "p_castle_ext", "EP5_ADDR", "EP5_MOJO_GOC3"); break;
+                case " [MTA] Crypt 3": LoadJobHelper(8, 2683, 2695, 33438, "p_castle_ewoktomb", "EP5_ADDR", "EP5_MOJO_C3"); break;
+                case " [MTA] Go to crypt 4": LoadJobHelper(8, 2683, 2697, 59818, "p_castle_ext", "EP5_ADDR", "EP5_MOJO_GOC4"); break;
+                case " [MTA] Crypt 4": LoadJobHelper(8, 2683, 2698, 33438, "p_castle_ewokwater", "EP5_ADDR", "EP5_MOJO_C4"); break;
+                case "Tank Showdown": LoadJobHelper(9, 2734, 2735, 59868, "p_castle_ext", "EP5_ADDR", "EP5_TANK_START"); break;
+                case " [TS] Tanks": LoadJobHelper(9, 2734, 2735, 59868, "p_castle_ext", "EP5_ADDR", "EP5_TANK_TANK"); break;
+                case "Stealing Voices": LoadJobHelper(7, -1, -1, 59827, "p_castle_ext", "EP5_ADDR", "EP5_VOICES_START"); break;
+                case " [SV] Keys 1": LoadJobHelper(7, 2711, 2712, 59827, "p_castle_ext", "EP5_ADDR", "EP5_VOICES_KEYS1"); break;
+                case " [SV] Go to crypt 1": LoadJobHelper(7, 2711, 2716, 59827, "p_castle_ext", "EP5_ADDR", "EP5_VOICES_GOC1"); break;
+                case " [SV] Crypt 1": LoadJobHelper(7, 2711, 2717, 59836, "p_castle_guardbreak", "EP5_ADDR", "EP5_VOICES_C1"); break;
+                case " [SV] Keys 2": LoadJobHelper(7, 2711, 2719, 59838, "p_castle_ext", "EP5_ADDR", "EP5_VOICES_KEYS2"); break;
+                case " [SV] Go to crypt 2": LoadJobHelper(7, 2711, 2723, 59838, "p_castle_ext", "EP5_ADDR", "EP5_VOICES_GOC2"); break;
+                case " [SV] Crypt 2": LoadJobHelper(7, 2711, 2724, 59847, "p_castle_guardbreak", "EP5_ADDR", "EP5_VOICES_C2"); break;
+                case " [SV] Keys 3": LoadJobHelper(7, 2711, 2726, 59854, "p_castle_ext", "EP5_ADDR", "EP5_VOICES_KEYS3"); break;
+                case " [SV] Go to crypt 3": LoadJobHelper(7, 2711, 2730, 59854, "p_castle_ext", "EP5_ADDR", "EP5_VOICES_GOC3"); break;
+                case " [SV] Crypt 3": LoadJobHelper(7, 2711, 2731, 33438, "p_castle_waterrails", "EP5_ADDR", "EP5_VOICES_C3"); break;
+                case "Crypt Hack": LoadJobHelper(8, 2746, 2748, 59882, "p_castle_heist", "EP5_ADDR", "EP5_CRYPT_START"); break;
+                case " [CH] Find the computer": LoadJobHelper(8, 2746, 2748, 59882, "p_castle_heist", "EP5_ADDR", "EP5_CRYPT_FIND"); break;
+                case " [CH] Hack 1": LoadJobHelper(8, 2746, 2751, 59889, "p_castle_heist", "EP5_ADDR", "EP5_CRYPT_H1"); break;
+                case " [CH] Go to hack 2": LoadJobHelper(8, 2746, 2753, 59889, "p_castle_heist", "EP5_ADDR", "EP5_CRYPT_GOH2"); break;
+                case " [CH] Hack 2": LoadJobHelper(8, 2746, 2755, 59896, "p_castle_heist", "EP5_ADDR", "EP5_CRYPT_H2"); break;
+                case " [CH] Go to hack 3": LoadJobHelper(8, 2746, 2757, 59896, "p_castle_heist", "EP5_ADDR", "EP5_CRYPT_GOH3"); break;
+                case " [CH] Hack 3": LoadJobHelper(8, 2746, 2759, 59896, "p_castle_heist", "EP5_ADDR", "EP5_CRYPT_H3"); break;
+                case "OP: High Road": LoadJobHelper(9, 2765, 2766, 27280, "p_castle_ext", "EP5_ADDR", "EP5_OP_START"); break;
+                case " [OHR] Paraglide": LoadJobHelper(7, 2765, 2767, 59915, "p_castle_ext", "EP5_ADDR", "EP5_OP_PARAGLIDE"); break;
+                case " [OHR] Enter tower": LoadJobHelper(7, 2765, 2774, 33438, "p_castle_heist", "EP5_ADDR", "EP5_OP_TOWER"); break;
+                case " [OHR] Hack": LoadJobHelper(7, 2765, 1638, 33438, "p_castle_heist", "EP5_ADDR", "EP5_OP_HACK"); break;
+                case " [OHR] Chase Neyla": LoadJobHelper(7, 2765, 2791, 59983, "p_castle_ext", "EP5_ADDR", "EP5_OP_NEYLA"); break;
+                case " [OHR] Turret": LoadJobHelper(7, 2765, 2798, 60005, "p_castle_ext", "EP5_ADDR", "EP5_OP_TURRET"); break;
+                case " [OHR] Contessa 1": LoadJobHelper(7, 2765, 2808, 49343, "p_castle_ext", "EP5_ADDR", "EP5_OP_C1"); break;
+                case " [OHR] Tank": LoadJobHelper(9, 2765, 2825, 59868, "p_castle_ext", "EP5_ADDR", "EP5_OP_TANK"); break;
+                case " [OHR] Contessa 2": LoadJobHelper(7, 2765, 2832, 49343, "p_castle_ext", "EP5_ADDR", "EP5_OP_C2"); break;
+                case "Cabin Crimes": LoadJobHelper(7, -1, -1, 49223, "c_train_ext", "EP6_ADDR", "EP6_CABIN_START"); break;
+                case " [CC] Enter cabin 1": LoadJobHelper(7, 2860, 2861, 49223, "c_train_ext", "EP6_ADDR", "EP6_CABIN_GOC1"); break;
+                case " [CC] Cabin 1": LoadJobHelper(7, 2860, 2862, 49224, "c_train_cabins", "EP6_ADDR", "EP6_CABIN_C1"); break;
+                case " [CC] Enter cabin 2": LoadJobHelper(7, 2860, 2869, 49231, "c_train_ext", "EP6_ADDR", "EP6_CABIN_GOC2"); break;
+                case " [CC] Cabin 2": LoadJobHelper(7, 2860, 2870, 49237, "c_train_cabins", "EP6_ADDR", "EP6_CABIN_C2"); break;
+                case " [CC] Enter cabin 3": LoadJobHelper(7, 2860, 2870, 49238, "c_train_ext", "EP6_ADDR", "EP6_CABIN_GOC3"); break;
+                case " [CC] Cabin 3": LoadJobHelper(7, 2860, 2872, 49244, "c_train_cabins", "EP6_ADDR", "EP6_CABIN_C3"); break;
+                case " [CC] Climb the mountain": LoadJobHelper(7, 2860, 2875, 49245, "c_train_ext", "EP6_ADDR", "EP6_CABIN_CLIMB"); break;
+                case "Spice in the Sky": LoadJobHelper(7, -1, -1, 49254, "c_train_ext", "EP6_ADDR", "EP6_SPICE_START"); break;
+                case " [SitS] Train 1": LoadJobHelper(7, -1, -1, 49254, "c_train_ext", "EP6_ADDR", "EP6_SPICE_T1"); break;
+                case " [SitS] Train 2": LoadJobHelper(7, 2883, 2889, 49254, "c_train_ext", "EP6_ADDR", "EP6_SPICE_T2"); break;
+                case " [SitS] Train 3": LoadJobHelper(7, 2883, 2890, 49254, "c_train_ext", "EP6_ADDR", "EP6_SPICE_T3"); break;
+                case "A Friend in Need": LoadJobHelper(7, -1, -1, 49280, "c_train_ext", "EP6_ADDR", "EP6_FRIEND_START"); break;
+                case " [AFiN] Follow Carmelita": LoadJobHelper(7, 2909, 2912, 49280, "c_train_ext", "EP6_ADDR", "EP6_FRIEND_FOLLOW"); break;
+                case " [AFiN] Key 1": LoadJobHelper(7, 2909, 2918, 49285, "c_train_ext", "EP6_ADDR", "EP6_FRIEND_K1"); break;
+                case " [AFiN] Key 2": LoadJobHelper(7, 2909, 2923, 49285, "c_train_ext", "EP6_ADDR", "EP6_FRIEND_K2"); break;
+                case " [AFiN] Key 3": LoadJobHelper(7, 2909, 2926, 49285, "c_train_ext", "EP6_ADDR", "EP6_FRIEND_K3"); break;
+                case "Ride the Iron Horse": LoadJobHelper(8, -1, -1, 49276, "c_train_ext", "EP6_ADDR", "EP6_RIDE_START"); break;
+                case " [RtIH] Enter the train": LoadJobHelper(8, 2904, 2905, 49276, "c_train_ext", "EP6_ADDR", "EP6_RIDE_ENTER"); break;
+                case " [RtIH] Train": LoadJobHelper(8, 2904, -1, 393, "c_train_c", "EP6_ADDR", "EP6_RIDE_TRAIN"); break;
+                case "Aerial Assault": LoadJobHelper(8, 2933, 2934, 49304, "c_train_ext", "EP6_ADDR", "EP6_AERIAL_START"); break;
+                case " [AA] Enter the train": LoadJobHelper(8, 2933, 2934, 49304, "c_train_ext", "EP6_ADDR", "EP6_AERIAL_ENTER"); break;
+                case " [AA] RC Chopper": LoadJobHelper(8, 2933, 2935, 49304, "c_train_a", "EP6_ADDR", "EP6_AERIAL_TRAIN"); break;
+                case "Bear Cub Kidnapping": LoadJobHelper(9, -1, -1, 49324, "c_train_ext", "EP6_ADDR", "EP6_BEAR_START"); break;
+                case " [BCK] Cub 1": LoadJobHelper(9, 2945, 2946, 49324, "c_train_ext", "EP6_ADDR", "EP6_BEAR_C1"); break;
+                case " [BCK] Cub 2": LoadJobHelper(9, 2945, 2951, 49327, "c_train_ext", "EP6_ADDR", "EP6_BEAR_C2"); break;
+                case "Theft on the Rails": LoadJobHelper(7, -1, -1, 49310, "c_train_ext", "EP6_ADDR", "EP6_THEFT_START"); break;
+                case " [TotR] Enter the train": LoadJobHelper(7, 2939, 2940, 49310, "c_train_ext", "EP6_ADDR", "EP6_THEFT_ENTER"); break;
+                case " [TotR] Train": LoadJobHelper(7, 2939, -1, 393, "c_train_a", "EP6_ADDR", "EP6_THEFT_TRAIN"); break;
+                case "OP: Choo-Choo": LoadJobHelper(9, 2962, 2965, 27280, "c_train_ext", "EP6_ADDR", "EP6_OP_START"); break;
+                case " [OCC] Catch the train": LoadJobHelper(7, 2962, 2967, 393, "c_train_b", "EP6_ADDR", "EP6_OP_CATCH"); break;
+                case " [OCC] Sly section 1": LoadJobHelper(7, 2962, 2967, 393, "c_train_b", "EP6_ADDR", "EP6_OP_S1"); break;
+                case " [OCC] Neyla fight 1": LoadJobHelper(7, 2962, 2971, 393, "c_train_b", "EP6_ADDR", "EP6_OP_N1"); break;
+                case " [OCC] Sly section 2": LoadJobHelper(7, 2962, 2977, 49370, "c_train_b", "EP6_ADDR", "EP6_OP_S2"); break;
+                case " [OCC] Neyla fight 2": LoadJobHelper(7, 2962, 2979, 393, "c_train_b", "EP6_ADDR", "EP6_OP_N2"); break;
+                case "Recon the Sawmill": LoadJobHelper(7, -1, -1, 33420, "c_sawmill_ext", "EP7_ADDR", "EP7_RECON_START"); break;
+                case " [RtS] Photos": LoadJobHelper(7, 3037, 3043, 33430, "c_sawmill_lighthouse", "EP7_ADDR", "EP7_RECON_PHOTOS"); break;
+                case "Laser Redirection": LoadJobHelper(7, 3101, 3102, 393, "c_sawmill_burn", "EP7_ADDR", "EP7_LASER_START"); break;
+                case " [LR] Crystal 1": LoadJobHelper(7, 3101, 3105, 33507, "c_sawmill_ext", "EP7_ADDR", "EP7_LASER_C1"); break;
+                case " [LR] Crystal 2": LoadJobHelper(7, 3101, 3110, 33510, "c_sawmill_ext", "EP7_ADDR", "EP7_LASER_C2"); break;
+                case " [LR] Crystal 3": LoadJobHelper(7, 3101, 3114, 33510, "c_sawmill_ext", "EP7_ADDR", "EP7_LASER_C3"); break;
+                case " [LR] Crystal 4": LoadJobHelper(7, 3101, 3116, 33510, "c_sawmill_ext", "EP7_ADDR", "EP7_LASER_C4"); break;
+                case " [LR] Crystal 5": LoadJobHelper(7, 3101, 3118, 33510, "c_sawmill_ext", "EP7_ADDR", "EP7_LASER_C5"); break;
+                case " [LR] Crystal 6": LoadJobHelper(7, 3101, 3120, 33510, "c_sawmill_ext", "EP7_ADDR", "EP7_LASER_C6"); break;
+                case "Bearcave Bugging": LoadJobHelper(7, 3056, 3057, 33437, "c_sawmill_ext", "EP7_ADDR", "EP7_BEAR_START"); break;
+                case " [BB] Cave": LoadJobHelper(7, 3056, 3057, 33438, "c_sawmill_bearcave", "EP7_ADDR", "EP7_BEAR_CAVE"); break;
+                case " [BB] Transmitters": LoadJobHelper(7, 3056, 3066, 33439, "c_sawmill_ext", "EP7_ADDR", "EP7_BEAR_HUB"); break;
+                case " [BB] Transmitters (No CS)": LoadJobHelper(7, 3056, 3067, 33439, "c_sawmill_ext", "EP7_ADDR", "EP7_BEAR_HUB_NOCS"); break;
+                case "RC Combat Club": LoadJobHelper(9, -1, -1, 33479, "c_sawmill_ext", "EP7_ADDR", "EP7_RC_START"); break;
+                case " [RCC] Enter the club": LoadJobHelper(9, 3083, 3087, 33479, "c_sawmill_ext", "EP7_ADDR", "EP7_RC_ENTER"); break;
+                case " [RCC] Barrel": LoadJobHelper(9, 3083, 3088, 392, "c_sawmill_mulch", "EP7_ADDR", "EP7_RC_BARREL"); break;
+                case " [RCC] Moose head": LoadJobHelper(7, 3083, 1645, 392, "c_sawmill_mulch", "EP7_ADDR", "EP7_RC_MOOSE"); break;
+                case " [RCC] RC fight": LoadJobHelper(9, 3083, 3092, 33489, "c_sawmill_mulch", "EP7_ADDR", "EP7_RC_FIGHT"); break;
+                case "Old Grizzle Face": LoadJobHelper(9, -1, -1, 33583, "c_sawmill_ext", "EP7_ADDR", "EP7_GRIZZLE_START"); break;
+                case " [OGF] Destroy the generators": LoadJobHelper(9, 3146, 3149, 33583, "c_sawmill_ext", "EP7_ADDR", "EP7_GRIZZLE_DESTROY"); break;
+                case "Lighthouse Break In": LoadJobHelper(7, -1, -1, 33551, "c_sawmill_ext", "EP7_ADDR", "EP7_LIGHTHOUSE_START"); break;
+                case " [LBI] Enter the lighthouse": LoadJobHelper(7, 3130, 3132, 33551, "c_sawmill_ext", "EP7_ADDR", "EP7_LIGHTHOUSE_ENTER"); break;
+                case " [LBI] Reach the door": LoadJobHelper(7, 3130, 3133, 33235, "c_sawmill_lighthouse", "EP7_ADDR", "EP7_LIGHTHOUSE_DOOR"); break;
+                case " [LBI] Climb the lighthouse": LoadJobHelper(7, 3130, 3138, 393, "c_sawmill_lighthouse", "EP7_ADDR", "EP7_LIGHTHOUSE_CLIMB"); break;
+                case "Thermal Ride": LoadJobHelper(7, -1, -1, 33645, "c_sawmill_ext", "EP7_ADDR", "EP7_THERMAL_START"); break;
+                case " [TR] Paraglide": LoadJobHelper(7, 3188, 3190, 33645, "c_sawmill_ext", "EP7_ADDR", "EP7_THERMAL_PARAGLIDE"); break;
+                case " [TR] Egg": LoadJobHelper(7, 3188, 3196, 33662, "c_sawmill_ext", "EP7_ADDR", "EP7_THERMAL_EGG"); break;
+                case "Boat Hack": LoadJobHelper(8, -1, -1, 33596, "c_sawmill_ext", "EP7_ADDR", "EP7_BOAT_START"); break;
+                case " [BH] Go to hack 1": LoadJobHelper(8, 3156, 3158, 33596, "c_sawmill_ext", "EP7_ADDR", "EP7_BOAT_GOH1"); break;
+                case " [BH] Hack 1": LoadJobHelper(8, 3156, 3163, 33596, "c_sawmill_ext", "EP7_ADDR", "EP7_BOAT_H1"); break;
+                case " [BH] Go to hack 2": LoadJobHelper(8, 3156, 3168, 33610, "c_sawmill_ext", "EP7_ADDR", "EP7_BOAT_GOH2"); break;
+                case " [BH] Hack 2": LoadJobHelper(8, 3156, 3172, 33610, "c_sawmill_ext", "EP7_ADDR", "EP7_BOAT_H2"); break;
+                case " [BH] Go to hack 3": LoadJobHelper(8, 3156, 3176, 33624, "c_sawmill_ext", "EP7_ADDR", "EP7_BOAT_GOH3"); break;
+                case " [BH] Hack 3": LoadJobHelper(8, 3156, 3180, 33624, "c_sawmill_ext", "EP7_ADDR", "EP7_BOAT_H3"); break;
+                case "OP: Canada Games": LoadJobHelper(8, -1, -1, 33664, "c_sawmill_ext", "EP7_ADDR", "EP7_OP_START"); break;
+                case " [OCG] Cut the log": LoadJobHelper(9, 3202, 3215, 33676, "c_sawmill_ext", "EP7_ADDR", "EP7_OP_LOG"); break;
+                case " [OCG] Carry the egg": LoadJobHelper(8, 3202, 3224, 33679, "c_sawmill_ext", "EP7_ADDR", "EP7_OP_EGG"); break;
+                case " [OCG] Climb the wall": LoadJobHelper(7, 3202, 3240, 33692, "c_sawmill_ext", "EP7_ADDR", "EP7_OP_CLIMB"); break;
+                case " [OCG] Shoot the hooks": LoadJobHelper(9, 3202, 3245, 33694, "c_sawmill_ext", "EP7_ADDR", "EP7_OP_HOOKS"); break;
+                case " [OCG] Balance on the logs": LoadJobHelper(8, 3202, 3261, 33733, "c_sawmill_ext", "EP7_ADDR", "EP7_OP_BALANCE"); break;
+                case " [OCG] Lure the ducks": LoadJobHelper(7, 3202, 3266, 33740, "c_sawmill_ext", "EP7_ADDR", "EP7_OP_LURE"); break;
+                case " [OCG] Enter the saw": LoadJobHelper(7, 3285, 3289, 393, "c_sawmill_boss", "EP7_ADDR", "EP7_OP_SAW"); break;
+                case " [OCG] Bison fight": LoadJobHelper(8, 3285, 3291, 393, "c_sawmill_boss", "EP7_ADDR", "EP7_OP_BOSS"); break;
+                case " [OCG] Reach the battery": LoadJobHelper(8, 3285, 3297, 33407, "c_sawmill_ext", "EP7_ADDR", "EP7_OP_BATTERY"); break;
+                case "Blimp HQ Recon": LoadJobHelper(7, -1, -1, 17366, "a_blimp_ext", "EP8_ADDR", "EP8_RECON_START"); break;
+                case " [BHR] Enter the blimp": LoadJobHelper(7, 3352, 3354, 17366, "a_blimp_ext", "EP8_ADDR", "EP8_RECON_ENTER"); break;
+                case " [BHR] Photos": LoadJobHelper(7, 3352, 3354, 17372, "a_blimp_int", "EP8_ADDR", "EP8_RECON_PHOTOS"); break;
+                case " [BHR] Photos (No CS)": LoadJobHelper(7, 3352, 3356, 17372, "a_blimp_int", "EP8_ADDR", "EP8_RECON_PHOTOS_NOCS"); break;
+                case " [BHR] Keys": LoadJobHelper(7, 3352, 3368, 17384, "a_blimp_int", "EP8_ADDR", "EP8_RECON_KEYS"); break;
+                case " [BHR] Magnets": LoadJobHelper(7, 3352, 3374, 17384, "a_blimp_int", "EP8_ADDR", "EP8_RECON_MAGNETS"); break;
+                case "Bentley/Murray Team Up": LoadJobHelper(8, -1, -1, 17466, "a_blimp_ext", "EP8_ADDR", "EP8_BM_START"); break;
+                case " [BMTU] Go to hack 1": LoadJobHelper(8, 3431, 3433, 17466, "a_blimp_ext", "EP8_ADDR", "EP8_BM_GOH1"); break;
+                case " [BMTU] Hack 1": LoadJobHelper(8, 3431, 3434, 17470, "a_blimp_ext", "EP8_ADDR", "EP8_BM_H1"); break;
+                case " [BMTU] Go to hack 2": LoadJobHelper(8, 3431, 3435, 17470, "a_blimp_ext", "EP8_ADDR", "EP8_BM_GOH2"); break;
+                case " [BMTU] Hack 2": LoadJobHelper(8, 3431, 3436, 17473, "a_blimp_ext", "EP8_ADDR", "EP8_BM_H2"); break;
+                case " [BMTU] Go to hack 3": LoadJobHelper(8, 3431, 3437, 17473, "a_blimp_ext", "EP8_ADDR", "EP8_BM_GOH3"); break;
+                case " [BMTU] Hack 3": LoadJobHelper(8, 3431, 3438, 19472, "a_blimp_ext", "EP8_ADDR", "EP8_BM_H3"); break;
+                case " [BMTU] First floor": LoadJobHelper(9, 3431, -1, 393, "a_blimp_engine_room_murray", "EP8_ADDR", "EP8_BM_F1"); break;
+                case " [BMTU] Second floor": LoadJobHelper(9, 3431, 3450, 17446, "a_blimp_engine_room_murray", "EP8_ADDR", "EP8_BM_F2"); break;
+                case "Murray/Sly Tag Team": LoadJobHelper(9, -1, -1, 17420, "a_blimp_ext", "EP8_ADDR", "EP8_MS_START"); break;
+                case " [MSTT] Alarm 1": LoadJobHelper(9, 3401, 3403, 17420, "a_blimp_ext", "EP8_ADDR", "EP8_MS_A1"); break;
+                case " [MSTT] Alarm 2": LoadJobHelper(9, 3401, 3406, 17429, "a_blimp_ext", "EP8_ADDR", "EP8_MS_A2"); break;
+                case " [MSTT] Alarm 3": LoadJobHelper(9, 3401, 3407, 17432, "a_blimp_ext", "EP8_ADDR", "EP8_MS_A3"); break;
+                case " [MSTT] Alarm 4": LoadJobHelper(9, 3401, 3404, 17423, "a_blimp_ext", "EP8_ADDR", "EP8_MS_A4"); break;
+                case " [MSTT] Alarm 5": LoadJobHelper(9, 3401, 3405, 17426, "a_blimp_ext", "EP8_ADDR", "EP8_MS_A5"); break;
+                case " [MSTT] Reach the engine": LoadJobHelper(9, 3401, 3408, 17435, "a_blimp_ext", "EP8_ADDR", "EP8_MS_REACH"); break;
+                case " [MSTT] Lift the door": LoadJobHelper(9, 3401, 3409, 17436, "a_blimp_ext", "EP8_ADDR", "EP8_MS_LIFT"); break;
+                case " [MSTT] First floor": LoadJobHelper(7, 3401, 3412, 393, "a_blimp_engine_room_jt", "EP8_ADDR", "EP8_MS_F1"); break;
+                case " [MSTT] Second floor": LoadJobHelper(7, 3401, 3413, 17446, "a_blimp_engine_room_jt", "EP8_ADDR", "EP8_MS_F2"); break;
+                case "Sly/Bentley Conspire": LoadJobHelper(7, -1, -1, 17451, "a_blimp_ext", "EP8_ADDR", "EP8_SB_START"); break;
+                case " [SBC] Keys": LoadJobHelper(7, 3416, 3419, 17451, "a_blimp_ext", "EP8_ADDR", "EP8_SB_KEYS"); break;
+                case " [SBC] Enter the engine": LoadJobHelper(7, 3416, 3420, 17451, "a_blimp_ext", "EP8_ADDR", "EP8_SB_ENTER"); break;
+                case " [SBC] First floor": LoadJobHelper(8, 3416, 3427, 393, "a_blimp_engine_room_bentley", "EP8_ADDR", "EP8_SB_F1"); break;
+                case " [SBC] Second floor": LoadJobHelper(8, 3416, 3428, 17466, "a_blimp_engine_room_bentley", "EP8_ADDR", "EP8_SB_F2"); break;
+                case "Charged TNT Run": LoadJobHelper(7, -1, -1, 17401, "a_blimp_ext", "EP8_ADDR", "EP8_TNT_START"); break;
+                case " [CTR] Enter TNT": LoadJobHelper(7, 3390, 3391, 17401, "a_blimp_ext", "EP8_ADDR", "EP8_TNT_ENTER"); break;
+                case " [CTR] Checkpoint 1": LoadJobHelper(7, 3390, 3393, 17402, "a_blimp_ext", "EP8_ADDR", "EP8_TNT_CP1"); break;
+                case " [CTR] Checkpoint 2": LoadJobHelper(7, 3390, 3394, 17404, "a_blimp_ext", "EP8_ADDR", "EP8_TNT_CP2"); break;
+                case " [CTR] Checkpoint 3": LoadJobHelper(7, 3390, 3396, 17407, "a_blimp_ext", "EP8_ADDR", "EP8_TNT_CP3"); break;
+                case "Mega-Jump Job": LoadJobHelper(7, -1, -1, 17485, "a_blimp_ext", "EP8_ADDR", "EP8_MEGA_START"); break;
+                case " [MJJ] Climb": LoadJobHelper(7, 3464, 3466, 17485, "a_blimp_ext", "EP8_ADDR", "EP8_MEGA_CLIMB"); break;
+                case "Showdown with Clock-La": LoadJobHelper(7, -1, -1, 17485, "a_blimp_ext", "EP8_ADDR", "EP8_CLOCKLA_START"); break;
+                case " [SWC] Clock-La fight": LoadJobHelper(7, 3477, 3479, 17485, "a_blimp_ext", "EP8_ADDR", "EP8_CLOCKLA_FIGHT"); break;
+                case " [SWC] Paraglide": LoadJobHelper(7, 3482, 3483, 393, "a_blimp_boss_final", "EP8_ADDR", "EP8_CLOCKLA_PARAGLIDE"); break;
+                case " [SWC] Hit the head": LoadJobHelper(7, 3482, 3486, 13307, "a_blimp_boss_final", "EP8_ADDR", "EP8_CLOCKLA_HEAD"); break;
+                case " [SWC] Get the hate chip": LoadJobHelper(9, 3482, 3491, 11233, "a_blimp_boss_final", "EP8_ADDR", "EP8_CLOCKLA_MURRAY"); break;
                 default: break;
             }
         }
 
-        private void LoadJobHelper(int jobId, int checkpointId, int loadMode, string mapName)
+        private void LoadJobHelper(int characterId, int jobId, int checkpointId, int spawnLocationId, string mapName, string stateStartAddressKey, string stateValuesKey)
         {
-            SetMapName(mapName);
-            SetActiveCharacter((int)-1);
+            SetMapName("Y$KF" + mapName);
+            SetSpawnLocation(spawnLocationId);
+            SetActiveCharacter(characterId);
 
-            // TODO: DAG logic
+            string stateAddress = func.GetConfigData("data/s2_job_config.txt", stateStartAddressKey);
+            string stateValues = func.GetConfigData("data/s2_job_config.txt", stateValuesKey);
+
+            if (string.IsNullOrEmpty(stateAddress) || string.IsNullOrEmpty(stateValues))
+            {
+                Console.WriteLine($"Error: Missing state data for job {jobId} checkpoint {checkpointId}");
+                return;
+            }
+
+            byte[] stateBytes = ConvertMemoryDataString(stateValues);
+            WriteMemoryRegion((uint)Convert.ToInt32(stateAddress, 16), stateBytes);
 
             SetJobState(jobId, checkpointId);
-            TriggerGameLoad((uint)loadMode);
+            TriggerGameLoad(0);
             return;
+        }
+
+        public void KillActiveCharacter()
+        {
+            byte[] entityAddress = api.ReadMemory(pid, addr.activeCharacterPtr, 4);
+            api.WriteMemory(pid, BitConverter.ToUInt32(entityAddress.Reverse().ToArray(), 0) + 0xDD4, 8);
         }
 
         public void AbandonJob(string jobName)
         {
             SetJobState(-1, -1);
 
+        }
+
+        public void SetupWebManPopUp()
+        {
+            if (this.api is Ratchetron)
+            {
+                int webManPopUpSubID = api.SubMemory(pid, addr.loadingState, 4, (value) =>
+                {
+                    if (value[0] == 3)
+                    {
+                        WebMAN.DisplayVersionPopUp(func.api.GetIP());
+                    }
+                });
+            }
+        }
+
+        private static byte[] ConvertMemoryDataString(string data)
+        {
+            var parts = data.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            byte[] bytes = new byte[parts.Length];
+            for (int i = 0; i < parts.Length; i++)
+            {
+                bytes[i] = (byte)int.Parse(parts[i].ToString());
+            }
+            return bytes;
         }
     }
 }

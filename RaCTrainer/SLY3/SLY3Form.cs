@@ -12,6 +12,8 @@ namespace racman
 {
     public partial class SLY3Form : Form
     {
+        private const string PrefersAlwaysOnTopKey = "prefersAlwaysOnTop";
+
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly3 game;
@@ -38,6 +40,12 @@ namespace racman
             }
 
             this.gameNameId = gameNameId;
+        }
+
+        private void ApplySavedPreferences()
+        {
+            var prefersAlwaysOnTop = bool.TryParse(func.GetConfigData("config.txt", PrefersAlwaysOnTopKey), out bool alwaysOnTopEnabled) && alwaysOnTopEnabled;
+            alwaysOnTopCheckBox.Checked = prefersAlwaysOnTop;
         }
 
         private void inputDisplayButton_Click(object sender, EventArgs e)
@@ -139,18 +147,7 @@ namespace racman
 
         private void switchGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (game.api is Ratchetron r)
-            {
-                r.ReleaseAllSubs();
-            }
-            if (InputDisplay != null && !InputDisplay.IsDisposed)
-            {
-                InputDisplay.Close();
-            }
-            if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
-            {
-                GadgetsWindow.Close();
-            }
+            DisconnectGame();
             this.Close();
             Program.AttachPS3Form.Show();
         }
@@ -212,11 +209,59 @@ namespace racman
 
         private void fastReloadButton_Click(object sender, EventArgs e)
         {
+            switch (reloadAsCharacterComboBox.SelectedIndex)
+            {
+                case 1:
+                    game.SetActiveCharacter(24);
+                    break;
+                case 2:
+                    game.SetActiveCharacter(25);
+                    break;
+                case 3:
+                    game.SetActiveCharacter(26);
+                    break;
+                case 4:
+                    game.SetActiveCharacter(28);
+                    break;
+                case 5:
+                    game.SetActiveCharacter(29);
+                    break;
+                case 6:
+                    game.SetActiveCharacter(30);
+                    break;
+                case 7:
+                    game.SetActiveCharacter(31);
+                    break;
+            }
             game.TriggerGameLoad((uint)0);
         }
 
         private void fullReloadButton_Click(object sender, EventArgs e)
         {
+            switch (reloadAsCharacterComboBox.SelectedIndex)
+            {
+                case 1:
+                    game.SetActiveCharacter(24);
+                    break;
+                case 2:
+                    game.SetActiveCharacter(25);
+                    break;
+                case 3:
+                    game.SetActiveCharacter(26);
+                    break;
+                case 4:
+                    game.SetActiveCharacter(28);
+                    break;
+                case 5:
+                    game.SetActiveCharacter(29);
+                    break;
+                case 6:
+                    game.SetActiveCharacter(30);
+                    break;
+                case 7:
+                    game.SetActiveCharacter(31);
+                    break;
+            }
             game.TriggerGameLoad();
         }
 
@@ -237,6 +282,7 @@ namespace racman
 
         private void alwaysOnTopCheckBox_CheckedChanged(object sender, EventArgs e)
         {
+            func.ChangeFileLines("config.txt", alwaysOnTopCheckBox.Checked ? "true" : "false", PrefersAlwaysOnTopKey);
             if (!alwaysOnTopCheckBox.Checked)
             {
                 this.TopMost = false;
@@ -341,7 +387,7 @@ namespace racman
             Thread.Sleep(2000);
 
             // Re-establish memory subscriptions
-            game.SetupInputDisplayMemorySubs(false);
+            game.SetupInputDisplayMemorySubs();
 
             // Restart input timer if needed
             if (InputDisplay != null && !InputDisplay.IsDisposed)
@@ -399,6 +445,37 @@ namespace racman
             {
                 Program.AttachPS3Form.Close();
                 Environment.Exit(0);
+            }
+        }
+
+        private void powerOffPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to turn off your PS3?", "Power Off PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    DisconnectGame();
+                    WebMAN.TurnOffPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
+
+            }
+        }
+
+        private void rebootPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to reboot your PS3?", "Reboot PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    DisconnectGame();
+                    WebMAN.RebootPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
             }
         }
     }

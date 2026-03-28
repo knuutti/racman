@@ -35,6 +35,9 @@
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.switchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inputDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.powerOffPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rebootPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mapComboBox = new System.Windows.Forms.ComboBox();
             this.loadMapButton = new System.Windows.Forms.Button();
             this.gadgetButton = new System.Windows.Forms.Button();
@@ -54,6 +57,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.jobGroupBox = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.reloadAsCharacterComboBox = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.toggleGroupBox.SuspendLayout();
             this.reloadGroupBox.SuspendLayout();
@@ -75,7 +80,7 @@
             // 
             this.inputDisplayButton.Location = new System.Drawing.Point(226, 255);
             this.inputDisplayButton.Name = "inputDisplayButton";
-            this.inputDisplayButton.Size = new System.Drawing.Size(234, 40);
+            this.inputDisplayButton.Size = new System.Drawing.Size(234, 62);
             this.inputDisplayButton.TabIndex = 1;
             this.inputDisplayButton.Text = "Input Display";
             this.inputDisplayButton.UseVisualStyleBackColor = true;
@@ -98,7 +103,10 @@
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.switchGameToolStripMenuItem,
-            this.inputDisplayToolStripMenuItem});
+            this.inputDisplayToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.powerOffPS3ToolStripMenuItem,
+            this.rebootPS3ToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.menuToolStripMenuItem.Text = "Tools";
@@ -116,6 +124,25 @@
             this.inputDisplayToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.inputDisplayToolStripMenuItem.Text = "Input Display";
             this.inputDisplayToolStripMenuItem.Click += new System.EventHandler(this.inputDisplayButton_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(176, 6);
+            // 
+            // powerOffPS3ToolStripMenuItem
+            // 
+            this.powerOffPS3ToolStripMenuItem.Name = "powerOffPS3ToolStripMenuItem";
+            this.powerOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.powerOffPS3ToolStripMenuItem.Text = "Power Off (PS3)";
+            this.powerOffPS3ToolStripMenuItem.Click += new System.EventHandler(this.powerOffPS3ToolStripMenuItem_Click);
+            // 
+            // rebootPS3ToolStripMenuItem
+            // 
+            this.rebootPS3ToolStripMenuItem.Name = "rebootPS3ToolStripMenuItem";
+            this.rebootPS3ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.rebootPS3ToolStripMenuItem.Text = "Reboot (PS3)";
+            this.rebootPS3ToolStripMenuItem.Click += new System.EventHandler(this.rebootPS3ToolStripMenuItem_Click);
             // 
             // mapComboBox
             // 
@@ -481,7 +508,7 @@
             // 
             this.fullReloadButton.Location = new System.Drawing.Point(106, 25);
             this.fullReloadButton.Name = "fullReloadButton";
-            this.fullReloadButton.Size = new System.Drawing.Size(82, 40);
+            this.fullReloadButton.Size = new System.Drawing.Size(82, 33);
             this.fullReloadButton.TabIndex = 19;
             this.fullReloadButton.Text = "Reload (Full)";
             this.fullReloadButton.UseVisualStyleBackColor = true;
@@ -489,13 +516,15 @@
             // 
             // reloadGroupBox
             // 
+            this.reloadGroupBox.Controls.Add(this.label3);
+            this.reloadGroupBox.Controls.Add(this.reloadAsCharacterComboBox);
             this.reloadGroupBox.Controls.Add(this.fastReloadButton);
             this.reloadGroupBox.Controls.Add(this.fullReloadButton);
             this.reloadGroupBox.Location = new System.Drawing.Point(10, 218);
             this.reloadGroupBox.Margin = new System.Windows.Forms.Padding(2);
             this.reloadGroupBox.Name = "reloadGroupBox";
             this.reloadGroupBox.Padding = new System.Windows.Forms.Padding(2);
-            this.reloadGroupBox.Size = new System.Drawing.Size(201, 77);
+            this.reloadGroupBox.Size = new System.Drawing.Size(201, 99);
             this.reloadGroupBox.TabIndex = 20;
             this.reloadGroupBox.TabStop = false;
             this.reloadGroupBox.Text = "Reload";
@@ -504,7 +533,7 @@
             // 
             this.fastReloadButton.Location = new System.Drawing.Point(13, 25);
             this.fastReloadButton.Name = "fastReloadButton";
-            this.fastReloadButton.Size = new System.Drawing.Size(87, 40);
+            this.fastReloadButton.Size = new System.Drawing.Size(87, 33);
             this.fastReloadButton.TabIndex = 21;
             this.fastReloadButton.Text = "Reload (Fast)";
             this.fastReloadButton.UseVisualStyleBackColor = true;
@@ -603,11 +632,38 @@
             this.jobGroupBox.TabStop = false;
             this.jobGroupBox.Text = "Jobs";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(13, 67);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 13);
+            this.label3.TabIndex = 25;
+            this.label3.Text = "Character:";
+            // 
+            // reloadAsCharacterComboBox
+            // 
+            this.reloadAsCharacterComboBox.FormattingEnabled = true;
+            this.reloadAsCharacterComboBox.Items.AddRange(new object[] {
+            "Default",
+            "Sly",
+            "Bentley",
+            "Murray",
+            "Carmelita",
+            "Guru",
+            "Panda King",
+            "Penelope"});
+            this.reloadAsCharacterComboBox.Location = new System.Drawing.Point(75, 64);
+            this.reloadAsCharacterComboBox.Name = "reloadAsCharacterComboBox";
+            this.reloadAsCharacterComboBox.Size = new System.Drawing.Size(114, 21);
+            this.reloadAsCharacterComboBox.TabIndex = 24;
+            this.reloadAsCharacterComboBox.Text = "Default";
+            // 
             // SLY3Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 309);
+            this.ClientSize = new System.Drawing.Size(473, 329);
             this.Controls.Add(this.jobGroupBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -618,13 +674,14 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SLY3Form";
-            this.Text = "SluMAN :: Sly 3: Honor Among Thieves - NPEA00343 (Practice Mode)";
+            this.Text = "SluMAN :: Sly 3: Honor Among Thieves (Practice Mode)";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SLY3Form_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toggleGroupBox.ResumeLayout(false);
             this.toggleGroupBox.PerformLayout();
             this.reloadGroupBox.ResumeLayout(false);
+            this.reloadGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -661,5 +718,10 @@
         private System.Windows.Forms.GroupBox jobGroupBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem powerOffPS3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rebootPS3ToolStripMenuItem;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox reloadAsCharacterComboBox;
     }
 }
