@@ -31,6 +31,7 @@ namespace racman
         public uint transitionState => 0xE62AD0;
         public uint charmsCount => 0x3E7FF0;
         public uint livesCount => 0x3E7FEC;
+        public uint clockwerkHealth => 0x3630941C;
 
     }
 
@@ -46,7 +47,15 @@ namespace racman
 
         public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
         {
-
+            (addr.levelId, 4),
+            (addr.worldId, 4),
+            (addr.loadingState, 4),
+            (addr.w3Keys, 4),
+            (addr.charmsCount, 4),
+            (addr.livesCount, 4),
+            (addr.coinCount, 4),
+            (addr.transitionState, 4),
+            (addr.clockwerkHealth, 4),
         };
 
         public override void ResetLevelFlags() { }

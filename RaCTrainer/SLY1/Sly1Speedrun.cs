@@ -116,23 +116,23 @@ namespace racman
                     pid = game.api.getCurrentPID();
                     if (pid != 0)
                     {
-                        Console.WriteLine($"Sly 2: Game detected after {attempts * 3} seconds (PID: {pid})");
+                        Console.WriteLine($"Sly 1: Game detected after {attempts * 3} seconds (PID: {pid})");
                     }
                     else
                     {
-                        Console.WriteLine($"Sly 2: Still waiting for game... ({attempts * 3}s elapsed)");
+                        Console.WriteLine($"Sly 1: Still waiting for game... ({attempts * 3}s elapsed)");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Sly 2: Error checking game status: {ex.Message}");
+                    Console.WriteLine($"Sly 1: Error checking game status: {ex.Message}");
                 }
             }
 
             if (pid == 0)
             {
-                Console.WriteLine("Sly 2: Game did not start within 90 seconds");
-                game.api.Notify("Sly 2: Reconnection timeout");
+                Console.WriteLine("Sly 1: Game did not start within 90 seconds");
+                game.api.Notify("Sly 1: Reconnection timeout");
                 return;
             }
 
