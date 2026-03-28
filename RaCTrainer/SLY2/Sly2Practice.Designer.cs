@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Sly2Practice));
             this.jobGroupBox = new System.Windows.Forms.GroupBox();
             this.jobComboBox = new System.Windows.Forms.ComboBox();
             this.loadJobButton = new System.Windows.Forms.Button();
@@ -655,8 +656,9 @@
             this.Controls.Add(this.toggleGroupBox);
             this.Controls.Add(this.inputDisplayButton);
             this.Controls.Add(this.menuStrip1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Sly2Practice";
-            this.Text = "Sly2Practice";
+            this.Text = "SluMAN :: Sly 2: Band of Thieves (Practice Mode)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Sly2Practice_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Sly2Practice_FormClosed);
             this.jobGroupBox.ResumeLayout(false);

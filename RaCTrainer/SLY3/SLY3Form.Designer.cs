@@ -35,6 +35,9 @@
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.switchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inputDisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.powerOffPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rebootPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mapComboBox = new System.Windows.Forms.ComboBox();
             this.loadMapButton = new System.Windows.Forms.Button();
             this.gadgetButton = new System.Windows.Forms.Button();
@@ -54,9 +57,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.jobGroupBox = new System.Windows.Forms.GroupBox();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.powerOffPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rebootPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toggleGroupBox.SuspendLayout();
             this.reloadGroupBox.SuspendLayout();
@@ -112,16 +112,35 @@
             // switchGameToolStripMenuItem
             // 
             this.switchGameToolStripMenuItem.Name = "switchGameToolStripMenuItem";
-            this.switchGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.switchGameToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.switchGameToolStripMenuItem.Text = "Switch Game/Mode";
             this.switchGameToolStripMenuItem.Click += new System.EventHandler(this.switchGameToolStripMenuItem_Click);
             // 
             // inputDisplayToolStripMenuItem
             // 
             this.inputDisplayToolStripMenuItem.Name = "inputDisplayToolStripMenuItem";
-            this.inputDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.inputDisplayToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.inputDisplayToolStripMenuItem.Text = "Input Display";
             this.inputDisplayToolStripMenuItem.Click += new System.EventHandler(this.inputDisplayButton_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(176, 6);
+            // 
+            // powerOffPS3ToolStripMenuItem
+            // 
+            this.powerOffPS3ToolStripMenuItem.Name = "powerOffPS3ToolStripMenuItem";
+            this.powerOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.powerOffPS3ToolStripMenuItem.Text = "Power Off (PS3)";
+            this.powerOffPS3ToolStripMenuItem.Click += new System.EventHandler(this.powerOffPS3ToolStripMenuItem_Click);
+            // 
+            // rebootPS3ToolStripMenuItem
+            // 
+            this.rebootPS3ToolStripMenuItem.Name = "rebootPS3ToolStripMenuItem";
+            this.rebootPS3ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.rebootPS3ToolStripMenuItem.Text = "Reboot (PS3)";
+            this.rebootPS3ToolStripMenuItem.Click += new System.EventHandler(this.rebootPS3ToolStripMenuItem_Click);
             // 
             // mapComboBox
             // 
@@ -609,25 +628,6 @@
             this.jobGroupBox.TabStop = false;
             this.jobGroupBox.Text = "Jobs";
             // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
-            // 
-            // powerOffPS3ToolStripMenuItem
-            // 
-            this.powerOffPS3ToolStripMenuItem.Name = "powerOffPS3ToolStripMenuItem";
-            this.powerOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.powerOffPS3ToolStripMenuItem.Text = "Power Off (PS3)";
-            this.powerOffPS3ToolStripMenuItem.Click += new System.EventHandler(this.powerOffPS3ToolStripMenuItem_Click);
-            // 
-            // rebootPS3ToolStripMenuItem
-            // 
-            this.rebootPS3ToolStripMenuItem.Name = "rebootPS3ToolStripMenuItem";
-            this.rebootPS3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.rebootPS3ToolStripMenuItem.Text = "Reboot (PS3)";
-            this.rebootPS3ToolStripMenuItem.Click += new System.EventHandler(this.rebootPS3ToolStripMenuItem_Click);
-            // 
             // SLY3Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -643,7 +643,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SLY3Form";
-            this.Text = "SluMAN :: Sly 3: Honor Among Thieves - NPEA00343 (Practice Mode)";
+            this.Text = "SluMAN :: Sly 3: Honor Among Thieves (Practice Mode)";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SLY3Form_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

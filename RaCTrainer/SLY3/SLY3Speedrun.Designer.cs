@@ -50,7 +50,7 @@
             // inputDisplayButton
             // 
             this.inputDisplayButton.Location = new System.Drawing.Point(11, 36);
-            this.inputDisplayButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.inputDisplayButton.Margin = new System.Windows.Forms.Padding(2);
             this.inputDisplayButton.Name = "inputDisplayButton";
             this.inputDisplayButton.Size = new System.Drawing.Size(91, 32);
             this.inputDisplayButton.TabIndex = 0;
@@ -62,7 +62,7 @@
             // 
             this.autosplitterCheckbox.AutoSize = true;
             this.autosplitterCheckbox.Location = new System.Drawing.Point(11, 80);
-            this.autosplitterCheckbox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.autosplitterCheckbox.Margin = new System.Windows.Forms.Padding(2);
             this.autosplitterCheckbox.Name = "autosplitterCheckbox";
             this.autosplitterCheckbox.Size = new System.Drawing.Size(78, 17);
             this.autosplitterCheckbox.TabIndex = 1;
@@ -74,7 +74,7 @@
             // 
             this.gadgetsButton.BackColor = System.Drawing.SystemColors.ButtonHighlight;
             this.gadgetsButton.Location = new System.Drawing.Point(135, 36);
-            this.gadgetsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gadgetsButton.Margin = new System.Windows.Forms.Padding(2);
             this.gadgetsButton.Name = "gadgetsButton";
             this.gadgetsButton.Size = new System.Drawing.Size(84, 32);
             this.gadgetsButton.TabIndex = 3;
@@ -86,7 +86,7 @@
             // 
             this.alwaysTopButton.AutoSize = true;
             this.alwaysTopButton.Location = new System.Drawing.Point(11, 102);
-            this.alwaysTopButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.alwaysTopButton.Margin = new System.Windows.Forms.Padding(2);
             this.alwaysTopButton.Name = "alwaysTopButton";
             this.alwaysTopButton.Size = new System.Drawing.Size(98, 17);
             this.alwaysTopButton.TabIndex = 4;
@@ -106,7 +106,7 @@
             "Episode 6 (No CE)",
             "Episode 6 (CE)"});
             this.runFileComboBox.Location = new System.Drawing.Point(13, 33);
-            this.runFileComboBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.runFileComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.runFileComboBox.Name = "runFileComboBox";
             this.runFileComboBox.Size = new System.Drawing.Size(110, 21);
             this.runFileComboBox.TabIndex = 5;
@@ -115,7 +115,7 @@
             // loadRunFileButton
             // 
             this.loadRunFileButton.Location = new System.Drawing.Point(135, 25);
-            this.loadRunFileButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.loadRunFileButton.Margin = new System.Windows.Forms.Padding(2);
             this.loadRunFileButton.Name = "loadRunFileButton";
             this.loadRunFileButton.Size = new System.Drawing.Size(73, 35);
             this.loadRunFileButton.TabIndex = 6;
@@ -128,9 +128,9 @@
             this.groupBox1.Controls.Add(this.runFileComboBox);
             this.groupBox1.Controls.Add(this.loadRunFileButton);
             this.groupBox1.Location = new System.Drawing.Point(11, 134);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
             this.groupBox1.Size = new System.Drawing.Size(219, 82);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
@@ -165,33 +165,33 @@
             // switchGameModeToolStripMenuItem
             // 
             this.switchGameModeToolStripMenuItem.Name = "switchGameModeToolStripMenuItem";
-            this.switchGameModeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.switchGameModeToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.switchGameModeToolStripMenuItem.Text = "Switch Game/Mode";
             this.switchGameModeToolStripMenuItem.Click += new System.EventHandler(this.switchGameModeToolStripMenuItem_Click_1);
             // 
             // inputDisplayToolStripMenuItem
             // 
             this.inputDisplayToolStripMenuItem.Name = "inputDisplayToolStripMenuItem";
-            this.inputDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.inputDisplayToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.inputDisplayToolStripMenuItem.Text = "Input Display";
             this.inputDisplayToolStripMenuItem.Click += new System.EventHandler(this.inputDisplayButton_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(176, 6);
             // 
             // powerOffPS3ToolStripMenuItem
             // 
             this.powerOffPS3ToolStripMenuItem.Name = "powerOffPS3ToolStripMenuItem";
-            this.powerOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.powerOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.powerOffPS3ToolStripMenuItem.Text = "Power Off (PS3)";
             this.powerOffPS3ToolStripMenuItem.Click += new System.EventHandler(this.powerOffPS3ToolStripMenuItem_Click);
             // 
             // rebootPS3ToolStripMenuItem
             // 
             this.rebootPS3ToolStripMenuItem.Name = "rebootPS3ToolStripMenuItem";
-            this.rebootPS3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rebootPS3ToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
             this.rebootPS3ToolStripMenuItem.Text = "Reboot (PS3)";
             this.rebootPS3ToolStripMenuItem.Click += new System.EventHandler(this.rebootPS3ToolStripMenuItem_Click);
             // 
@@ -208,9 +208,9 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "SLY3Speedrun";
-            this.Text = "SluMAN :: Sly 3: Honor Among Thieves - NPEA00343 (Speedrun Mode)";
+            this.Text = "SluMAN :: Sly 3: Honor Among Thieves (Speedrun Mode)";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SLY3Speedrun_FormClosed);
             this.groupBox1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);

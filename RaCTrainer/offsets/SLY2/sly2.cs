@@ -13,6 +13,179 @@ namespace racman
 {
     public class Sly2Addresses : IAddresses
     {
+        private class AddressValues
+        {
+            public uint inputOffset;
+            public uint analogOffsetLeft;
+            public uint analogOffsetRight;
+
+            public uint slyCharacterPtr;
+            public uint activeCharacterPtr;
+
+            public uint transformOffset;
+            public uint coordsOffsetX;
+            public uint coordsOffsetY;
+            public uint coordsOffsetZ;
+
+            public uint coinCount;
+            public uint currentCharacter;
+            public uint cameraFov;
+            public uint cameraParameter;
+            public uint loadingState;
+            public uint currentJobId;
+            public uint currentCheckpointId;
+            public uint currentMapId;
+            public uint gameSpeed;
+            public uint pauseMenuState;
+
+            public uint dialogueState;
+            public uint dialogueFrameCounter;
+            public uint fmvState;
+
+            public uint mapAOB;
+            public uint spawnLocation;
+            public uint loadType;
+            public uint loadTrigger;
+
+            public uint gadgetUnlocks;
+            public uint gadgetBindsSly;
+            public uint gadgetBindsBentley;
+            public uint gadgetBindsMurray;
+
+            public uint parisStarted;
+            public uint templeStarted;
+            public uint prisonStarted;
+            public uint castleStarted;
+            public uint trainStarted;
+            public uint sawmillStarted;
+            public uint blimpStarted;
+            public uint parisCinemaState;
+            public uint rajanHealth;
+
+            public AddressValues Clone()
+            {
+                return (AddressValues)MemberwiseClone();
+            }
+        }
+
+        public const string GameIdKOR = "NPHA80175";
+        public const string GameIdPAL = "NPEA00342";
+        public const string DefaultGameId = GameIdKOR;
+
+        private static readonly Dictionary<string, AddressValues> gameVersions = CreateGameVersions();
+
+        private readonly string gameId;
+        private readonly AddressValues values;
+
+        public string GameId => gameId;
+
+        public Sly2Addresses(string gameId = DefaultGameId)
+        {
+            string normalizedGameId = NormalizeGameId(gameId);
+
+            if (!gameVersions.TryGetValue(normalizedGameId, out values))
+            {
+                normalizedGameId = DefaultGameId;
+                values = gameVersions[DefaultGameId];
+            }
+
+            this.gameId = normalizedGameId;
+        }
+
+        public static bool IsSupportedGameId(string gameId)
+        {
+            return gameVersions.ContainsKey(NormalizeGameId(gameId));
+        }
+
+        public static string GetDisplayName(string gameId)
+        {
+            switch (NormalizeGameId(gameId))
+            {
+                case GameIdKOR:
+                    return "SLY 2 (KOR, PSN)";
+                case GameIdPAL:
+                    return "SLY 2 (EU, PSN)";
+                default:
+                    return "SLY 2";
+            }
+        }
+
+        private static string NormalizeGameId(string gameId)
+        {
+            return string.IsNullOrWhiteSpace(gameId) ? DefaultGameId : gameId.Trim().ToUpperInvariant();
+        }
+
+        private static Dictionary<string, AddressValues> CreateGameVersions()
+        {
+            var versions = new Dictionary<string, AddressValues>(StringComparer.OrdinalIgnoreCase);
+
+            var kor = new AddressValues
+            {
+                inputOffset = 0x500F76,
+                analogOffsetLeft = 0x500EFC,
+                analogOffsetRight = 0x500F30,
+
+                slyCharacterPtr = 0x502100,
+                activeCharacterPtr = 0x49E290,
+
+                transformOffset = 0x44,
+                coordsOffsetX = 0x130,
+                coordsOffsetY = 0x134,
+                coordsOffsetZ = 0x138,
+
+                coinCount = 0x7A83B0,
+                currentCharacter = 0x7A830C,
+                cameraFov = 0x49E054,
+                cameraParameter = 0x49E07C,
+                loadingState = 0x7A7200,
+                currentJobId = 0x4FEBF4,
+                currentCheckpointId = 0x4FEBF8,
+                currentMapId = 0x7B4CE0,
+                gameSpeed = 0x49DF80,
+                pauseMenuState = 0x4FFE84,
+
+                dialogueState = 0x39E4BF70,
+                dialogueFrameCounter = 0x39E4BF54,
+                fmvState = 0x9066FC,
+
+                mapAOB = 0x7B4C58,
+                spawnLocation = 0x7B4C98,
+                loadType = 0x7B4C54,
+                loadTrigger = 0x7B4C50,
+
+                gadgetUnlocks = 0x7A83A8,
+                gadgetBindsSly = 0x7A836C,
+                gadgetBindsBentley = 0x7A8384,
+                gadgetBindsMurray = 0x7A839C,
+
+                parisStarted = 0x7A9D84,
+                templeStarted = 0x7AA9F0,
+                prisonStarted = 0x7AB38C,
+                castleStarted = 0x7ABBE8,
+                trainStarted = 0x7ABF28,
+                sawmillStarted = 0x7AC818,
+                blimpStarted = 0x7AD150,
+                parisCinemaState = 0x7A9AC0,
+                rajanHealth = 0x35C2AE2C,
+            };
+
+            versions[GameIdKOR] = kor;
+
+            // PAL addresses
+            var pal = kor.Clone();
+            pal.coinCount = 0x7A8330;
+            pal.loadTrigger = 0x7B4BD0;
+            pal.mapAOB = 0x7B4BD8;
+            pal.spawnLocation = 0x7B4C68;
+            pal.inputOffset = 0x500EF6;
+            pal.analogOffsetLeft = 0x500E7C;
+            pal.analogOffsetRight = 0x500EB0;
+
+            versions[GameIdPAL] = pal;
+
+            return versions;
+        }
+
         // Unused RaC addresses
         public uint boltCount => 0x0;
         public uint currentPlanet => 0x0;
@@ -22,59 +195,59 @@ namespace racman
         public uint playerCoords => 0x0;
 
         // Inputs
-        public uint inputOffset => 0x500F76;
-        public uint analogOffsetLeft => 0x500EFC;
-        public uint analogOffsetRight => 0x500F30;
+        public uint inputOffset => values.inputOffset;
+        public uint analogOffsetLeft => values.analogOffsetLeft;
+        public uint analogOffsetRight => values.analogOffsetRight;
 
         // Pointers
-        public uint slyCharacterPtr => 0x502100;
-        public uint activeCharacterPtr => 0x49E290;
+        public uint slyCharacterPtr => values.slyCharacterPtr;
+        public uint activeCharacterPtr => values.activeCharacterPtr;
 
         // Offsets
-        public uint transformOffset => 0x44;
-        public uint coordsOffsetX => 0x130;
-        public uint coordsOffsetY => 0x134;
-        public uint coordsOffsetZ => 0x138;
+        public uint transformOffset => values.transformOffset;
+        public uint coordsOffsetX => values.coordsOffsetX;
+        public uint coordsOffsetY => values.coordsOffsetY;
+        public uint coordsOffsetZ => values.coordsOffsetZ;
 
 
         // Utility
-        public uint coinCount => 0x7A83B0; 
-        public uint currentCharacter => 0x7A830C;
-        public uint cameraFov => 0x49E054;
-        public uint cameraParameter => 0x49E07C;
-        public uint loadingState => 0x7A7200;
-        public uint currentJobId => 0x4FEBF4;
-        public uint currentCheckpointId => 0x4FEBF8;
-        public uint currentMapId => 0x7B4CE0;
-        public uint gameSpeed => 0x49DF80;
-        public uint pauseMenuState => 0x4FFE84;
+        public uint coinCount => values.coinCount;
+        public uint currentCharacter => values.currentCharacter;
+        public uint cameraFov => values.cameraFov;
+        public uint cameraParameter => values.cameraParameter;
+        public uint loadingState => values.loadingState;
+        public uint currentJobId => values.currentJobId;
+        public uint currentCheckpointId => values.currentCheckpointId;
+        public uint currentMapId => values.currentMapId;
+        public uint gameSpeed => values.gameSpeed;
+        public uint pauseMenuState => values.pauseMenuState;
 
         // Cutscene skipping
-        public uint dialogueState => 0x39E4BF70;
-        public uint dialogueFrameCounter => 0x39E4BF54;
-        public uint fmvState => 0x9066FC;
+        public uint dialogueState => values.dialogueState;
+        public uint dialogueFrameCounter => values.dialogueFrameCounter;
+        public uint fmvState => values.fmvState;
 
-        public uint mapAOB => 0x7B4C58;
-        public uint spawnLocation => 0x7B4C98;
-        public uint loadType => 0x7B4C54;
-        public uint loadTrigger => 0x7B4C50; 
+        public uint mapAOB => values.mapAOB;
+        public uint spawnLocation => values.spawnLocation;
+        public uint loadType => values.loadType;
+        public uint loadTrigger => values.loadTrigger;
 
         // Gadgets
-        public uint gadgetUnlocks => 0x7A83A8;
-        public uint gadgetBindsSly => 0x7A836C;
-        public uint gadgetBindsBentley => 0x7A8384;
-        public uint gadgetBindsMurray => 0x7A839C;
+        public uint gadgetUnlocks => values.gadgetUnlocks;
+        public uint gadgetBindsSly => values.gadgetBindsSly;
+        public uint gadgetBindsBentley => values.gadgetBindsBentley;
+        public uint gadgetBindsMurray => values.gadgetBindsMurray;
 
         // Values for autosplitter
-        public uint parisStarted => 0x7A9D84;
-        public uint templeStarted => 0x7AA9F0;
-        public uint prisonStarted => 0x7AB38C;
-        public uint castleStarted => 0x7ABBE8;
-        public uint trainStarted => 0x7ABF28; // 2 = CC not started, 3 = CC started
-        public uint sawmillStarted => 0x7AC818;
-        public uint blimpStarted => 0x7AD150;
-        public uint parisCinemaState => 0x7A9AC0;
-        public uint rajanHealth => 0x35C2AE2C;
+        public uint parisStarted => values.parisStarted;
+        public uint templeStarted => values.templeStarted;
+        public uint prisonStarted => values.prisonStarted;
+        public uint castleStarted => values.castleStarted;
+        public uint trainStarted => values.trainStarted; // 2 = CC not started, 3 = CC started
+        public uint sawmillStarted => values.sawmillStarted;
+        public uint blimpStarted => values.blimpStarted;
+        public uint parisCinemaState => values.parisCinemaState;
+        public uint rajanHealth => values.rajanHealth;
 
         public enum LoadTypes : uint
         {
@@ -89,6 +262,16 @@ namespace racman
     public class sly2 : IGame, IAutosplitterAvailable
     {
         public static Sly2Addresses addr = new Sly2Addresses();
+
+        public static bool SupportsGameId(string gameId)
+        {
+            return Sly2Addresses.IsSupportedGameId(gameId);
+        }
+
+        public static string GetDisplayName(string gameId)
+        {
+            return Sly2Addresses.GetDisplayName(gameId);
+        }
 
         public uint mapIndex;
 
@@ -108,8 +291,10 @@ namespace racman
 
         public MapData[] maps;
 
-        public sly2(IPS3API api) : base(api)
+        public sly2(IPS3API api, string gameNameId = null) : base(api)
         {
+            addr = new Sly2Addresses(string.IsNullOrWhiteSpace(gameNameId) ? api.getGameTitleID() : gameNameId);
+
             this.maps = new MapData[]
             {
                 new MapData("Museum", "Y$KFjb_intro", 148457),
@@ -750,7 +935,7 @@ namespace racman
                 case " [OCC] Sly section 2": LoadJobHelper(7, 2962, 2977, 49370, "c_train_b", "EP6_ADDR", "EP6_OP_S2"); break;
                 case " [OCC] Neyla fight 2": LoadJobHelper(7, 2962, 2979, 393, "c_train_b", "EP6_ADDR", "EP6_OP_N2"); break;
                 case "Recon the Sawmill": LoadJobHelper(7, -1, -1, 33420, "c_sawmill_ext", "EP7_ADDR", "EP7_RECON_START"); break;
-                case " [RtS] Photos": LoadJobHelper(7, 3037, 3043, 33430, "c_sawmill_ligthhouse", "EP7_ADDR", "EP7_RECON_PHOTOS"); break;
+                case " [RtS] Photos": LoadJobHelper(7, 3037, 3043, 33430, "c_sawmill_lighthouse", "EP7_ADDR", "EP7_RECON_PHOTOS"); break;
                 case "Laser Redirection": LoadJobHelper(7, 3101, 3102, 393, "c_sawmill_burn", "EP7_ADDR", "EP7_LASER_START"); break;
                 case " [LR] Crystal 1": LoadJobHelper(7, 3101, 3105, 33507, "c_sawmill_ext", "EP7_ADDR", "EP7_LASER_C1"); break;
                 case " [LR] Crystal 2": LoadJobHelper(7, 3101, 3110, 33510, "c_sawmill_ext", "EP7_ADDR", "EP7_LASER_C2"); break;
