@@ -164,6 +164,14 @@ namespace racman
                     sly3.ShowDialog();
                 }
             }
+            else if (game == "NPUA80663")
+            {
+                Hide();
+                func.api.Notify($"SluMAN v{Assembly.GetExecutingAssembly().GetName().Version} connected (Speedrun Mode)");
+                Sly1Speedrun sly1 = new Sly1Speedrun(new sly1(func.api));
+                gameName = "SLY 1 (NTSC, PSN)";
+                sly1.ShowDialog();
+            }
             else if (sly2.SupportsGameId(game))
             {
                 if (speedrunMode)
