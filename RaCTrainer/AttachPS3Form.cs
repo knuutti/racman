@@ -242,5 +242,13 @@ namespace racman
 
             AttachGameEvent(true);
         }
+
+        private void AttachPS3Form_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (func.api != null)
+            {
+                func.api.Disconnect();
+            }
+        }
     }
 }

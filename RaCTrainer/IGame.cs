@@ -122,8 +122,12 @@ namespace racman
 
         public abstract void SetupFile();
 
-        public virtual void SetupInputDisplayMemorySubs()
+        public virtual void SetupInputDisplayMemorySubs(bool clearSubs = true)
         {
+            if (clearSubs)
+            {
+                ClearInputDisplayMemorySubs();
+            }
 
             SetupInputDisplayMemorySubsButtons();
 

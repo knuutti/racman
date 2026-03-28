@@ -15,8 +15,9 @@ namespace racman
         public Form InputDisplay;
         public Form GadgetsWindow;
         public sly3 game;
+        public string gameNameId;
 
-        public SLY3Form(sly3 game)
+        public SLY3Form(sly3 game, string gameNameId = "NPEA00343")
         {
             this.game = game;
             InitializeComponent();
@@ -26,77 +27,17 @@ namespace racman
 
             game.SetupInputDisplayMemorySubs();
             game.SetupWebManPopUp();
-            game.speedrunMode = false;
 
             game.CheckRunFileConfig();
 
-            // Setup disconnect/reconnect callbacks for XMB transitions
             if (func.api is Ratchetron r)
             {
-                r.setDisconnectCallback(() =>
-                {
-                    if (game.api is Ratchetron ratchetron)
-                    {
-                        ratchetron.ReleaseAllSubs();
-                    }
-                });
+                r.setDisconnectCallback(() => { DisconnectGame(false); });
 
-                r.setReconnectCallback(() =>
-                {
-                    int pid = 0;
-                    int attempts = 0;
-                    int maxAttempts = 30;
-                    
-                    while (pid == 0 && attempts < maxAttempts)
-                    {
-                        Thread.Sleep(3000);
-                        attempts++;
-                        
-                        try
-                        {
-                            pid = game.api.getCurrentPID();
-                            if (pid != 0)
-                            {
-                                Console.WriteLine($"Sly 3: Game detected after {attempts * 3} seconds (PID: {pid})");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"Sly 3: Still waiting for game... ({attempts * 3}s elapsed)");
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Sly 3: Error checking game status: {ex.Message}");
-                        }
-                    }
-                    
-                    if (pid == 0)
-                    {
-                        Console.WriteLine("Sly 3: Game did not start within 90 seconds");
-                        game.api.Notify("Sly 3: Reconnection timeout");
-                        return;
-                    }
-                    
-                    // Update PID for new game session
-                    AttachPS3Form.pid = pid;
-                    game.pid = pid;
-                    
-                    // Give game extra time to fully initialize
-                    Thread.Sleep(2000);
-                    
-                    // Re-establish memory subscriptions
-                    game.SetupInputDisplayMemorySubs();
-                    
-                    // Restart input timer if needed
-                    if (InputDisplay != null && !InputDisplay.IsDisposed)
-                    {
-                        game.InputsTimer.Start();
-                    }
-
-                    game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Practice Mode)");
-                    Console.WriteLine("Sly 3: Reconnection complete");
-                });
+                r.setReconnectCallback(() => { ReconnectGame(); });
             }
+
+            this.gameNameId = gameNameId;
         }
 
         private void inputDisplayButton_Click(object sender, EventArgs e)
@@ -201,6 +142,14 @@ namespace racman
             if (game.api is Ratchetron r)
             {
                 r.ReleaseAllSubs();
+            }
+            if (InputDisplay != null && !InputDisplay.IsDisposed)
+            {
+                InputDisplay.Close();
+            }
+            if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
+            {
+                GadgetsWindow.Close();
             }
             this.Close();
             Program.AttachPS3Form.Show();
@@ -321,6 +270,88 @@ namespace racman
 
         }
 
+        private void DisconnectGame(bool closeInputDisplay = true)
+        {
+            if (game.api is Ratchetron ratchetron)
+            {
+                ratchetron.ReleaseAllSubs();
+            }
+            CloseAdditionalWindows(closeInputDisplay);
+        }
+
+        private void CloseAdditionalWindows(bool closeInputDisplay = true)
+        {
+            if (closeInputDisplay && InputDisplay != null && !InputDisplay.IsDisposed)
+            {
+                InputDisplay.Close();
+            }
+            if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
+            {
+                GadgetsWindow.Close();
+            }
+        }
+
+        private void ReconnectGame()
+        {
+            int pid = 0;
+            int attempts = 0;
+            int maxAttempts = 30;
+
+            while (pid == 0 && attempts < maxAttempts)
+            {
+                Thread.Sleep(3000);
+                attempts++;
+
+                try
+                {
+                    if (game.api.getGameTitleID() != gameNameId)
+                    {
+                        Console.WriteLine("Different game detected.");
+                        return;
+                    }
+
+                    pid = game.api.getCurrentPID();
+                    if (pid != 0)
+                    {
+                        Console.WriteLine($"Sly 3: Game detected after {attempts * 3} seconds (PID: {pid})");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Sly 3: Still waiting for game... ({attempts * 3}s elapsed)");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Sly 3: Error checking game status: {ex.Message}");
+                }
+            }
+
+            if (pid == 0)
+            {
+                Console.WriteLine("Sly 3: Game did not start within 90 seconds");
+                game.api.Notify("Sly 3: Reconnection timeout");
+                return;
+            }
+
+            // Update PID for new game session
+            AttachPS3Form.pid = pid;
+            game.pid = pid;
+
+            // Give game extra time to fully initialize
+            Thread.Sleep(2000);
+
+            // Re-establish memory subscriptions
+            game.SetupInputDisplayMemorySubs(false);
+
+            // Restart input timer if needed
+            if (InputDisplay != null && !InputDisplay.IsDisposed)
+            {
+                game.InputsTimer.Start();
+            }
+
+            game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Practice Mode)");
+            Console.WriteLine("Sly 3: Reconnection complete");
+        }
 
         private void SetCoinsFromTextBox()
         {
@@ -360,9 +391,15 @@ namespace racman
             SetHealthFromTextBox();
         }
 
-        private void groupBox1_Enter_1(object sender, EventArgs e)
-        {
 
+
+        private void SLY3Form_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            if (Program.AttachPS3Form.Visible == false)
+            {
+                Program.AttachPS3Form.Close();
+                Environment.Exit(0);
+            }
         }
     }
 }

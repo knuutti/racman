@@ -40,19 +40,17 @@ namespace racman
             // 
             // IPTextBox
             // 
-            this.IPTextBox.Location = new System.Drawing.Point(25, 43);
-            this.IPTextBox.Margin = new System.Windows.Forms.Padding(4);
+            this.IPTextBox.Location = new System.Drawing.Point(19, 35);
             this.IPTextBox.Name = "IPTextBox";
-            this.IPTextBox.Size = new System.Drawing.Size(199, 22);
+            this.IPTextBox.Size = new System.Drawing.Size(150, 20);
             this.IPTextBox.TabIndex = 0;
             this.IPTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.IPTextBox_KeyDown);
             // 
             // attachButton
             // 
-            this.attachButton.Location = new System.Drawing.Point(25, 136);
-            this.attachButton.Margin = new System.Windows.Forms.Padding(4);
+            this.attachButton.Location = new System.Drawing.Point(19, 110);
             this.attachButton.Name = "attachButton";
-            this.attachButton.Size = new System.Drawing.Size(199, 37);
+            this.attachButton.Size = new System.Drawing.Size(149, 30);
             this.attachButton.TabIndex = 1;
             this.attachButton.Text = "Attach (Practice Mode)";
             this.attachButton.UseVisualStyleBackColor = true;
@@ -61,30 +59,27 @@ namespace racman
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(22, 23);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(16, 19);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(76, 16);
+            this.label1.Size = new System.Drawing.Size(61, 13);
             this.label1.TabIndex = 2;
             this.label1.Text = "IP Address:";
             // 
             // currentVerLabel
             // 
             this.currentVerLabel.AutoSize = true;
-            this.currentVerLabel.Location = new System.Drawing.Point(22, 230);
-            this.currentVerLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.currentVerLabel.Location = new System.Drawing.Point(16, 187);
             this.currentVerLabel.Name = "currentVerLabel";
-            this.currentVerLabel.Size = new System.Drawing.Size(93, 16);
+            this.currentVerLabel.Size = new System.Drawing.Size(79, 13);
             this.currentVerLabel.TabIndex = 3;
             this.currentVerLabel.Text = "SluMAN v0.0.0";
             this.currentVerLabel.Click += new System.EventHandler(this.currentVerLabel_Click);
             // 
             // attachRestrictedButton
             // 
-            this.attachRestrictedButton.Location = new System.Drawing.Point(25, 91);
-            this.attachRestrictedButton.Margin = new System.Windows.Forms.Padding(4);
+            this.attachRestrictedButton.Location = new System.Drawing.Point(19, 74);
             this.attachRestrictedButton.Name = "attachRestrictedButton";
-            this.attachRestrictedButton.Size = new System.Drawing.Size(199, 37);
+            this.attachRestrictedButton.Size = new System.Drawing.Size(149, 30);
             this.attachRestrictedButton.TabIndex = 5;
             this.attachRestrictedButton.Text = "Attach (Speedrun Mode)";
             this.attachRestrictedButton.UseVisualStyleBackColor = true;
@@ -93,18 +88,19 @@ namespace racman
             // rpcs3CheckBox
             // 
             this.rpcs3CheckBox.AutoSize = true;
-            this.rpcs3CheckBox.Location = new System.Drawing.Point(25, 190);
+            this.rpcs3CheckBox.Location = new System.Drawing.Point(19, 154);
+            this.rpcs3CheckBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.rpcs3CheckBox.Name = "rpcs3CheckBox";
-            this.rpcs3CheckBox.Size = new System.Drawing.Size(73, 20);
+            this.rpcs3CheckBox.Size = new System.Drawing.Size(61, 17);
             this.rpcs3CheckBox.TabIndex = 6;
             this.rpcs3CheckBox.Text = "RPCS3";
             this.rpcs3CheckBox.UseVisualStyleBackColor = true;
             // 
             // AttachPS3Form
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(258, 268);
+            this.ClientSize = new System.Drawing.Size(194, 218);
             this.Controls.Add(this.rpcs3CheckBox);
             this.Controls.Add(this.attachRestrictedButton);
             this.Controls.Add(this.currentVerLabel);
@@ -113,12 +109,12 @@ namespace racman
             this.Controls.Add(this.IPTextBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "AttachPS3Form";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "SluMAN :: Attach to game";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AttachPS3Form_FormClosing);
             this.Load += new System.EventHandler(this.AttachPS3Form_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
