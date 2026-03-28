@@ -27,7 +27,7 @@ init
     vars.cairoStarted = false;
     vars.palaceStarted = false;
 
-    current.isLoading = vars.reader.ReadByte();
+    current.isLoading = vars.reader.ReadUInt32();
     current.jobId = vars.reader.ReadUInt32();
     current.checkpointId = vars.reader.ReadUInt32();
     current.mapId = vars.reader.ReadUInt32();
@@ -52,7 +52,7 @@ update
 {
     vars.reader.BaseStream.Position = 0;
 
-    current.isLoading = vars.reader.ReadByte();
+    current.isLoading = vars.reader.ReadUInt32();
     current.jobId = vars.reader.ReadUInt32();
     current.checkpointId = vars.reader.ReadUInt32();
     current.mapId = vars.reader.ReadUInt32();

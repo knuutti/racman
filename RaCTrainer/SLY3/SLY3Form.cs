@@ -139,18 +139,7 @@ namespace racman
 
         private void switchGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (game.api is Ratchetron r)
-            {
-                r.ReleaseAllSubs();
-            }
-            if (InputDisplay != null && !InputDisplay.IsDisposed)
-            {
-                InputDisplay.Close();
-            }
-            if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
-            {
-                GadgetsWindow.Close();
-            }
+            DisconnectGame();
             this.Close();
             Program.AttachPS3Form.Show();
         }
@@ -341,7 +330,7 @@ namespace racman
             Thread.Sleep(2000);
 
             // Re-establish memory subscriptions
-            game.SetupInputDisplayMemorySubs(false);
+            game.SetupInputDisplayMemorySubs();
 
             // Restart input timer if needed
             if (InputDisplay != null && !InputDisplay.IsDisposed)
@@ -399,6 +388,37 @@ namespace racman
             {
                 Program.AttachPS3Form.Close();
                 Environment.Exit(0);
+            }
+        }
+
+        private void powerOffPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to turn off your PS3?", "Power Off PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    DisconnectGame();
+                    WebMAN.TurnOffPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
+
+            }
+        }
+
+        private void rebootPS3ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (game.api is Ratchetron r)
+            {
+                var dialogResult = MessageBox.Show("Do you want to reboot your PS3?", "Reboot PS3", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    DisconnectGame();
+                    WebMAN.RebootPS3(func.api.GetIP());
+                    this.Close();
+                    Program.AttachPS3Form.Show();
+                }
             }
         }
     }

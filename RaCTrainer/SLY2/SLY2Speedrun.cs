@@ -449,7 +449,7 @@ namespace racman
                 Console.WriteLine("Autosplitter restarted successfully.");
             }
 
-            game.SetupInputDisplayMemorySubs(false);
+            game.SetupInputDisplayMemorySubs();
 
             game.api.Notify($"SluMAN v{Assembly.GetEntryAssembly().GetName().Version.ToString(3)} (Speedrun Mode)");
             Console.WriteLine("Game reconnected.");

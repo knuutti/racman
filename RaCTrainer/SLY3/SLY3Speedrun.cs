@@ -466,7 +466,7 @@ namespace racman
             Thread.Sleep(2000);
 
             // Re-establish memory subscriptions
-            game.SetupInputDisplayMemorySubs(false);
+            game.SetupInputDisplayMemorySubs();
 
             // Restart input timer if needed
             if (InputDisplay != null && !InputDisplay.IsDisposed)

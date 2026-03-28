@@ -49,7 +49,7 @@ init
     vars.cooperHangarDefenceDone = 0;
     vars.hiddenFlightRosterDone = false;
 
-    current.isLoading = vars.reader.ReadByte();
+    current.isLoading = vars.reader.ReadUInt32();
     current.currentJob = vars.reader.ReadUInt32();
     current.currentCheckpoint = vars.reader.ReadUInt32();
     current.currentMap = vars.reader.ReadUInt32();
@@ -70,7 +70,7 @@ update
 {
     vars.reader.BaseStream.Position = 0;
 
-    current.isLoading = vars.reader.ReadByte();
+    current.isLoading = vars.reader.ReadUInt32();
     current.currentJob = vars.reader.ReadUInt32();
     current.currentCheckpoint = vars.reader.ReadUInt32();
     current.currentMap = vars.reader.ReadUInt32();

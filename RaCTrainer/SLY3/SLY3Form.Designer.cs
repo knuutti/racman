@@ -54,6 +54,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.jobGroupBox = new System.Windows.Forms.GroupBox();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.powerOffPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rebootPS3ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toggleGroupBox.SuspendLayout();
             this.reloadGroupBox.SuspendLayout();
@@ -98,7 +101,10 @@
             // 
             this.menuToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.switchGameToolStripMenuItem,
-            this.inputDisplayToolStripMenuItem});
+            this.inputDisplayToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.powerOffPS3ToolStripMenuItem,
+            this.rebootPS3ToolStripMenuItem});
             this.menuToolStripMenuItem.Name = "menuToolStripMenuItem";
             this.menuToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.menuToolStripMenuItem.Text = "Tools";
@@ -106,14 +112,14 @@
             // switchGameToolStripMenuItem
             // 
             this.switchGameToolStripMenuItem.Name = "switchGameToolStripMenuItem";
-            this.switchGameToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.switchGameToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.switchGameToolStripMenuItem.Text = "Switch Game/Mode";
             this.switchGameToolStripMenuItem.Click += new System.EventHandler(this.switchGameToolStripMenuItem_Click);
             // 
             // inputDisplayToolStripMenuItem
             // 
             this.inputDisplayToolStripMenuItem.Name = "inputDisplayToolStripMenuItem";
-            this.inputDisplayToolStripMenuItem.Size = new System.Drawing.Size(179, 22);
+            this.inputDisplayToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.inputDisplayToolStripMenuItem.Text = "Input Display";
             this.inputDisplayToolStripMenuItem.Click += new System.EventHandler(this.inputDisplayButton_Click);
             // 
@@ -603,6 +609,25 @@
             this.jobGroupBox.TabStop = false;
             this.jobGroupBox.Text = "Jobs";
             // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
+            // 
+            // powerOffPS3ToolStripMenuItem
+            // 
+            this.powerOffPS3ToolStripMenuItem.Name = "powerOffPS3ToolStripMenuItem";
+            this.powerOffPS3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.powerOffPS3ToolStripMenuItem.Text = "Power Off (PS3)";
+            this.powerOffPS3ToolStripMenuItem.Click += new System.EventHandler(this.powerOffPS3ToolStripMenuItem_Click);
+            // 
+            // rebootPS3ToolStripMenuItem
+            // 
+            this.rebootPS3ToolStripMenuItem.Name = "rebootPS3ToolStripMenuItem";
+            this.rebootPS3ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.rebootPS3ToolStripMenuItem.Text = "Reboot (PS3)";
+            this.rebootPS3ToolStripMenuItem.Click += new System.EventHandler(this.rebootPS3ToolStripMenuItem_Click);
+            // 
             // SLY3Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -661,5 +686,8 @@
         private System.Windows.Forms.GroupBox jobGroupBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem powerOffPS3ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rebootPS3ToolStripMenuItem;
     }
 }

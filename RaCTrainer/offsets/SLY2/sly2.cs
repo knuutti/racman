@@ -41,7 +41,7 @@ namespace racman
         public uint currentCharacter => 0x7A830C;
         public uint cameraFov => 0x49E054;
         public uint cameraParameter => 0x49E07C;
-        public uint loadingState => 0x7A7203;
+        public uint loadingState => 0x7A7200;
         public uint currentJobId => 0x4FEBF4;
         public uint currentCheckpointId => 0x4FEBF8;
         public uint currentMapId => 0x7B4CE0;
@@ -163,7 +163,7 @@ namespace racman
 
         public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
         {
-            (addr.loadingState, 1),
+            (addr.loadingState, 4),
             (addr.currentJobId, 4),
             (addr.currentCheckpointId, 4),
             (addr.currentMapId, 4),
@@ -861,6 +861,20 @@ namespace racman
         {
             SetJobState(-1, -1);
 
+        }
+
+        public void SetupWebManPopUp()
+        {
+            if (this.api is Ratchetron)
+            {
+                int webManPopUpSubID = api.SubMemory(pid, addr.loadingState, 4, (value) =>
+                {
+                    if (value[0] == 3)
+                    {
+                        WebMAN.DisplayVersionPopUp(func.api.GetIP());
+                    }
+                });
+            }
         }
     }
 }

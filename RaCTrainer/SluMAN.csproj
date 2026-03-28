@@ -483,6 +483,9 @@
     <EmbeddedResource Include="SLY2\Sly2Gadgets.resx">
       <DependentUpon>Sly2Gadgets.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SLY2\Sly2Practice.resx">
+      <DependentUpon>Sly2Practice.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SLY2\SLY2Speedrun.resx">
       <DependentUpon>SLY2Speedrun.cs</DependentUpon>
     </EmbeddedResource>
