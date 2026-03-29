@@ -1063,9 +1063,9 @@ namespace racman
         {
             if (this.api is Ratchetron)
             {
-                int webManPopUpSubID = api.SubMemory(pid, addr.loadingState, 4, (value) =>
+                int webManPopUpSubID = api.SubMemory(pid, addr.loadingState, 8, (value) =>
                 {
-                    if (value[0] == 3)
+                    if (value[4] == 3)
                     {
                         WebMAN.DisplayVersionPopUp(func.api.GetIP());
                     }

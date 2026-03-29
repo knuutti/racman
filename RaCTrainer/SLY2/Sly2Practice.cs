@@ -310,6 +310,7 @@ namespace racman
 
             // Re-establish memory subscriptions
             game.SetupInputDisplayMemorySubs();
+            game.SetupWebManPopUp();
 
             // Restart input timer if needed
             if (InputDisplay != null && !InputDisplay.IsDisposed)

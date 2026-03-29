@@ -238,29 +238,30 @@ namespace racman
 
             string gadgetHex = func.GetConfigData("config.txt", episodeKey + "_Sly2GadgetUnlocks");
             string bindingHex = func.GetConfigData("config.txt", episodeKey + "_Sly2GadgetBindings");
+            string lastGadgetUpdate = func.GetConfigData("config.txt", "GadgetConfigUpdate");
 
-            if (!string.IsNullOrEmpty(gadgetHex))
+            if (string.IsNullOrEmpty(gadgetHex) || string.IsNullOrEmpty(lastGadgetUpdate))
             {
-                try
-                {
-                    byte[] gadgetBytes = StringToByteArray(gadgetHex);
-                    byte[] bindingBytes = StringToByteArray(bindingHex);
+                gadgetHex = func.GetConfigData("data/s2_run_file_config.txt", episodeKey + "_Sly2GadgetUnlocks");
+                bindingHex = func.GetConfigData("data/s2_run_file_config.txt", episodeKey + "_Sly2GadgetBindings");
+                func.ChangeFileLines("config.txt", "29032026", "GadgetConfigUpdate");
+            }
 
-                    game.SetGadgetUnlocks(gadgetBytes);
+            try
+            {
+                byte[] gadgetBytes = StringToByteArray(gadgetHex);
+                byte[] bindingBytes = StringToByteArray(bindingHex);
 
-                    if (!string.IsNullOrEmpty(bindingHex))
-                    {
-                        game.SetGadgetBindings(bindingBytes);
-                    }
-                }
-                catch (Exception ex)
+                game.SetGadgetUnlocks(gadgetBytes);
+
+                if (!string.IsNullOrEmpty(bindingHex))
                 {
-                    MessageBox.Show($"Error loading gadget configuration: {ex.Message}", "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    game.SetGadgetBindings(bindingBytes);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show($"No saved gadget configuration found for {runFileComboBox.SelectedItem}", "No Configuration", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Error loading gadget configuration: {ex.Message}", "Load Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

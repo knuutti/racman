@@ -27,6 +27,8 @@ namespace racman
             mapComboBox.Items.AddRange(game.GetMapNames());
             mapComboBox.SelectedIndex = 0;
 
+            ApplySavedPreferences();
+
             game.SetupInputDisplayMemorySubs();
             game.SetupWebManPopUp();
 
