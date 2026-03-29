@@ -7,6 +7,7 @@ SluMAN is speedrun tool for Sly Cooper games for PS3 and RPCS3. SluMAN is design
 SluMAN also provides a Speedrun Mode, that provides the runners with an input display, autosplitter and run file loading (exact features might differ between games)
 
 ## Supported games
+- Sly Cooper and the Thievius Raccoonus (NPUA80663)
 - Sly 2: Band of Thieves (NPHA80175)
 - Sly 3: Honor Among Thieves (NPEA00343)
 
