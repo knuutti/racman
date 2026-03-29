@@ -244,7 +244,7 @@ namespace racman
 
             // Gadget states are stored as bits in 8-byte array
             // Default values: FE 00 02 00 00 02 00 00
-            var gadgetBytes = new byte[8] { 0xFE, 0x00, 0x02, 0x00, 0x00, 0x02, 0x00, 0x00 };
+            var gadgetBytes = new byte[8] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
             foreach (var gadget in updatedGadgetStates)
             {
@@ -431,7 +431,7 @@ namespace racman
 
             // Gadget states are stored as bits in 8-byte array
             // Default values: FE 00 02 00 00 02 00 00
-            var gadgetBytes = new byte[8] { 0xFE, 0x00, 0x02, 0x00, 0x00, 0x02, 0x00, 0x00 };
+            var gadgetBytes = new byte[8] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
             foreach (var gadget in updatedGadgetStates)
             {
