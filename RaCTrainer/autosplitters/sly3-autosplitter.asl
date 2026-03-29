@@ -748,5 +748,8 @@ split
 
 reset
 {
-
+    if (settings["GAUNTLET"] && current.currentCheckpoint == 4495 && current.mtcTimerValue == 1.0f) 
+    { 
+        return true; 
+    }
 }
