@@ -19,7 +19,7 @@ namespace racman
 
         public Form InputDisplay;
         public sly1 game;
-        public string gameNameId;
+        public string gameNameId = "NPUA80663";
         public AutosplitterHelper autosplitter;
 
         public Sly1Speedrun(sly1 game)

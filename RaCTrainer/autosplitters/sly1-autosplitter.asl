@@ -3,9 +3,7 @@ state("SluMAN") {}
 startup
 {	
     settings.Add("ANY", true, "Any%");
-    settings.Add("PARIS", false, "Split after Paris", "ANY");
     settings.Add("SKIPS", false, "Split after World Skips", "ANY");
-    settings.Add("MAPFREEZE", false, "Split on Map Freeze", "ANY");
 }
 
 init
@@ -88,10 +86,6 @@ onReset
 
 split
 {
-    if (settings["PARIS"] && old.levelId == 3 && current.worldId == 0 && old.worldId == 0 && current.levelId == 4)
-    {
-        vars.splitAfterLoad = true;
-    }
 
     if (current.levelId == 1 && current.worldId == 1 && vars.asaState == 0)
     {
@@ -213,12 +207,6 @@ split
     }
 
     // SPLIT TIMING LOGIC BELOW 
-
-    if (settings["MAPFREEZE"] && vars.splitAfterLoad)
-    {
-        vars.splitAfterLoad = false;
-        return true;
-    }
 
     if (vars.splitAfterLoad && current.loadingState == 0 && old.loadingState == 1)
     {
