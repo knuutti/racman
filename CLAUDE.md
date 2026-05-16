@@ -28,6 +28,8 @@ There are no automated tests.
 
 `AttachPS3Form` selects the API based on user choice (RPCS3 checkbox or old API checkbox), then calls `Attach()` which reads the game title ID and routes to the correct game form.
 
+> **Full Ratchetron API reference:** [`.claude/ratchetron-api.md`](.claude/ratchetron-api.md) — covers the complete TCP/UDP protocol, all `IPS3API` method signatures, byte-order rules, subscription lifecycle, conditions, and known limits. Use the `/ratchetron-api` skill to load this context automatically when working with memory code.
+
 ### Game layer
 
 `IGame` is the abstract base class for each supported game. Each game subclass holds an `IPS3API` reference and implements:
@@ -66,6 +68,17 @@ Settings are stored in `config.txt` (next to the executable) as `key = value` li
 ### Static utility class (`func.cs`)
 
 `func` is a static utility class with: hex/byte conversion helpers, config file I/O, memory read/write wrappers that delegate to `func.api`, and Win32 P/Invoke helpers for window enumeration.
+
+## Coding style
+
+Follow the conventions in [`.claude/coding-style.md`](.claude/coding-style.md). Key points:
+
+- Explicit types preferred over `var`
+- PascalCase methods, camelCase fields (no `_` prefix on private fields)
+- Game implementation classes are lowercase (`sly2`, `sly3`)
+- PS3 bytes are big-endian — always `.Reverse().ToArray()` before `BitConverter`
+- Bare `catch` blocks for expected non-fatal errors; `MessageBox` for user-facing failures
+- No async/await; no null-conditional `?.`; no LINQ query syntax
 
 ## Adding a new game
 
