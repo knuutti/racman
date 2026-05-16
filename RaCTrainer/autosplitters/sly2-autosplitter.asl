@@ -225,7 +225,7 @@ split
             // Waterpump Destruction
             vars.splitPending = true;
         }
-        else if (current.checkpointId == 1831 && old.checkpointsId != 1831)
+        else if (current.checkpointId == 1831 && old.checkpointId != 1831)
         {
             // Silence the Alarms
             vars.splitPending = true;
