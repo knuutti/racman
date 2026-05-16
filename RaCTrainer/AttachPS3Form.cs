@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using System.Reflection;
 using System.Threading;
 using racman.Memory;
-using racman.TOD;
 using System.Diagnostics;
 using AutoUpdaterDotNET;
 
@@ -203,12 +202,7 @@ namespace racman
                     }
                     else
                     {
-                        // memory viewer does not do anything if you dont initialize one of the forms... for whatever reason
-                        // horrible hack i am so fucking lazy to figure out this shit
-                        // fuck this codebase
-                        RAC3Form rac3 = new RAC3Form(new rac3(func.api)); 
-
-                        modLoaderForm = new ModLoaderForm();
+                            modLoaderForm = new ModLoaderForm();
                         modLoaderForm.Show();
 
                         memoryForm = new MemoryForm();

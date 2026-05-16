@@ -1,25 +1,16 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DiscordRPC;
 using Timer = System.Windows.Forms.Timer;
 
 namespace racman
 {
-    public class Sly1Addresses : IAddresses
+    public class Sly1Addresses
     {
-        // Unused RaC addresses
-        public uint boltCount => 0x0;
-        public uint currentPlanet => 0x0;
-        public uint loadPlanet => 0x0;
-        public uint mobyInstances => 0x0;
-        public uint analogOffset => 0x0;
-        public uint playerCoords => 0x0;
-
         public uint inputOffset => 0x428BFC;
         public uint analogOffsetLeft => 0x428B94;
         public uint analogOffsetRight => 0x428BC8;
@@ -32,7 +23,6 @@ namespace racman
         public uint charmsCount => 0x3E7FF0;
         public uint livesCount => 0x3E7FEC;
         public uint clockwerkHealth => 0x3630941C;
-
     }
 
     public class sly1 : IGame, IAutosplitterAvailable
@@ -41,8 +31,6 @@ namespace racman
 
         public sly1(IPS3API api) : base(api)
         {
-            // For compatibility with base class
-            this.planetsList = new string[] { };
         }
 
         public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
@@ -58,15 +46,12 @@ namespace racman
             (addr.clockwerkHealth, 4),
         };
 
-        public override void ResetLevelFlags() { }
-        public override void SetFastLoads(bool enabled = false) { }
-        public override void ToggleInfiniteAmmo(bool toggle = false) { }
-        public override void SetupFile() { }
+        public override void SavePosition() { }
+        public override void LoadPosition() { }
 
         public override void CheckInputs(object sender, EventArgs e)
         {
-            // Controller combos temporarily disabled for Sly 3
-            // TODO: Implement proper functions for Sly 3 before re-enabling
+            // TODO: Implement controller combos for Sly 1
             /*
             if (Inputs.RawInputs == ConfigureCombos.saveCombo && inputCheck)
             {
@@ -76,11 +61,6 @@ namespace racman
             if (Inputs.RawInputs == ConfigureCombos.loadCombo && inputCheck)
             {
                 LoadPosition();
-                inputCheck = false;
-            }
-            if (Inputs.RawInputs == ConfigureCombos.dieCombo && inputCheck)
-            {
-                KillYourself();
                 inputCheck = false;
             }
             if (Inputs.RawInputs == ConfigureCombos.runScriptCombo && inputCheck)
@@ -94,8 +74,6 @@ namespace racman
             }
             */
         }
-
-        public override void CheckPlanetForDiscordRPC(object sender = null, EventArgs e = null) { }
 
         protected override void SetupInputDisplayMemorySubsButtons()
         {
@@ -164,7 +142,7 @@ namespace racman
 
         public void WriteMemoryRegion(uint startAddress, byte[] data)
         {
-            var spliceSize = 256; // Write in chunks to avoid overwhelming the API
+            var spliceSize = 256;
             for (int i = 0; i < data.Length; i += spliceSize)
             {
                 int chunkSize = Math.Min(spliceSize, data.Length - i);
@@ -198,6 +176,5 @@ namespace racman
         {
             return api.ReadMemory(pid, startAddress, size);
         }
-
     }
 }

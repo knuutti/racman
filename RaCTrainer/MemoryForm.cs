@@ -6,20 +6,15 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static racman.rac2;
 
 namespace racman
-{ 
+{
     public partial class MemoryForm : Form
     {
-        public static uint mobyInstancesAddr;
-
         public class WatchedAddress
         {
             public uint address;
@@ -33,18 +28,12 @@ namespace racman
             public string name;
         }
 
-        public static void SetMobyInstancesAddress(uint address)
-        {
-            mobyInstancesAddr = address;
-        }
-
         public MemoryForm()
         {
             InitializeComponent();
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 
             watchedMemoryAddressesListView.DoubleBuffering(true);
-            mobyInspectorListView.DoubleBuffering(true);
         }
 
         IPS3API api = func.api;
@@ -298,163 +287,6 @@ namespace racman
 
                     watchedMemoryAddressesListView.Items.Remove(focusedItem);
                 }
-            }
-        }
-
-        public void PopulateMobysComboBoxRac2()
-        {
-            // Clear combo box
-            selectedMobyComboBox.Items.Clear();
-
-            var pid = func.api.getCurrentPID();
-
-            uint instance = BitConverter.ToUInt32(func.api.ReadMemory(pid, mobyInstancesAddr, 4).Reverse().ToArray(), 0);
-            uint end = BitConverter.ToUInt32(func.api.ReadMemory(pid, mobyInstancesAddr + 8, 4).Reverse().ToArray(), 0);
-
-            int offset_oClass, offset_state;
-
-            if(AttachPS3Form.game == "NPEA00385")
-            {
-                // Dynamically get offsets from the RAC1.Moby struct
-                offset_oClass = (int)Marshal.OffsetOf(typeof(rac1.Moby), nameof(rac1.Moby.oClass));
-                offset_state = (int)Marshal.OffsetOf(typeof(rac1.Moby), nameof(rac1.Moby.state));
-            }
-            else
-            {
-                // Dynamically get offsets from the RAC2.Moby struct
-                offset_oClass = (int)Marshal.OffsetOf(typeof(rac2.Moby), nameof(rac2.Moby.oClass));
-                offset_state = (int)Marshal.OffsetOf(typeof(rac2.Moby), nameof(rac2.Moby.state));
-            }
-
-
-            while (instance < end)
-            {
-                // Read oClass (2 bytes)
-                ushort oClass = BitConverter.ToUInt16(
-                    func.api.ReadMemory(pid, instance + (uint)offset_oClass, 2).Reverse().ToArray(), 0);
-
-                // Read state (1 byte)
-                byte state = func.api.ReadMemory(pid, instance + (uint)offset_state, 1)[0];
-
-                // Add formatted entry to the combo box
-                selectedMobyComboBox.Items.Add($"0x{instance:X}: 0x{oClass:X} ({oClass}) (state: {state})");
-
-                // Next Moby (each entry = 0x100 bytes)
-                instance += 0x100;
-            }
-        }
-        public void PopulateMobyInspectorRac2(int index)
-        {
-            var pid = func.api.getCurrentPID();
-            uint instance = BitConverter.ToUInt32(func.api.ReadMemory(pid, mobyInstancesAddr, 4).Reverse().ToArray(), 0);
-
-            byte[] memory = func.api.ReadMemory(pid, instance + (0x100 * (uint)index), 0x100);
-
-
-            object moby;
-            Type type;
-            FieldInfo[] fields;
-
-            // Pick which Moby type to use based on the game
-            if (AttachPS3Form.game == "NPEA00385")
-            {
-                moby = rac1.Moby.ByteArrayToMoby(memory);
-                type = typeof(rac1.Moby);
-                fields = type.GetFields();
-            }
-            else
-            {
-                moby = rac2.Moby.ByteArrayToMoby(memory);
-                type = typeof(rac2.Moby);
-                fields = type.GetFields();
-            }
-
-            while (mobyInspectorListView.Items.Count < fields.Length)
-                mobyInspectorListView.Items.Add(new ListViewItem(new string[3]));
-
-            for (int i = 0; i < fields.Length; i++)
-            {
-                var field = fields[i];
-                var offset = Marshal.OffsetOf(type, field.Name).ToInt32();
-
-                var item = mobyInspectorListView.Items[i];
-                item.Text = $"0x{(instance + (0x100 * (uint)index) + offset):X}";
-                item.SubItems[1].Text = field.Name;
-
-                object value = field.GetValue(moby);
-                string display = "";
-
-                if (field.FieldType == typeof(rac2.Vec4))
-                {
-                    var vec = (rac2.Vec4)value;
-                    display = $"x: {vec.x}, y: {vec.y}, z: {vec.z}, w: {vec.w}";
-                }
-                else if (field.FieldType == typeof(GamePtr))
-                {
-                    display = $"0x{((GamePtr)value).addr:X}";
-                }
-                else if (field.FieldType == typeof(uint) ||
-                         field.FieldType == typeof(ushort) ||
-                         field.FieldType == typeof(byte))
-                {
-                    display = $"0x{Convert.ToUInt64(value):X}";
-                }
-                else if (field.FieldType == typeof(int) ||
-                         field.FieldType == typeof(short))
-                {
-                    long signedValue = Convert.ToInt64(value);
-                    display = $"0x{(signedValue & 0xFFFFFFFF):X}";
-                }
-
-                else
-                {
-                    display = value?.ToString() ?? "null";
-                }
-
-                item.SubItems[2].Text = display;
-            }
-        }
-
-        private void refreshMobysButton_Click(object sender, EventArgs e)
-        {
-            if (AttachPS3Form.game == "NPEA00386" || AttachPS3Form.game == "NPEA00385" || AttachPS3Form.game == "NPEA00387" )
-            {
-                WebMAN wmm = new WebMAN(func.api.GetIP());
-                wmm.PauseRSX();
-                   
-                try
-                {
-                    PopulateMobysComboBoxRac2();
-                } catch (Exception ex)
-                {
-                    wmm.ContinueRSX();
-                    throw ex;
-                }
-                wmm.ContinueRSX();
-            } 
-            else
-            {
-                MessageBox.Show("Game is not supported.");
-                Console.WriteLine(AttachPS3Form.game);
-            }
-        }
-        System.Timers.Timer timer = new System.Timers.Timer(1000); // Set up the timer for 1 second intervals (1000 milliseconds = 1 second)
-
-        private void selectedMobyComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (AttachPS3Form.game == "NPEA00386" || AttachPS3Form.game == "NPEA00387" || AttachPS3Form.game == "NPEA00385")
-            {
-                timer.Elapsed += (s, evt) =>
-                {
-                    // Inline function (or lambda expression) to be executed every second
-                    this.Invoke(new Action(() =>
-                    {
-                        PopulateMobyInspectorRac2(((ComboBox)sender).SelectedIndex);
-                    }));
-                };
-                timer.Start(); // Start the timer
-
-                PopulateMobyInspectorRac2(((ComboBox)sender).SelectedIndex);
             }
         }
 

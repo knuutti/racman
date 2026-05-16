@@ -30,7 +30,7 @@ namespace racman
         int currentInput;
         bool input = false;
 
-        public static int loadCombo, saveCombo, loadSetAsideCombo, dieCombo, loadPlanetCombo, runScriptCombo;
+        public static int loadCombo, saveCombo, loadSetAsideCombo, dieCombo, runScriptCombo;
         public static void GetCombos()
         {
             try
@@ -39,7 +39,6 @@ namespace racman
                 saveCombo = Convert.ToInt32(func.GetConfigData("config.txt", "savePosCombo"));
                 loadSetAsideCombo = Convert.ToInt32(func.GetConfigData("config.txt", "loadSetAsideCombo"));
                 dieCombo = Convert.ToInt32(func.GetConfigData("config.txt", "dieCombo"));
-                loadPlanetCombo = Convert.ToInt32(func.GetConfigData("config.txt", "loadPlanetCombo"));
                 runScriptCombo = Convert.ToInt32(func.GetConfigData("config.txt", "runScriptCombo"));
             }
             catch
@@ -48,14 +47,12 @@ namespace racman
                 saveCombo = saveCombo == 0 ? 0xb : saveCombo;
                 loadCombo = loadCombo == 0 ? 0x7 : loadCombo;
                 dieCombo = dieCombo == 0 ? 0x5 : dieCombo;
-                loadPlanetCombo = loadPlanetCombo == 0 ? 0x600 : loadPlanetCombo;
                 loadSetAsideCombo = loadSetAsideCombo == 0 ? 0x100 : loadSetAsideCombo;
                 runScriptCombo = runScriptCombo == 0 ? 0xFF : runScriptCombo;
             }
         }
         public void UpdateCombos()
         {
-            loadPlanetTextBox.Text = String.Join(" + ", Inputs.DecodeMask(loadPlanetCombo));
             dieTextBox.Text = String.Join(" + ", Inputs.DecodeMask(dieCombo));
             loadSetAsideComboTextBox.Text = String.Join(" + ", Inputs.DecodeMask(loadSetAsideCombo));
             loadPositionTextBox.Text = String.Join(" + ", Inputs.DecodeMask(loadCombo));
@@ -66,7 +63,6 @@ namespace racman
             func.ChangeFileLines("config.txt", saveCombo.ToString(), "savePosCombo");
             func.ChangeFileLines("config.txt", loadSetAsideCombo.ToString(), "loadSetAsideCombo");
             func.ChangeFileLines("config.txt", dieCombo.ToString(), "dieCombo");
-            func.ChangeFileLines("config.txt", loadPlanetCombo.ToString(), "loadPlanetCombo");
             func.ChangeFileLines("config.txt", runScriptCombo.ToString(), "runScriptCombo");
             input = false;
             timer.Enabled = false;
@@ -83,11 +79,6 @@ namespace racman
             if (currentInput != Inputs.RawInputs)
             {
                 input = true;
-            }
-            if(loadPlanetTextBox.Text == EnterInput && input == true)
-            {
-                loadPlanetCombo = Inputs.RawInputs;
-                UpdateCombos();
             }
             if (dieTextBox.Text == EnterInput && input == true)
             {
@@ -114,12 +105,6 @@ namespace racman
                 runScriptCombo = Inputs.RawInputs;
                 UpdateCombos();
             } 
-        }
-
-        private void loadPlanetTextBox_Click(object sender, EventArgs e)
-        {
-            loadPlanetTextBox.Text = EnterInput;
-            timer.Enabled = true;
         }
 
         private void ConfigureCombos_FormClosing(object sender, FormClosingEventArgs e)

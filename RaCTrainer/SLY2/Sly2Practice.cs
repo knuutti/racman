@@ -142,10 +142,6 @@ namespace racman
             {
                 game.InputsTimer.Stop();
             }
-            if (game.DiscordTimer != null)
-            {
-                game.DiscordTimer.Stop();
-            }
 
             try
             {

@@ -149,9 +149,7 @@ namespace racman
             state.RegisterFunction("writememory", typeof(LuaFunctions).GetMethod("WriteMemoryAsync"));
             state.RegisterFunction("net_receive", typeof(LuaFunctions).GetMethod("ReceiveSockData"));
             state.RegisterFunction("read_byte", typeof(LuaFunctions).GetMethod("ReadOneByte"));
-            state.RegisterFunction("set_lap_flag_addr", typeof(LuaFunctions).GetMethod("SetLapFlagAddress"));
-
-            state["Ratchetron"] = func.api;
+            state["API"] = func.api;
             state["GAME_PID"] = func.api.getCurrentPID();
             state["Inputs"] = new InputsClass();
 
@@ -368,7 +366,7 @@ namespace racman
             List<byte> buffer = new List<byte>();
 
             int pid = AttachPS3Form.pid;
-            Ratchetron api = (Ratchetron)func.api;
+            IPS3API api = func.api;
 
             for (uint i = 0; i <= size; i+=0x8000)
             {
@@ -408,7 +406,7 @@ namespace racman
         public int SubscribeMemory(int address, int size, int condition, LuaFunction callback)
         {
             int pid = AttachPS3Form.pid;
-            Ratchetron api = (Ratchetron)func.api;
+            IPS3API api = func.api;
 
             var subID = -1;
             subID = api.SubMemory(pid, (uint)address, (uint)size, (IPS3API.MemoryCondition)condition, (value) =>
@@ -449,7 +447,7 @@ namespace racman
         public static void WriteMemoryAsync(uint address, byte[] memory)
         {
             int pid = AttachPS3Form.pid;
-            Ratchetron api = (Ratchetron)func.api;
+            IPS3API api = func.api;
 
             new Thread(() =>
             {
@@ -482,46 +480,9 @@ namespace racman
         public static int ReadOneByte(int address)
         {
             int pid = AttachPS3Form.pid;
-            Ratchetron api = (Ratchetron)func.api;
+            IPS3API api = func.api;
             var res = api.ReadMemory(pid, (uint)address, 1);
             return (int)res[0];
-        }
-
-        private static void SetLapFlagAddressInForm(RAC2Form rac2form, int value)
-        {
-            if (rac2form.InvokeRequired)
-            {
-                Action safeWrite = delegate { rac2form?.UpdateLapFlag(value); };
-                rac2form?.Invoke(safeWrite);
-            }
-            else
-            {
-                rac2form?.UpdateLapFlag(value);
-            }
-        }
-
-        // Special hook for use with the lap skip trainer UI
-        public static void SetLapFlagAddress(int address)
-        {
-            RAC2Form rac2form = null;
-            for (var i = 0; i < Application.OpenForms.Count; i++)
-            {
-                // lmao 
-                var form = Application.OpenForms[i];
-                if (form is RAC2Form)
-                    rac2form = (RAC2Form)form;
-            }
-
-            if (rac2form == null)
-                throw new Exception("Called SetLapFlagAddress from non-RC2 game!");
-            SetLapFlagAddressInForm(rac2form, 0);
-
-            int pid = AttachPS3Form.pid;
-            Ratchetron api = (Ratchetron)func.api;
-            api.SubMemory(pid, (uint)address, 1, (flag) =>
-            {
-                SetLapFlagAddressInForm(rac2form, flag[0]);
-            });
         }
     }
 
