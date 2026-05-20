@@ -5,21 +5,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DiscordRPC;
 using Timer = System.Windows.Forms.Timer;
 
 namespace racman
 {
-    public class Sly3Addresses : IAddresses
+    public class Sly3Addresses
     {
-        // Unused RaC addresses
-        public uint boltCount => 0x0;
-        public uint currentPlanet => 0x0; 
-        public uint loadPlanet => 0x0;  
-        public uint mobyInstances => 0x0;
-        public uint analogOffset => 0x0;
-        public uint playerCoords => 0x0;
-
         public uint inputOffset => 0x5EC5AA;
         public uint analogOffsetLeft => 0x5EC5F0;
         public uint analogOffsetRight => 0x5EC61C;
@@ -146,8 +137,6 @@ namespace racman
                 new MapData("Inner Sanctum", "Y$KFm_boss", 0)
             };
             
-            // For compatibility with base class
-            this.planetsList = new string[] { };
         }
 
         public IEnumerable<(uint addr, uint size)> AutosplitterAddresses => new (uint, uint)[]
@@ -169,15 +158,9 @@ namespace racman
             (addr.pauseLock, 4),
         };
 
-        public override void ResetLevelFlags() { }
-        public override void SetFastLoads(bool enabled = false) { }
-        public override void ToggleInfiniteAmmo(bool toggle = false) { }
-        public override void SetupFile() { }
-
         public override void CheckInputs(object sender, EventArgs e)
         {
-            // Controller combos temporarily disabled for Sly 3
-            // TODO: Implement proper functions for Sly 3 before re-enabling
+            // TODO: Implement controller combos for Sly 3
             /*
             if (Inputs.RawInputs == ConfigureCombos.saveCombo && inputCheck)
             {
@@ -187,11 +170,6 @@ namespace racman
             if (Inputs.RawInputs == ConfigureCombos.loadCombo && inputCheck)
             {
                 LoadPosition();
-                inputCheck = false;
-            }
-            if (Inputs.RawInputs == ConfigureCombos.dieCombo && inputCheck)
-            {
-                KillYourself();
                 inputCheck = false;
             }
             if (Inputs.RawInputs == ConfigureCombos.runScriptCombo && inputCheck)
@@ -205,8 +183,6 @@ namespace racman
             }
             */
         }
-
-        public override void CheckPlanetForDiscordRPC(object sender = null, EventArgs e = null) { }
 
         protected override void SetupInputDisplayMemorySubsButtons()
         {

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -73,9 +73,6 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="NLua, Version=1.6.0.0, Culture=neutral, PublicKeyToken=6a194c04b9c89217, processorArchitecture=MSIL">
       <HintPath>..\packages\NLua.1.6.0\lib\net46\NLua.dll</HintPath>
     </Reference>
@@ -102,18 +99,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ACIT\ACITForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ACIT\ACITForm.Designer.cs">
-      <DependentUpon>ACITForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ACIT\ACITUnlocks.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ACIT\ACITUnlocks.Designer.cs">
-      <DependentUpon>ACITUnlocks.cs</DependentUpon>
-    </Compile>
     <Compile Include="AttachPS3Form.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -151,110 +136,6 @@
     <Compile Include="FlagViewer.Designer.cs">
       <DependentUpon>FlagViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Memory\RPCS3.cs" />
-    <Compile Include="offsets\ACIT\ACITAddresses.cs" />
-    <Compile Include="offsets\ACIT\ACITWeapon.cs" />
-    <Compile Include="offsets\ACIT\ACITWeaponFactory.cs" />
-    <Compile Include="offsets\ACIT\ACITTimer.cs" />
-    <Compile Include="offsets\BH\hackpack.cs" />
-    <Compile Include="offsets\RAC4\BotsUnlocks.cs" />
-    <Compile Include="offsets\RAC4\BotsUnlocksFactory.cs" />
-    <Compile Include="ChargebootColorPicker.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ChargebootColorPicker.Designer.cs">
-      <DependentUpon>ChargebootColorPicker.cs</DependentUpon>
-    </Compile>
-    <Compile Include="offsets\SLY1\sly1.cs" />
-    <Compile Include="offsets\SLY2\sly2.cs" />
-    <Compile Include="offsets\SLY4\sly4.cs" />
-    <Compile Include="offsets\TOD\tod.cs" />
-    <Compile Include="offsets\SLY3\sly3.cs" />
-    <Compile Include="RAC1Mp\RAC1MpForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC1Mp\RAC1MpForm.Designer.cs">
-      <DependentUpon>RAC1MpForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC1Mp\RAC1MpHovenHealthForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC1Mp\RAC1MpHovenHealthForm.Designer.cs">
-      <DependentUpon>RAC1MpHovenHealthForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC1Mp\RAC1MpUnlocks.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC1Mp\RAC1MpUnlocks.Designer.cs">
-      <DependentUpon>RAC1MpUnlocks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC1Mp\RaC1MpVersionForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC2\RC2Unlocks.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC2\RC2Unlocks.Designer.cs">
-      <DependentUpon>RC2Unlocks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC2\RAC2JPForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC2\RAC2JPForm.Designer.cs">
-      <DependentUpon>RAC2JPForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="offsets\RAC2\rac2jp.cs" />
-    <Compile Include="RAC2\TAS\Racket2API.cs" />
-    <Compile Include="RAC2\TAS\Rackets2GUI.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC2\TAS\Rackets2GUI.Designer.cs">
-      <DependentUpon>Rackets2GUI.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC2\TAS\ScriptSerializer.cs" />
-    <Compile Include="RAC3\SavefileLoader.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC3\SavefileLoader.Designer.cs">
-      <DependentUpon>SavefileLoader.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC3\UYAUnlocks.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC3\UYAUnlocks.Designer.cs">
-      <DependentUpon>UYAUnlocks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="MemoryForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MemoryForm.Designer.cs">
-      <DependentUpon>MemoryForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC4\FormAutosplitter.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC4\FormAutosplitter.Designer.cs">
-      <DependentUpon>FormAutosplitter.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC4\RAC4BotsUnlocks.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC4\RAC4BotsUnlocks.Designer.cs">
-      <DependentUpon>RAC4BotsUnlocks.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RacmanScripting.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RacmanScripting.Designer.cs">
-      <DependentUpon>RacmanScripting.cs</DependentUpon>
-    </Compile>
-    <Compile Include="LuaAutomation.cs" />
-    <Compile Include="RacManConsole.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RacManConsole.Designer.cs">
-      <DependentUpon>RacManConsole.cs</DependentUpon>
-    </Compile>
     <Compile Include="IGame.cs" />
     <Compile Include="InputDisplay.cs">
       <SubType>Form</SubType>
@@ -263,69 +144,57 @@
       <DependentUpon>InputDisplay.cs</DependentUpon>
     </Compile>
     <Compile Include="Inputs.cs" />
+    <Compile Include="LuaAutomation.cs" />
     <Compile Include="Memory\IPS3API.cs" />
+    <Compile Include="Memory\Ratchetron.cs" />
+    <Compile Include="Memory\RPCS3.cs" />
+    <Compile Include="Memory\WebMAN.cs" />
+    <Compile Include="MemoryForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MemoryForm.Designer.cs">
+      <DependentUpon>MemoryForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ModLoaderForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="ModLoaderForm.Designer.cs">
       <DependentUpon>ModLoaderForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="offsets\ACIT\acit.cs" />
-    <Compile Include="offsets\RAC2\rac2.cs" />
-    <Compile Include="offsets\RAC4\rac4.cs" />
+    <Compile Include="offsets\BH\hackpack.cs" />
+    <Compile Include="offsets\SLY1\sly1.cs" />
+    <Compile Include="offsets\SLY2\sly2.cs" />
+    <Compile Include="offsets\SLY3\sly3.cs" />
+    <Compile Include="offsets\SLY4\sly4.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="RAC2\RAC2Form.cs">
+    <Compile Include="RacManConsole.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="RAC2\RAC2Form.Designer.cs">
-      <DependentUpon>RAC2Form.cs</DependentUpon>
+    <Compile Include="RacManConsole.Designer.cs">
+      <DependentUpon>RacManConsole.cs</DependentUpon>
+    </Compile>
+    <Compile Include="RacmanScripting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RacmanScripting.Designer.cs">
+      <DependentUpon>RacmanScripting.cs</DependentUpon>
     </Compile>
     <Compile Include="SimpleInputDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SimpleInputDialogForm.Designer.cs">
       <DependentUpon>SimpleInputDialogForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Memory\WebMAN.cs" />
-    <Compile Include="func.cs" />
-    <Compile Include="RAC1\HovenHealthForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC1\HovenHealthForm.Designer.cs">
-      <DependentUpon>HovenHealthForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="offsets\RAC1\rac1.cs" />
-    <Compile Include="Memory\Ratchetron.cs" />
-    <Compile Include="RAC1\UnlocksWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC1\UnlocksWindow.Designer.cs">
-      <DependentUpon>UnlocksWindow.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC1\RAC1Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC1\RAC1Form.Designer.cs">
-      <DependentUpon>RAC1Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="RAC3\RAC3Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC3\RAC3Form.Designer.cs">
-      <DependentUpon>RAC3Form.cs</DependentUpon>
-    </Compile>
-    <Compile Include="offsets\RAC3\rac3.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RAC4\RAC4Form.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RAC4\RAC4Form.Designer.cs">
-      <DependentUpon>RAC4Form.cs</DependentUpon>
     </Compile>
     <Compile Include="SLY1\Sly1Speedrun.cs">
       <SubType>Form</SubType>
@@ -369,25 +238,9 @@
     <Compile Include="SLY3\SLY3Speedrun.Designer.cs">
       <DependentUpon>SLY3Speedrun.cs</DependentUpon>
     </Compile>
-    <Compile Include="TOD\CategoryChoiceForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TOD\CategoryChoiceForm.Designer.cs">
-      <DependentUpon>CategoryChoiceForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TOD\TODForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TOD\TODForm.Designer.cs">
-      <DependentUpon>TODForm.cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="ACIT\ACITForm.resx">
-      <DependentUpon>ACITForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ACIT\ACITUnlocks.resx">
-      <DependentUpon>ACITUnlocks.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <Compile Include="func.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Include="AttachPS3Form.resx">
       <DependentUpon>AttachPS3Form.cs</DependentUpon>
     </EmbeddedResource>
@@ -407,87 +260,28 @@
     <EmbeddedResource Include="FlagViewer.resx">
       <DependentUpon>FlagViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MemoryForm.resx">
-      <DependentUpon>MemoryForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ChargebootColorPicker.resx">
-      <DependentUpon>ChargebootColorPicker.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC1Mp\RAC1MpForm.resx">
-      <DependentUpon>RAC1MpForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC1Mp\RAC1MpHovenHealthForm.resx">
-      <DependentUpon>RAC1MpHovenHealthForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC1Mp\RAC1MpUnlocks.resx">
-      <DependentUpon>RAC1MpUnlocks.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC1Mp\RaC1MpVersionForm.resx">
-      <DependentUpon>RaC1MpVersionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC2\RAC2JPForm.resx">
-      <DependentUpon>RAC2JPForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC2\TAS\Rackets2GUI.resx">
-      <DependentUpon>Rackets2GUI.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC3\SavefileLoader.resx">
-      <DependentUpon>SavefileLoader.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC4\FormAutosplitter.resx">
-      <DependentUpon>FormAutosplitter.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC4\RAC4BotsUnlocks.resx">
-      <DependentUpon>RAC4BotsUnlocks.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RacmanScripting.resx">
-      <DependentUpon>RacmanScripting.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RacManConsole.resx">
-      <DependentUpon>RacManConsole.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC1\HovenHealthForm.resx">
-      <DependentUpon>HovenHealthForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="InputDisplay.resx">
       <DependentUpon>InputDisplay.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MemoryForm.resx">
+      <DependentUpon>MemoryForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ModLoaderForm.resx">
       <DependentUpon>ModLoaderForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC2\RAC2Form.resx">
-      <DependentUpon>RAC2Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC2\RC2Unlocks.resx">
-      <DependentUpon>RC2Unlocks.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SimpleInputDialogForm.resx">
-      <DependentUpon>SimpleInputDialogForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC1\UnlocksWindow.resx">
-      <DependentUpon>UnlocksWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC1\RAC1Form.resx">
-      <DependentUpon>RAC1Form.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RAC3\RAC3Form.resx">
-      <DependentUpon>RAC3Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="RAC4\RAC4Form.resx">
-      <DependentUpon>RAC4Form.cs</DependentUpon>
+    <EmbeddedResource Include="RacManConsole.resx">
+      <DependentUpon>RacManConsole.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <EmbeddedResource Include="RAC3\UYAUnlocks.resx">
-      <DependentUpon>UYAUnlocks.cs</DependentUpon>
+    <EmbeddedResource Include="RacmanScripting.resx">
+      <DependentUpon>RacmanScripting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SimpleInputDialogForm.resx">
+      <DependentUpon>SimpleInputDialogForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SLY1\Sly1Speedrun.resx">
       <DependentUpon>Sly1Speedrun.cs</DependentUpon>
@@ -509,12 +303,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SLY3\SLY3Speedrun.resx">
       <DependentUpon>SLY3Speedrun.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TOD\CategoryChoiceForm.resx">
-      <DependentUpon>CategoryChoiceForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TOD\TODForm.resx">
-      <DependentUpon>TODForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
