@@ -66,10 +66,12 @@ namespace racman
 
         private void loadPosButton_Click(object sender, EventArgs e)
         {
+            game.LoadPosition();
         }
 
         private void savePosButton_Click(object sender, EventArgs e)
         {
+            game.SavePosition();
         }
 
         private void coinsTextBox_KeyDown(object sender, KeyEventArgs e)
@@ -92,8 +94,79 @@ namespace racman
 
         }
 
+        private void invulnerabilityCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetInvulnerability(invulnerabilityCheckBox.Checked);
+        }
+
+        private void infiniteJumpsCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetInfiniteDoubleJump(infiniteJumpsCheckBox.Checked);
+        }
+
+        private void guardAICheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetGuardAI(guardAICheckBox.Checked);
+        }
+
+        private void undetectableCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetUndetectable(undetectableCheckBox.Checked);
+        }
+
+        private void deathBarriersCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetDeathBarriers(deathBarriersCheckBox.Checked);
+        }
+
+        private void gameClockCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetGameClockFrozen(gameClockCheckBox.Checked);
+        }
+
+        private void setJuiceButton_Click(object sender, EventArgs e)
+        {
+            if (int.TryParse(juiceTextBox.Text, out int juice))
+                game.SetGadgetPower(juice);
+            else
+                MessageBox.Show("Please enter a valid number.", "Invalid Input",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void setSpeedButton_Click(object sender, EventArgs e)
+        {
+            if (float.TryParse(speedTextBox.Text, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out float speed))
+                game.SetSpeedMultiplier(speed);
+            else
+                MessageBox.Show("Please enter a valid number (e.g. 1.5).", "Invalid Input",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void setFOVButton_Click(object sender, EventArgs e)
+        {
+            if (float.TryParse(fovTextBox.Text, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out float fov))
+                game.SetCameraFOV(fov);
+            else
+                MessageBox.Show("Please enter a valid number.", "Invalid Input",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void setDrawDistButton_Click(object sender, EventArgs e)
+        {
+            if (float.TryParse(drawDistTextBox.Text, System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out float dist))
+                game.SetDrawDistance(dist);
+            else
+                MessageBox.Show("Please enter a valid number.", "Invalid Input",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         private void SLY3Form_FormClosing(object sender, FormClosingEventArgs e)
         {
+            game.ReleaseToggleSubs();
+
             // Make sure all child forms are closed
             if (InputDisplay != null && !InputDisplay.IsDisposed)
             {

@@ -54,6 +54,11 @@ namespace racman
         public uint mtcTimerValue => 0x7DAB2C;
         public uint pauseLock => 0x5EC6C4;
 
+        // Toggle / cheat addresses
+        public uint guardAIAddress => 0x5EC6CC;
+        public uint deathBarriersPointer => 0x78C6E4;
+        public uint cameraPointer => 0x78CE2C;
+
         // Episode 1 specific addresses
         public uint veniceStarted => 0x6CE0B4;
         public uint outbackStarted => 0x6CEA80;
@@ -76,6 +81,9 @@ namespace racman
 
         public uint mapIndex;
         public bool speedrunMode;
+
+        private int infiniteJumpsFreezeSubID = -1;
+        private int gameClockFreezeSubID = -1;
 
         public struct MapData
         {
@@ -364,6 +372,111 @@ namespace racman
             byte[] healthBytes = ConvertIntToBytes(health);
             var entityPtrBytes = api.ReadMemory(pid, sly3.addr.activeCharacterPtr, 4);
             api.WriteMemory(pid, BitConverter.ToUInt32(entityPtrBytes.Reverse().ToArray(), 0) + 0x168, healthBytes);
+        }
+
+        private uint GetEntityAddress()
+        {
+            byte[] ptrBytes = api.ReadMemory(pid, sly3.addr.activeCharacterPtr, 4);
+            return BitConverter.ToUInt32(ptrBytes.Reverse().ToArray(), 0);
+        }
+
+        public void SetGadgetPower(int value)
+        {
+            uint entity = GetEntityAddress();
+            api.WriteMemory(pid, entity + 0x170, ConvertIntToBytes(value));
+            api.WriteMemory(pid, entity + 0x174, ConvertIntToBytes(value));
+        }
+
+        public void SetInvulnerability(bool enabled)
+        {
+            uint entity = GetEntityAddress();
+            api.WriteMemory(pid, entity + 0x17C, ConvertIntToBytes(enabled ? 1 : 0));
+        }
+
+        public void SetInfiniteDoubleJump(bool enabled)
+        {
+            if (infiniteJumpsFreezeSubID != -1)
+            {
+                api.ReleaseSubID(infiniteJumpsFreezeSubID);
+                infiniteJumpsFreezeSubID = -1;
+            }
+            if (enabled)
+            {
+                uint entity = GetEntityAddress();
+                infiniteJumpsFreezeSubID = api.FreezeMemory(pid, entity + 0x32C, 0u);
+            }
+        }
+
+        public void SetSpeedMultiplier(float value)
+        {
+            uint entity = GetEntityAddress();
+            api.WriteMemory(pid, entity + 0x344, ConvertFloatToBytes(value));
+        }
+
+        public void SetUndetectable(bool enabled)
+        {
+            uint entity = GetEntityAddress();
+            api.WriteMemory(pid, entity + 0x1150, ConvertIntToBytes(enabled ? 1 : 0));
+        }
+
+        public void SetGuardAI(bool disabled)
+        {
+            api.WriteMemory(pid, sly3.addr.guardAIAddress, ConvertIntToBytes(disabled ? 1 : 0));
+        }
+
+        public void SetGameClockFrozen(bool frozen)
+        {
+            if (gameClockFreezeSubID != -1)
+            {
+                api.ReleaseSubID(gameClockFreezeSubID);
+                gameClockFreezeSubID = -1;
+            }
+            if (frozen)
+            {
+                byte[] zero = ConvertFloatToBytes(0.0f);
+                api.WriteMemory(pid, sly3.addr.gameSpeed, zero);
+                gameClockFreezeSubID = api.FreezeMemory(pid, sly3.addr.gameSpeed, 4,
+                    IPS3API.MemoryCondition.Any, zero);
+            }
+            else
+            {
+                api.WriteMemory(pid, sly3.addr.gameSpeed, ConvertFloatToBytes(1.0f));
+            }
+        }
+
+        public void SetDeathBarriers(bool disabled)
+        {
+            byte[] ptrBytes = api.ReadMemory(pid, sly3.addr.deathBarriersPointer, 4);
+            uint ptr = BitConverter.ToUInt32(ptrBytes.Reverse().ToArray(), 0);
+            api.WriteMemory(pid, ptr + 0x2C, ConvertIntToBytes(disabled ? 1 : 0));
+        }
+
+        public void SetCameraFOV(float value)
+        {
+            byte[] ptrBytes = api.ReadMemory(pid, sly3.addr.cameraPointer, 4);
+            uint ptr = BitConverter.ToUInt32(ptrBytes.Reverse().ToArray(), 0);
+            api.WriteMemory(pid, ptr + 0x11C, ConvertFloatToBytes(value));
+        }
+
+        public void SetDrawDistance(float value)
+        {
+            byte[] ptrBytes = api.ReadMemory(pid, sly3.addr.cameraPointer, 4);
+            uint ptr = BitConverter.ToUInt32(ptrBytes.Reverse().ToArray(), 0);
+            api.WriteMemory(pid, ptr + 0x114, ConvertFloatToBytes(value));
+        }
+
+        public void ReleaseToggleSubs()
+        {
+            if (infiniteJumpsFreezeSubID != -1)
+            {
+                api.ReleaseSubID(infiniteJumpsFreezeSubID);
+                infiniteJumpsFreezeSubID = -1;
+            }
+            if (gameClockFreezeSubID != -1)
+            {
+                api.ReleaseSubID(gameClockFreezeSubID);
+                gameClockFreezeSubID = -1;
+            }
         }
 
         public void SetGadgetUnlocks(byte[] gadgetBytes)
