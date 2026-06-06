@@ -11,7 +11,13 @@
       "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"C:\\\\Users\\\\Eetu\\\\Documents\\\\GitHub\\\\racman\\\\RaCTrainer\\\\SluMAN.csproj\" /p:Configuration=Release /p:Platform=x64 /t:CoreCompile /v:normal 2>&1 | Select-Object -Last 30)",
       "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\18\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"C:\\\\Users\\\\Eetu\\\\Documents\\\\GitHub\\\\racman\\\\RaCTrainer\\\\SluMAN.csproj\" /p:Configuration=Release /p:Platform=x64 /t:Rebuild /v:minimal 2>&1 | Where-Object { $_ -match \"error CS|warning CS|Build succeeded|Build FAILED\" } | Select-Object -First 30)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\Eetu\\\\Documents\\\\GitHub\\\\Ratchetron\" -Recurse)",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\eknut\\\\Documents\\\\Koodit\\\\Projektit\\\\racman\" -Directory)",
+      "Bash(Select-Object Name)",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"RaCTrainer\\\\SluMAN.csproj\" /p:Configuration=Release /p:Platform=x64 /verbosity:minimal 2>&1 | Select-Object -Last 10)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"RaCTrainer\\\\SluMAN.csproj\" /p:Configuration=Release /p:Platform=x64 /verbosity:minimal 2>&1 | Select-Object -Last 5)",
+      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"RaCTrainer\\\\SluMAN.csproj\" /p:Configuration=Release /p:Platform=x64 /verbosity:minimal 2>&1 | Where-Object { $_ -match \"error\" } | Select-Object -Last 10)"
     ]
   }
 }

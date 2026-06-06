@@ -16,6 +16,7 @@ namespace racman
 
         public Form InputDisplay;
         public Form GadgetsWindow;
+        public Form PositionEditor;
         public sly3 game;
         public string gameNameId;
 
@@ -200,6 +201,25 @@ namespace racman
             GadgetsWindow = null;
         }
 
+        private void positionEditorButton_Click(object sender, EventArgs e)
+        {
+            if (PositionEditor == null || PositionEditor.IsDisposed)
+            {
+                PositionEditor = new SLY3PositionEditor(game);
+                PositionEditor.FormClosed += PositionEditor_FormClosed;
+                PositionEditor.Show();
+            }
+            else
+            {
+                PositionEditor.Focus();
+            }
+        }
+
+        private void PositionEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            PositionEditor = null;
+        }
+
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
@@ -332,6 +352,10 @@ namespace racman
             if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
             {
                 GadgetsWindow.Close();
+            }
+            if (PositionEditor != null && !PositionEditor.IsDisposed)
+            {
+                PositionEditor.Close();
             }
         }
 

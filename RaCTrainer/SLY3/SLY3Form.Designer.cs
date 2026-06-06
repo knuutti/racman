@@ -41,6 +41,7 @@
             this.mapComboBox = new System.Windows.Forms.ComboBox();
             this.loadMapButton = new System.Windows.Forms.Button();
             this.gadgetButton = new System.Windows.Forms.Button();
+            this.positionEditorButton = new System.Windows.Forms.Button();
             this.toggleGroupBox = new System.Windows.Forms.GroupBox();
             this.alwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.jobComboBox = new System.Windows.Forms.ComboBox();
@@ -77,14 +78,24 @@
             this.coinsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.coinsTextBox_KeyDown);
             // 
             // inputDisplayButton
-            // 
+            //
             this.inputDisplayButton.Location = new System.Drawing.Point(226, 255);
             this.inputDisplayButton.Name = "inputDisplayButton";
-            this.inputDisplayButton.Size = new System.Drawing.Size(234, 62);
+            this.inputDisplayButton.Size = new System.Drawing.Size(113, 62);
             this.inputDisplayButton.TabIndex = 1;
             this.inputDisplayButton.Text = "Input Display";
             this.inputDisplayButton.UseVisualStyleBackColor = true;
             this.inputDisplayButton.Click += new System.EventHandler(this.inputDisplayButton_Click);
+            //
+            // positionEditorButton
+            //
+            this.positionEditorButton.Location = new System.Drawing.Point(343, 255);
+            this.positionEditorButton.Name = "positionEditorButton";
+            this.positionEditorButton.Size = new System.Drawing.Size(116, 62);
+            this.positionEditorButton.TabIndex = 27;
+            this.positionEditorButton.Text = "Position Editor";
+            this.positionEditorButton.UseVisualStyleBackColor = true;
+            this.positionEditorButton.Click += new System.EventHandler(this.positionEditorButton_Click);
             // 
             // menuStrip1
             // 
@@ -670,6 +681,7 @@
             this.Controls.Add(this.reloadGroupBox);
             this.Controls.Add(this.toggleGroupBox);
             this.Controls.Add(this.inputDisplayButton);
+            this.Controls.Add(this.positionEditorButton);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
@@ -723,5 +735,6 @@
         private System.Windows.Forms.ToolStripMenuItem rebootPS3ToolStripMenuItem;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox reloadAsCharacterComboBox;
+        private System.Windows.Forms.Button positionEditorButton;
     }
 }

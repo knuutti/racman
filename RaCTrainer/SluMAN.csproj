@@ -232,6 +232,12 @@
     <Compile Include="SLY3\SLY3GadgetsForm.Designer.cs">
       <DependentUpon>SLY3GadgetsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="SLY3\SLY3PositionEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SLY3\SLY3PositionEditor.Designer.cs">
+      <DependentUpon>SLY3PositionEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="SLY3\SLY3Speedrun.cs">
       <SubType>Form</SubType>
     </Compile>
