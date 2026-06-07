@@ -44,10 +44,7 @@ init
     vars.currentAirTime = 0.0f;
 
     vars.getAJobDone = false;
-    vars.frameTeamBelgiumDone = false;
-    vars.giantWolfMassacreDone = false;
     vars.cooperHangarDefenceDone = 0;
-    vars.hiddenFlightRosterDone = false;
 
     current.isLoading = vars.reader.ReadUInt32();
     current.currentJob = vars.reader.ReadUInt32();
@@ -235,10 +232,7 @@ gameTime
     {
         if (current.currentCheckpoint == 2215 && old.currentCheckpoint != 2215)
         {
-            if (old.currentCheckpoint != 2215)
-            {
-                vars.airTimeChanged = true;
-            }
+            vars.airTimeChanged = true;
             return TimeSpan.FromSeconds(Math.Floor(100*45*6*(1-current.mtcTimerValue))/100);
         }
         else if (current.currentCheckpoint < 2215)
@@ -259,6 +253,8 @@ onReset
     vars.totalAirTime = 0.0f;
     vars.currentAirTime = 0.0f;
     vars.currentAirTimeSection = 0;
+    vars.getAJobDone = false;
+    vars.cooperHangarDefenceDone = 0;
 }
 
 split
@@ -562,12 +558,11 @@ split
             // Frame Team Belgium
             vars.splitPending = true;
         } 
-        else if (current.currentCheckpoint == 3040 && old.currentCheckpoint != 3040) 
-        { 
+        else if (current.currentCheckpoint == 3040 && old.currentCheckpoint != 3040)
+        {
             // Hidden Flight Roster
-            vars.hiddenFlightRosterDone = true;
             return false;
-        } 
+        }
         else if (vars.cooperHangarDefenceDone == 0 && vars.splitPending == false && current.currentCheckpoint == 3158) 
         { 
             // Cooper Hangar Defence
