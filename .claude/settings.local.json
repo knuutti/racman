@@ -17,7 +17,9 @@
       "PowerShell(Get-ChildItem *)",
       "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"RaCTrainer\\\\SluMAN.csproj\" /p:Configuration=Release /p:Platform=x64 /verbosity:minimal 2>&1 | Select-Object -Last 10)",
       "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"RaCTrainer\\\\SluMAN.csproj\" /p:Configuration=Release /p:Platform=x64 /verbosity:minimal 2>&1 | Select-Object -Last 5)",
-      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"RaCTrainer\\\\SluMAN.csproj\" /p:Configuration=Release /p:Platform=x64 /verbosity:minimal 2>&1 | Where-Object { $_ -match \"error\" } | Select-Object -Last 10)"
+      "PowerShell(& \"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\MSBuild\\\\Current\\\\Bin\\\\amd64\\\\MSBuild.exe\" \"RaCTrainer\\\\SluMAN.csproj\" /p:Configuration=Release /p:Platform=x64 /verbosity:minimal 2>&1 | Where-Object { $_ -match \"error\" } | Select-Object -Last 10)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\eknut\\\\Documents\\\\Koodit\\\\Projektit\\\\racman\" -Recurse -Name)",
+      "Bash(Select-Object -First 50)"
     ]
   }
 }

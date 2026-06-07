@@ -51,7 +51,17 @@ namespace racman
 
                     if (buttonName == "imageName")
                     {
-                        skin.image = Image.FromFile(skinPath + "\\" + components[1].Trim());
+                        using (Image rawImage = Image.FromFile(skinPath + "\\" + components[1].Trim()))
+                        {
+                            // Convert to pre-multiplied alpha format. GDI+ DrawImage is up to 6x faster
+                            // with Format32bppPArgb vs the default Format32bppArgb loaded from PNG.
+                            // Without this, white/light skins cause high CPU because per-pixel alpha
+                            // math can't be short-circuited for non-zero RGB values.
+                            Bitmap bmp = new Bitmap(rawImage.Width, rawImage.Height, System.Drawing.Imaging.PixelFormat.Format32bppPArgb);
+                            using (Graphics g = Graphics.FromImage(bmp))
+                                g.DrawImage(rawImage, 0, 0, rawImage.Width, rawImage.Height);
+                            skin.image = bmp;
+                        }
                         continue;
                     }
 
