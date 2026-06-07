@@ -19,8 +19,12 @@ namespace racman
         public uint activeCharacterPtr => 0x5EC654;
 
         public uint playerEntityPointer => 0x5EC654;
-        public uint transformOffset => 0x44; 
-        public uint coordsOffsetX => 0x130; 
+        public uint transformOffset => 0x44;
+        public uint coordsOffsetX => 0x130;
+
+        // Entity struct offsets (from activeCharacterPtr dereference)
+        public uint healthEntityOffset => 0x168;
+        public uint gadgetPowerEntityOffset => 0x170;
         public uint coordsOffsetY => 0x134; 
         public uint coordsOffsetZ => 0x138;
 
@@ -361,9 +365,18 @@ namespace racman
 
         public void SetHealth(int health)
         {
-            byte[] healthBytes = ConvertIntToBytes(health);
-            var entityPtrBytes = api.ReadMemory(pid, sly3.addr.activeCharacterPtr, 4);
-            api.WriteMemory(pid, BitConverter.ToUInt32(entityPtrBytes.Reverse().ToArray(), 0) + 0x168, healthBytes);
+            byte[] entityPtrBytes = api.ReadMemory(pid, sly3.addr.activeCharacterPtr, 4);
+            uint entityPtr = BitConverter.ToUInt32(entityPtrBytes.Reverse().ToArray(), 0);
+            if (entityPtr == 0) return;
+            api.WriteMemory(pid, entityPtr + sly3.addr.healthEntityOffset, ConvertIntToBytes(health));
+        }
+
+        public void SetGadgetPower(int value)
+        {
+            byte[] entityPtrBytes = api.ReadMemory(pid, sly3.addr.activeCharacterPtr, 4);
+            uint entityPtr = BitConverter.ToUInt32(entityPtrBytes.Reverse().ToArray(), 0);
+            if (entityPtr == 0) return;
+            api.WriteMemory(pid, entityPtr + sly3.addr.gadgetPowerEntityOffset, ConvertIntToBytes(value));
         }
 
         public void SetGadgetUnlocks(byte[] gadgetBytes)

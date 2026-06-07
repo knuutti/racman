@@ -30,6 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SLY3Form));
             this.coinsTextBox = new System.Windows.Forms.TextBox();
+            this.infiniteHealthCheckBox = new System.Windows.Forms.CheckBox();
+            this.infiniteGadgetPowerCheckBox = new System.Windows.Forms.CheckBox();
             this.inputDisplayButton = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,9 +81,9 @@
             // 
             // inputDisplayButton
             //
-            this.inputDisplayButton.Location = new System.Drawing.Point(226, 255);
+            this.inputDisplayButton.Location = new System.Drawing.Point(226, 295);
             this.inputDisplayButton.Name = "inputDisplayButton";
-            this.inputDisplayButton.Size = new System.Drawing.Size(113, 62);
+            this.inputDisplayButton.Size = new System.Drawing.Size(113, 54);
             this.inputDisplayButton.TabIndex = 1;
             this.inputDisplayButton.Text = "Input Display";
             this.inputDisplayButton.UseVisualStyleBackColor = true;
@@ -89,9 +91,9 @@
             //
             // positionEditorButton
             //
-            this.positionEditorButton.Location = new System.Drawing.Point(343, 255);
+            this.positionEditorButton.Location = new System.Drawing.Point(343, 295);
             this.positionEditorButton.Name = "positionEditorButton";
-            this.positionEditorButton.Size = new System.Drawing.Size(116, 62);
+            this.positionEditorButton.Size = new System.Drawing.Size(116, 54);
             this.positionEditorButton.TabIndex = 27;
             this.positionEditorButton.Text = "Position Editor";
             this.positionEditorButton.UseVisualStyleBackColor = true;
@@ -183,21 +185,23 @@
             this.gadgetButton.Text = "Gadgets";
             this.gadgetButton.UseVisualStyleBackColor = true;
             this.gadgetButton.Click += new System.EventHandler(this.gadgetsButton_Click);
-            // 
+            //
             // toggleGroupBox
-            // 
+            //
             this.toggleGroupBox.Controls.Add(this.alwaysOnTopCheckBox);
+            this.toggleGroupBox.Controls.Add(this.infiniteHealthCheckBox);
+            this.toggleGroupBox.Controls.Add(this.infiniteGadgetPowerCheckBox);
             this.toggleGroupBox.Location = new System.Drawing.Point(226, 196);
             this.toggleGroupBox.Margin = new System.Windows.Forms.Padding(2);
             this.toggleGroupBox.Name = "toggleGroupBox";
             this.toggleGroupBox.Padding = new System.Windows.Forms.Padding(2);
-            this.toggleGroupBox.Size = new System.Drawing.Size(234, 50);
+            this.toggleGroupBox.Size = new System.Drawing.Size(234, 90);
             this.toggleGroupBox.TabIndex = 15;
             this.toggleGroupBox.TabStop = false;
             this.toggleGroupBox.Text = "Toggles";
-            // 
+            //
             // alwaysOnTopCheckBox
-            // 
+            //
             this.alwaysOnTopCheckBox.AutoSize = true;
             this.alwaysOnTopCheckBox.Location = new System.Drawing.Point(16, 22);
             this.alwaysOnTopCheckBox.Margin = new System.Windows.Forms.Padding(2);
@@ -207,6 +211,30 @@
             this.alwaysOnTopCheckBox.Text = "Always On Top";
             this.alwaysOnTopCheckBox.UseVisualStyleBackColor = true;
             this.alwaysOnTopCheckBox.CheckedChanged += new System.EventHandler(this.alwaysOnTopCheckBox_CheckedChanged);
+            //
+            // infiniteHealthCheckBox
+            //
+            this.infiniteHealthCheckBox.AutoSize = true;
+            this.infiniteHealthCheckBox.Location = new System.Drawing.Point(16, 45);
+            this.infiniteHealthCheckBox.Margin = new System.Windows.Forms.Padding(2);
+            this.infiniteHealthCheckBox.Name = "infiniteHealthCheckBox";
+            this.infiniteHealthCheckBox.Size = new System.Drawing.Size(98, 17);
+            this.infiniteHealthCheckBox.TabIndex = 6;
+            this.infiniteHealthCheckBox.Text = "Infinite Health";
+            this.infiniteHealthCheckBox.UseVisualStyleBackColor = true;
+            this.infiniteHealthCheckBox.CheckedChanged += new System.EventHandler(this.infiniteHealthCheckBox_CheckedChanged);
+            //
+            // infiniteGadgetPowerCheckBox
+            //
+            this.infiniteGadgetPowerCheckBox.AutoSize = true;
+            this.infiniteGadgetPowerCheckBox.Location = new System.Drawing.Point(16, 67);
+            this.infiniteGadgetPowerCheckBox.Margin = new System.Windows.Forms.Padding(2);
+            this.infiniteGadgetPowerCheckBox.Name = "infiniteGadgetPowerCheckBox";
+            this.infiniteGadgetPowerCheckBox.Size = new System.Drawing.Size(120, 17);
+            this.infiniteGadgetPowerCheckBox.TabIndex = 7;
+            this.infiniteGadgetPowerCheckBox.Text = "Infinite Gadget Power";
+            this.infiniteGadgetPowerCheckBox.UseVisualStyleBackColor = true;
+            this.infiniteGadgetPowerCheckBox.CheckedChanged += new System.EventHandler(this.infiniteGadgetPowerCheckBox_CheckedChanged);
             // 
             // jobComboBox
             // 
@@ -674,7 +702,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 329);
+            this.ClientSize = new System.Drawing.Size(473, 360);
             this.Controls.Add(this.jobGroupBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -706,6 +734,8 @@
         #endregion
 
         private System.Windows.Forms.TextBox coinsTextBox;
+        private System.Windows.Forms.CheckBox infiniteHealthCheckBox;
+        private System.Windows.Forms.CheckBox infiniteGadgetPowerCheckBox;
         private System.Windows.Forms.Button inputDisplayButton;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
