@@ -16,8 +16,11 @@ namespace racman
 
         public Form InputDisplay;
         public Form GadgetsWindow;
+        public Form PositionEditor;
         public sly3 game;
         public string gameNameId;
+
+        private System.Windows.Forms.Timer freezeTimer;
 
         public SLY3Form(sly3 game, string gameNameId = "NPEA00343")
         {
@@ -42,6 +45,23 @@ namespace racman
             }
 
             this.gameNameId = gameNameId;
+
+            freezeTimer = new System.Windows.Forms.Timer();
+            freezeTimer.Interval = 100;
+            freezeTimer.Tick += FreezeTimer_Tick;
+            freezeTimer.Start();
+        }
+
+        private void FreezeTimer_Tick(object sender, EventArgs e)
+        {
+            if (infiniteHealthCheckBox.Checked)
+            {
+                try { game.SetHealth(100); } catch { }
+            }
+            if (infiniteGadgetPowerCheckBox.Checked)
+            {
+                try { game.SetGadgetPower(100); } catch { }
+            }
         }
 
         private void ApplySavedPreferences()
@@ -103,8 +123,12 @@ namespace racman
             {
                 GadgetsWindow.Close();
             }
-            
+
             // Stop timers
+            if (freezeTimer != null)
+            {
+                freezeTimer.Stop();
+            }
             if (game.InputsTimer != null)
             {
                 game.InputsTimer.Stop();
@@ -198,6 +222,25 @@ namespace racman
         private void GadgetsWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             GadgetsWindow = null;
+        }
+
+        private void positionEditorButton_Click(object sender, EventArgs e)
+        {
+            if (PositionEditor == null || PositionEditor.IsDisposed)
+            {
+                PositionEditor = new SLY3PositionEditor(game);
+                PositionEditor.FormClosed += PositionEditor_FormClosed;
+                PositionEditor.Show();
+            }
+            else
+            {
+                PositionEditor.Focus();
+            }
+        }
+
+        private void PositionEditor_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            PositionEditor = null;
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -332,6 +375,10 @@ namespace racman
             if (GadgetsWindow != null && !GadgetsWindow.IsDisposed)
             {
                 GadgetsWindow.Close();
+            }
+            if (PositionEditor != null && !PositionEditor.IsDisposed)
+            {
+                PositionEditor.Close();
             }
         }
 
@@ -475,6 +522,14 @@ namespace racman
                     Program.AttachPS3Form.Show();
                 }
             }
+        }
+
+        private void infiniteHealthCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+        }
+
+        private void infiniteGadgetPowerCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
         }
     }
 }

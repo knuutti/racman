@@ -149,7 +149,7 @@ namespace racman
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Address must be hexadecimal");
+                MessageBox.Show("Address must be hexadecimal. Error in MemoryForm: " + ex.ToString());
                 return;
             }
 
@@ -228,7 +228,7 @@ namespace racman
                     }
                     catch (Exception ex)
                     {
-
+                        MessageBox.Show("Error in MemoryForm: " + ex.ToString());
                     }
                 }
             }
@@ -265,7 +265,7 @@ namespace racman
                         }
                         catch (Exception ex)
                         {
-
+                            MessageBox.Show("Error in MemoryForm: " + ex.ToString());
                         }
                     }
                 }

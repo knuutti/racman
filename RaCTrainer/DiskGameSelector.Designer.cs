@@ -103,7 +103,7 @@ namespace racman
         private System.Windows.Forms.Label label1;
 
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Button Select;
+        private new System.Windows.Forms.Button Select;
 
         #endregion
 

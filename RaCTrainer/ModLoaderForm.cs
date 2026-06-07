@@ -322,10 +322,10 @@ namespace racman
 
 
                         //ZipFile.ExtractToDirectory(openFileDialog.FileName, $"{Directory.GetCurrentDirectory()}\\mods\\{AttachPS3Form.game}\\");
-                    } catch (IOException exception)
+                    } catch (IOException ex)
                     {
                         // There's apparently no easy way to tell ZipFile.ExtractToDirectory to overwrite files smh
-                        MessageBox.Show("Failed to extract ZIP. ");
+                        MessageBox.Show("Failed to extract ZIP: " + ex.ToString());
                     } finally
                     {
                         Directory.Delete($"{System.IO.Path.GetTempPath()}\\racman\\", true);
