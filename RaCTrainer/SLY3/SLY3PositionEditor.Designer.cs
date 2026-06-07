@@ -13,7 +13,7 @@ namespace racman
 
         private void InitializeComponent()
         {
-            // Character info group
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SLY3PositionEditor));
             this.charInfoGroupBox = new System.Windows.Forms.GroupBox();
             this.lblEntityId = new System.Windows.Forms.Label();
             this.entityIdValueLabel = new System.Windows.Forms.Label();
@@ -35,8 +35,6 @@ namespace racman
             this.hSpeedLabel = new System.Windows.Forms.Label();
             this.lblZVel = new System.Windows.Forms.Label();
             this.zVelLiveLabel = new System.Windows.Forms.Label();
-
-            // Position input group
             this.positionGroupBox = new System.Windows.Forms.GroupBox();
             this.lblSetX = new System.Windows.Forms.Label();
             this.xPosTextBox = new System.Windows.Forms.TextBox();
@@ -50,18 +48,16 @@ namespace racman
             this.zPosTextBox = new System.Windows.Forms.TextBox();
             this.setZPosButton = new System.Windows.Forms.Button();
             this.freezePosZCheckBox = new System.Windows.Forms.CheckBox();
-
-            // Options group
             this.optionsGroupBox = new System.Windows.Forms.GroupBox();
             this.flyModeCheckBox = new System.Windows.Forms.CheckBox();
             this.infiniteJumpCheckBox = new System.Windows.Forms.CheckBox();
-
             this.charInfoGroupBox.SuspendLayout();
             this.positionGroupBox.SuspendLayout();
             this.optionsGroupBox.SuspendLayout();
             this.SuspendLayout();
-
-            // ── charInfoGroupBox ──────────────────────────────────────────
+            // 
+            // charInfoGroupBox
+            // 
             this.charInfoGroupBox.Controls.Add(this.lblEntityId);
             this.charInfoGroupBox.Controls.Add(this.entityIdValueLabel);
             this.charInfoGroupBox.Controls.Add(this.lblHealth);
@@ -88,117 +84,186 @@ namespace racman
             this.charInfoGroupBox.TabIndex = 0;
             this.charInfoGroupBox.TabStop = false;
             this.charInfoGroupBox.Text = "Character Info";
-
-            // Row 1: Entity ID, Health, Gadget Power
+            // 
+            // lblEntityId
+            // 
             this.lblEntityId.AutoSize = true;
             this.lblEntityId.Location = new System.Drawing.Point(8, 22);
             this.lblEntityId.Name = "lblEntityId";
+            this.lblEntityId.Size = new System.Drawing.Size(21, 13);
+            this.lblEntityId.TabIndex = 0;
             this.lblEntityId.Text = "ID:";
-
+            // 
+            // entityIdValueLabel
+            // 
             this.entityIdValueLabel.AutoSize = true;
-            this.entityIdValueLabel.Location = new System.Drawing.Point(32, 22);
+            this.entityIdValueLabel.Location = new System.Drawing.Point(56, 22);
             this.entityIdValueLabel.Name = "entityIdValueLabel";
+            this.entityIdValueLabel.Size = new System.Drawing.Size(27, 13);
+            this.entityIdValueLabel.TabIndex = 1;
             this.entityIdValueLabel.Text = "N/A";
-
+            // 
+            // lblHealth
+            // 
             this.lblHealth.AutoSize = true;
-            this.lblHealth.Location = new System.Drawing.Point(110, 22);
+            this.lblHealth.Location = new System.Drawing.Point(8, 45);
             this.lblHealth.Name = "lblHealth";
+            this.lblHealth.Size = new System.Drawing.Size(41, 13);
+            this.lblHealth.TabIndex = 2;
             this.lblHealth.Text = "Health:";
-
+            // 
+            // healthValueLabel
+            // 
             this.healthValueLabel.AutoSize = true;
-            this.healthValueLabel.Location = new System.Drawing.Point(158, 22);
+            this.healthValueLabel.Location = new System.Drawing.Point(56, 45);
             this.healthValueLabel.Name = "healthValueLabel";
+            this.healthValueLabel.Size = new System.Drawing.Size(27, 13);
+            this.healthValueLabel.TabIndex = 3;
             this.healthValueLabel.Text = "N/A";
-
+            // 
+            // lblGadgetPower
+            // 
             this.lblGadgetPower.AutoSize = true;
-            this.lblGadgetPower.Location = new System.Drawing.Point(255, 22);
+            this.lblGadgetPower.Location = new System.Drawing.Point(8, 68);
             this.lblGadgetPower.Name = "lblGadgetPower";
-            this.lblGadgetPower.Text = "Gadget Power:";
-
+            this.lblGadgetPower.Size = new System.Drawing.Size(35, 13);
+            this.lblGadgetPower.TabIndex = 4;
+            this.lblGadgetPower.Text = "Juice:";
+            this.lblGadgetPower.Click += new System.EventHandler(this.lblGadgetPower_Click);
+            // 
+            // gadgetPowerValueLabel
+            // 
             this.gadgetPowerValueLabel.AutoSize = true;
-            this.gadgetPowerValueLabel.Location = new System.Drawing.Point(352, 22);
+            this.gadgetPowerValueLabel.Location = new System.Drawing.Point(56, 68);
             this.gadgetPowerValueLabel.Name = "gadgetPowerValueLabel";
+            this.gadgetPowerValueLabel.Size = new System.Drawing.Size(27, 13);
+            this.gadgetPowerValueLabel.TabIndex = 5;
             this.gadgetPowerValueLabel.Text = "N/A";
-
-            // Row 2: Opacity, Rotation
+            // 
+            // lblOpacity
+            // 
             this.lblOpacity.AutoSize = true;
-            this.lblOpacity.Location = new System.Drawing.Point(8, 45);
+            this.lblOpacity.Location = new System.Drawing.Point(8, 91);
             this.lblOpacity.Name = "lblOpacity";
+            this.lblOpacity.Size = new System.Drawing.Size(46, 13);
+            this.lblOpacity.TabIndex = 6;
             this.lblOpacity.Text = "Opacity:";
-
+            // 
+            // opacityValueLabel
+            // 
             this.opacityValueLabel.AutoSize = true;
-            this.opacityValueLabel.Location = new System.Drawing.Point(58, 45);
+            this.opacityValueLabel.Location = new System.Drawing.Point(56, 91);
             this.opacityValueLabel.Name = "opacityValueLabel";
+            this.opacityValueLabel.Size = new System.Drawing.Size(27, 13);
+            this.opacityValueLabel.TabIndex = 7;
             this.opacityValueLabel.Text = "N/A";
-
+            // 
+            // lblRotation
+            // 
             this.lblRotation.AutoSize = true;
-            this.lblRotation.Location = new System.Drawing.Point(180, 45);
+            this.lblRotation.Location = new System.Drawing.Point(132, 91);
             this.lblRotation.Name = "lblRotation";
-            this.lblRotation.Text = "Rotation:";
-
+            this.lblRotation.Size = new System.Drawing.Size(37, 13);
+            this.lblRotation.TabIndex = 8;
+            this.lblRotation.Text = "Angle:";
+            // 
+            // rotationValueLabel
+            // 
             this.rotationValueLabel.AutoSize = true;
-            this.rotationValueLabel.Location = new System.Drawing.Point(233, 45);
+            this.rotationValueLabel.Location = new System.Drawing.Point(175, 91);
             this.rotationValueLabel.Name = "rotationValueLabel";
+            this.rotationValueLabel.Size = new System.Drawing.Size(27, 13);
+            this.rotationValueLabel.TabIndex = 9;
             this.rotationValueLabel.Text = "N/A";
-
-            // Row 3: X, Y, Z position (live)
+            // 
+            // lblPosX
+            // 
             this.lblPosX.AutoSize = true;
-            this.lblPosX.Location = new System.Drawing.Point(8, 68);
+            this.lblPosX.Location = new System.Drawing.Point(132, 22);
             this.lblPosX.Name = "lblPosX";
+            this.lblPosX.Size = new System.Drawing.Size(17, 13);
+            this.lblPosX.TabIndex = 10;
             this.lblPosX.Text = "X:";
-
-            this.xPosLiveLabel.AutoSize = false;
-            this.xPosLiveLabel.Location = new System.Drawing.Point(24, 68);
+            // 
+            // xPosLiveLabel
+            // 
+            this.xPosLiveLabel.Location = new System.Drawing.Point(175, 22);
             this.xPosLiveLabel.Name = "xPosLiveLabel";
             this.xPosLiveLabel.Size = new System.Drawing.Size(88, 13);
+            this.xPosLiveLabel.TabIndex = 11;
             this.xPosLiveLabel.Text = "N/A";
-
+            // 
+            // lblPosY
+            // 
             this.lblPosY.AutoSize = true;
-            this.lblPosY.Location = new System.Drawing.Point(122, 68);
+            this.lblPosY.Location = new System.Drawing.Point(132, 45);
             this.lblPosY.Name = "lblPosY";
+            this.lblPosY.Size = new System.Drawing.Size(17, 13);
+            this.lblPosY.TabIndex = 12;
             this.lblPosY.Text = "Y:";
-
-            this.yPosLiveLabel.AutoSize = false;
-            this.yPosLiveLabel.Location = new System.Drawing.Point(138, 68);
+            // 
+            // yPosLiveLabel
+            // 
+            this.yPosLiveLabel.Location = new System.Drawing.Point(175, 45);
             this.yPosLiveLabel.Name = "yPosLiveLabel";
             this.yPosLiveLabel.Size = new System.Drawing.Size(88, 13);
+            this.yPosLiveLabel.TabIndex = 13;
             this.yPosLiveLabel.Text = "N/A";
-
+            // 
+            // lblPosZ
+            // 
             this.lblPosZ.AutoSize = true;
-            this.lblPosZ.Location = new System.Drawing.Point(236, 68);
+            this.lblPosZ.Location = new System.Drawing.Point(132, 68);
             this.lblPosZ.Name = "lblPosZ";
+            this.lblPosZ.Size = new System.Drawing.Size(17, 13);
+            this.lblPosZ.TabIndex = 14;
             this.lblPosZ.Text = "Z:";
-
-            this.zPosLiveLabel.AutoSize = false;
-            this.zPosLiveLabel.Location = new System.Drawing.Point(252, 68);
+            // 
+            // zPosLiveLabel
+            // 
+            this.zPosLiveLabel.Location = new System.Drawing.Point(175, 68);
             this.zPosLiveLabel.Name = "zPosLiveLabel";
             this.zPosLiveLabel.Size = new System.Drawing.Size(88, 13);
+            this.zPosLiveLabel.TabIndex = 15;
             this.zPosLiveLabel.Text = "N/A";
-
-            // Row 4: Horizontal speed, Z velocity
+            // 
+            // lblHSpeed
+            // 
             this.lblHSpeed.AutoSize = true;
-            this.lblHSpeed.Location = new System.Drawing.Point(8, 91);
+            this.lblHSpeed.Location = new System.Drawing.Point(269, 22);
             this.lblHSpeed.Name = "lblHSpeed";
-            this.lblHSpeed.Text = "H Speed:";
-
-            this.hSpeedLabel.AutoSize = false;
-            this.hSpeedLabel.Location = new System.Drawing.Point(65, 91);
+            this.lblHSpeed.Size = new System.Drawing.Size(103, 13);
+            this.lblHSpeed.TabIndex = 16;
+            this.lblHSpeed.Text = "Velocity (Horizontal):";
+            this.lblHSpeed.Click += new System.EventHandler(this.lblHSpeed_Click);
+            // 
+            // hSpeedLabel
+            // 
+            this.hSpeedLabel.Location = new System.Drawing.Point(378, 22);
             this.hSpeedLabel.Name = "hSpeedLabel";
             this.hSpeedLabel.Size = new System.Drawing.Size(88, 13);
+            this.hSpeedLabel.TabIndex = 17;
             this.hSpeedLabel.Text = "N/A";
-
+            // 
+            // lblZVel
+            // 
             this.lblZVel.AutoSize = true;
-            this.lblZVel.Location = new System.Drawing.Point(185, 91);
+            this.lblZVel.Location = new System.Drawing.Point(269, 45);
             this.lblZVel.Name = "lblZVel";
-            this.lblZVel.Text = "Z Vel:";
-
-            this.zVelLiveLabel.AutoSize = false;
-            this.zVelLiveLabel.Location = new System.Drawing.Point(222, 91);
+            this.lblZVel.Size = new System.Drawing.Size(91, 13);
+            this.lblZVel.TabIndex = 18;
+            this.lblZVel.Text = "Velocity (Vertical):";
+            // 
+            // zVelLiveLabel
+            // 
+            this.zVelLiveLabel.Location = new System.Drawing.Point(378, 45);
             this.zVelLiveLabel.Name = "zVelLiveLabel";
             this.zVelLiveLabel.Size = new System.Drawing.Size(88, 13);
+            this.zVelLiveLabel.TabIndex = 19;
             this.zVelLiveLabel.Text = "N/A";
-
-            // ── positionGroupBox ──────────────────────────────────────────
+            // 
+            // positionGroupBox
+            // 
             this.positionGroupBox.Controls.Add(this.lblSetX);
             this.positionGroupBox.Controls.Add(this.xPosTextBox);
             this.positionGroupBox.Controls.Add(this.setXPosButton);
@@ -217,18 +282,25 @@ namespace racman
             this.positionGroupBox.TabIndex = 1;
             this.positionGroupBox.TabStop = false;
             this.positionGroupBox.Text = "Set Position";
-
-            // X row (y=22)
+            // 
+            // lblSetX
+            // 
             this.lblSetX.AutoSize = true;
             this.lblSetX.Location = new System.Drawing.Point(5, 25);
             this.lblSetX.Name = "lblSetX";
+            this.lblSetX.Size = new System.Drawing.Size(17, 13);
+            this.lblSetX.TabIndex = 0;
             this.lblSetX.Text = "X:";
-
+            // 
+            // xPosTextBox
+            // 
             this.xPosTextBox.Location = new System.Drawing.Point(24, 22);
             this.xPosTextBox.Name = "xPosTextBox";
             this.xPosTextBox.Size = new System.Drawing.Size(150, 20);
             this.xPosTextBox.TabIndex = 0;
-
+            // 
+            // setXPosButton
+            // 
             this.setXPosButton.Location = new System.Drawing.Point(179, 21);
             this.setXPosButton.Name = "setXPosButton";
             this.setXPosButton.Size = new System.Drawing.Size(50, 22);
@@ -236,26 +308,36 @@ namespace racman
             this.setXPosButton.Text = "Set";
             this.setXPosButton.UseVisualStyleBackColor = true;
             this.setXPosButton.Click += new System.EventHandler(this.setXPosButton_Click);
-
+            // 
+            // freezePosXCheckBox
+            // 
             this.freezePosXCheckBox.AutoSize = true;
             this.freezePosXCheckBox.Location = new System.Drawing.Point(234, 23);
             this.freezePosXCheckBox.Name = "freezePosXCheckBox";
-            this.freezePosXCheckBox.Text = "Freeze";
+            this.freezePosXCheckBox.Size = new System.Drawing.Size(58, 17);
             this.freezePosXCheckBox.TabIndex = 2;
+            this.freezePosXCheckBox.Text = "Freeze";
             this.freezePosXCheckBox.UseVisualStyleBackColor = true;
             this.freezePosXCheckBox.CheckedChanged += new System.EventHandler(this.freezePosXCheckBox_CheckedChanged);
-
-            // Y row (y=50)
+            // 
+            // lblSetY
+            // 
             this.lblSetY.AutoSize = true;
             this.lblSetY.Location = new System.Drawing.Point(5, 53);
             this.lblSetY.Name = "lblSetY";
+            this.lblSetY.Size = new System.Drawing.Size(17, 13);
+            this.lblSetY.TabIndex = 3;
             this.lblSetY.Text = "Y:";
-
+            // 
+            // yPosTextBox
+            // 
             this.yPosTextBox.Location = new System.Drawing.Point(24, 50);
             this.yPosTextBox.Name = "yPosTextBox";
             this.yPosTextBox.Size = new System.Drawing.Size(150, 20);
             this.yPosTextBox.TabIndex = 3;
-
+            // 
+            // setYPosButton
+            // 
             this.setYPosButton.Location = new System.Drawing.Point(179, 49);
             this.setYPosButton.Name = "setYPosButton";
             this.setYPosButton.Size = new System.Drawing.Size(50, 22);
@@ -263,26 +345,36 @@ namespace racman
             this.setYPosButton.Text = "Set";
             this.setYPosButton.UseVisualStyleBackColor = true;
             this.setYPosButton.Click += new System.EventHandler(this.setYPosButton_Click);
-
+            // 
+            // freezePosYCheckBox
+            // 
             this.freezePosYCheckBox.AutoSize = true;
             this.freezePosYCheckBox.Location = new System.Drawing.Point(234, 51);
             this.freezePosYCheckBox.Name = "freezePosYCheckBox";
-            this.freezePosYCheckBox.Text = "Freeze";
+            this.freezePosYCheckBox.Size = new System.Drawing.Size(58, 17);
             this.freezePosYCheckBox.TabIndex = 5;
+            this.freezePosYCheckBox.Text = "Freeze";
             this.freezePosYCheckBox.UseVisualStyleBackColor = true;
             this.freezePosYCheckBox.CheckedChanged += new System.EventHandler(this.freezePosYCheckBox_CheckedChanged);
-
-            // Z row (y=78)
+            // 
+            // lblSetZ
+            // 
             this.lblSetZ.AutoSize = true;
             this.lblSetZ.Location = new System.Drawing.Point(5, 81);
             this.lblSetZ.Name = "lblSetZ";
+            this.lblSetZ.Size = new System.Drawing.Size(17, 13);
+            this.lblSetZ.TabIndex = 6;
             this.lblSetZ.Text = "Z:";
-
+            // 
+            // zPosTextBox
+            // 
             this.zPosTextBox.Location = new System.Drawing.Point(24, 78);
             this.zPosTextBox.Name = "zPosTextBox";
             this.zPosTextBox.Size = new System.Drawing.Size(150, 20);
             this.zPosTextBox.TabIndex = 6;
-
+            // 
+            // setZPosButton
+            // 
             this.setZPosButton.Location = new System.Drawing.Point(179, 77);
             this.setZPosButton.Name = "setZPosButton";
             this.setZPosButton.Size = new System.Drawing.Size(50, 22);
@@ -290,16 +382,20 @@ namespace racman
             this.setZPosButton.Text = "Set";
             this.setZPosButton.UseVisualStyleBackColor = true;
             this.setZPosButton.Click += new System.EventHandler(this.setZPosButton_Click);
-
+            // 
+            // freezePosZCheckBox
+            // 
             this.freezePosZCheckBox.AutoSize = true;
             this.freezePosZCheckBox.Location = new System.Drawing.Point(234, 79);
             this.freezePosZCheckBox.Name = "freezePosZCheckBox";
-            this.freezePosZCheckBox.Text = "Freeze";
+            this.freezePosZCheckBox.Size = new System.Drawing.Size(58, 17);
             this.freezePosZCheckBox.TabIndex = 8;
+            this.freezePosZCheckBox.Text = "Freeze";
             this.freezePosZCheckBox.UseVisualStyleBackColor = true;
             this.freezePosZCheckBox.CheckedChanged += new System.EventHandler(this.freezePosZCheckBox_CheckedChanged);
-
-            // ── optionsGroupBox ───────────────────────────────────────────
+            // 
+            // optionsGroupBox
+            // 
             this.optionsGroupBox.Controls.Add(this.flyModeCheckBox);
             this.optionsGroupBox.Controls.Add(this.infiniteJumpCheckBox);
             this.optionsGroupBox.Location = new System.Drawing.Point(10, 271);
@@ -308,23 +404,30 @@ namespace racman
             this.optionsGroupBox.TabIndex = 2;
             this.optionsGroupBox.TabStop = false;
             this.optionsGroupBox.Text = "Options";
-
+            // 
+            // flyModeCheckBox
+            // 
             this.flyModeCheckBox.AutoSize = true;
             this.flyModeCheckBox.Location = new System.Drawing.Point(10, 22);
             this.flyModeCheckBox.Name = "flyModeCheckBox";
-            this.flyModeCheckBox.Text = "Fly Mode (L2 = up, R2 = down)";
+            this.flyModeCheckBox.Size = new System.Drawing.Size(172, 17);
             this.flyModeCheckBox.TabIndex = 0;
+            this.flyModeCheckBox.Text = "Fly Mode (L2 = up, R2 = down)";
             this.flyModeCheckBox.UseVisualStyleBackColor = true;
             this.flyModeCheckBox.CheckedChanged += new System.EventHandler(this.flyModeCheckBox_CheckedChanged);
-
+            // 
+            // infiniteJumpCheckBox
+            // 
             this.infiniteJumpCheckBox.AutoSize = true;
             this.infiniteJumpCheckBox.Location = new System.Drawing.Point(240, 22);
             this.infiniteJumpCheckBox.Name = "infiniteJumpCheckBox";
-            this.infiniteJumpCheckBox.Text = "Infinite Jump";
+            this.infiniteJumpCheckBox.Size = new System.Drawing.Size(85, 17);
             this.infiniteJumpCheckBox.TabIndex = 1;
+            this.infiniteJumpCheckBox.Text = "Infinite Jump";
             this.infiniteJumpCheckBox.UseVisualStyleBackColor = true;
-
-            // ── SLY3PositionEditor ────────────────────────────────────────
+            // 
+            // SLY3PositionEditor
+            // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(484, 334);
@@ -332,11 +435,11 @@ namespace racman
             this.Controls.Add(this.positionGroupBox);
             this.Controls.Add(this.optionsGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "SLY3PositionEditor";
-            this.Text = "Position Editor";
+            this.Text = "SluMAN :: Position Editor (Sly 3)";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SLY3PositionEditor_FormClosing);
-
             this.charInfoGroupBox.ResumeLayout(false);
             this.charInfoGroupBox.PerformLayout();
             this.positionGroupBox.ResumeLayout(false);
@@ -344,6 +447,7 @@ namespace racman
             this.optionsGroupBox.ResumeLayout(false);
             this.optionsGroupBox.PerformLayout();
             this.ResumeLayout(false);
+
         }
 
         private System.Windows.Forms.GroupBox charInfoGroupBox;

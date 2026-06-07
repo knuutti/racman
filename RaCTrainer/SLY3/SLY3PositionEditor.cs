@@ -302,5 +302,15 @@ namespace racman
             pollTimer.Stop();
             pollTimer.Dispose();
         }
+
+        private void lblGadgetPower_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblHSpeed_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
