@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 
 namespace racman
@@ -20,10 +23,29 @@ namespace racman
         private const float FlyHeightStep = 20.0f;
         private const float FlyBoostMultiplier = 8.0f;
 
+        private struct WarpLocation
+        {
+            public string Name;
+            public string MapIndicator;
+            public float X, Y, Z;
+            public bool IsUserDefined;
+        }
+
+        private List<WarpLocation> builtinWarps = new List<WarpLocation>();
+        private List<WarpLocation> userWarps = new List<WarpLocation>();
+        private List<WarpLocation> displayedWarps = new List<WarpLocation>();
+        private string currentMapIndicator = "";
+
+        private static readonly string UserWarpFile = "sly3_user_warps.txt";
+        private static readonly string BuiltinWarpFile = "data/sly3_warp_locations.txt";
+
         public SLY3PositionEditor(sly3 game)
         {
             this.game = game;
             InitializeComponent();
+
+            LoadBuiltinWarps();
+            LoadUserWarps();
 
             pollTimer = new System.Windows.Forms.Timer();
             pollTimer.Interval = 10;
@@ -72,6 +94,15 @@ namespace racman
 
         private void PollTimer_Tick(object sender, EventArgs e)
         {
+            string mapIndicator = ReadCurrentMapIndicator();
+            if (mapIndicator != currentMapIndicator && mapIndicator.Length > 0)
+            {
+                currentMapIndicator = mapIndicator;
+                string mapName = GetMapDisplayName(mapIndicator);
+                currentMapLabel.Text = "Current map: " + (mapName ?? mapIndicator);
+                RefreshWarpDropdown(mapIndicator);
+            }
+
             if (!TryResolvePointers(out uint entityPtr, out uint transformPtr))
             {
                 SetLabelsUnavailable();
@@ -303,14 +334,210 @@ namespace racman
             pollTimer.Dispose();
         }
 
-        private void lblGadgetPower_Click(object sender, EventArgs e)
-        {
+        // --- Warp Locations ---
 
+        private string ReadCurrentMapIndicator()
+        {
+            try
+            {
+                byte[] b = game.api.ReadMemory(game.pid, 0x78D2C8, 32);
+                int nullIdx = -1;
+                for (int i = 0; i < b.Length; i++)
+                {
+                    if (b[i] == 0) { nullIdx = i; break; }
+                }
+                if (nullIdx < 0) nullIdx = b.Length;
+                return Encoding.ASCII.GetString(b, 0, nullIdx);
+            }
+            catch
+            {
+                return "";
+            }
         }
 
-        private void lblHSpeed_Click(object sender, EventArgs e)
+        private string GetMapDisplayName(string indicator)
         {
-
+            foreach (sly3.MapData m in game.maps)
+            {
+                if (m.indicator == indicator)
+                    return m.naturalName;
+            }
+            return null;
         }
+
+        private void RefreshWarpDropdown(string mapIndicator)
+        {
+            displayedWarps.Clear();
+            warpLocationComboBox.Items.Clear();
+
+            foreach (WarpLocation w in builtinWarps)
+            {
+                if (w.MapIndicator == mapIndicator)
+                {
+                    displayedWarps.Add(w);
+                    warpLocationComboBox.Items.Add("[Default] " + w.Name);
+                }
+            }
+
+            foreach (WarpLocation w in userWarps)
+            {
+                if (w.MapIndicator == mapIndicator)
+                {
+                    displayedWarps.Add(w);
+                    warpLocationComboBox.Items.Add(w.Name);
+                }
+            }
+
+            deleteWarpButton.Enabled = false;
+            warpNameTextBox.Clear();
+
+            if (warpLocationComboBox.Items.Count > 0)
+                warpLocationComboBox.SelectedIndex = 0;
+        }
+
+        private void warpLocationComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int idx = warpLocationComboBox.SelectedIndex;
+            if (idx < 0 || idx >= displayedWarps.Count)
+            {
+                deleteWarpButton.Enabled = false;
+                return;
+            }
+
+            WarpLocation loc = displayedWarps[idx];
+            if (loc.IsUserDefined)
+            {
+                warpNameTextBox.Text = loc.Name;
+                deleteWarpButton.Enabled = true;
+            }
+            else
+            {
+                warpNameTextBox.Clear();
+                deleteWarpButton.Enabled = false;
+            }
+        }
+
+        private void warpButton_Click(object sender, EventArgs e)
+        {
+            int idx = warpLocationComboBox.SelectedIndex;
+            if (idx < 0 || idx >= displayedWarps.Count) return;
+
+            WarpLocation loc = displayedWarps[idx];
+            try
+            {
+                if (!TryResolvePointers(out _, out uint transformPtr)) return;
+                WriteFloat(transformPtr + 0x130, loc.X);
+                WriteFloat(transformPtr + 0x134, loc.Y);
+                WriteFloat(transformPtr + 0x138, loc.Z);
+                WriteFloat(transformPtr + 0x1B0, 0f);
+                WriteFloat(transformPtr + 0x1B4, 0f);
+                WriteFloat(transformPtr + 0x1B8, 0f);
+                if (flyModeCheckBox.Checked) flyFrozenZ = loc.Z;
+            }
+            catch { }
+        }
+
+        private void saveWarpButton_Click(object sender, EventArgs e)
+        {
+            string name = warpNameTextBox.Text.Trim();
+            if (string.IsNullOrEmpty(name))
+            {
+                MessageBox.Show("Enter a name for the warp location.", "Name Required");
+                return;
+            }
+            if (currentMapIndicator == "") return;
+            if (!TryResolvePointers(out _, out uint transformPtr)) return;
+
+            try
+            {
+                float x = ReadFloat(transformPtr + 0x130);
+                float y = ReadFloat(transformPtr + 0x134);
+                float z = ReadFloat(transformPtr + 0x138);
+
+                userWarps.RemoveAll(w => w.MapIndicator == currentMapIndicator && w.Name == name);
+                userWarps.Add(new WarpLocation { Name = name, MapIndicator = currentMapIndicator, X = x, Y = y, Z = z, IsUserDefined = true });
+                SaveUserWarps();
+                RefreshWarpDropdown(currentMapIndicator);
+
+                for (int i = 0; i < displayedWarps.Count; i++)
+                {
+                    if (displayedWarps[i].IsUserDefined && displayedWarps[i].Name == name)
+                    {
+                        warpLocationComboBox.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private void deleteWarpButton_Click(object sender, EventArgs e)
+        {
+            int idx = warpLocationComboBox.SelectedIndex;
+            if (idx < 0 || idx >= displayedWarps.Count) return;
+
+            WarpLocation loc = displayedWarps[idx];
+            if (!loc.IsUserDefined) return;
+
+            userWarps.RemoveAll(w => w.MapIndicator == loc.MapIndicator && w.Name == loc.Name);
+            SaveUserWarps();
+            RefreshWarpDropdown(currentMapIndicator);
+        }
+
+        private void LoadBuiltinWarps()
+        {
+            builtinWarps.Clear();
+            if (!File.Exists(BuiltinWarpFile)) return;
+
+            foreach (string line in File.ReadAllLines(BuiltinWarpFile))
+            {
+                string trimmed = line.Trim();
+                if (trimmed.StartsWith("#") || string.IsNullOrEmpty(trimmed)) continue;
+
+                string[] parts = trimmed.Split('|');
+                if (parts.Length != 5) continue;
+
+                if (!float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float x)) continue;
+                if (!float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out float y)) continue;
+                if (!float.TryParse(parts[4], NumberStyles.Float, CultureInfo.InvariantCulture, out float z)) continue;
+
+                builtinWarps.Add(new WarpLocation { MapIndicator = parts[0], Name = parts[1], X = x, Y = y, Z = z, IsUserDefined = false });
+            }
+        }
+
+        private void LoadUserWarps()
+        {
+            userWarps.Clear();
+            if (!File.Exists(UserWarpFile)) return;
+
+            foreach (string line in File.ReadAllLines(UserWarpFile))
+            {
+                string trimmed = line.Trim();
+                if (string.IsNullOrEmpty(trimmed)) continue;
+
+                string[] parts = trimmed.Split('|');
+                if (parts.Length != 5) continue;
+
+                if (!float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float x)) continue;
+                if (!float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out float y)) continue;
+                if (!float.TryParse(parts[4], NumberStyles.Float, CultureInfo.InvariantCulture, out float z)) continue;
+
+                userWarps.Add(new WarpLocation { MapIndicator = parts[0], Name = parts[1], X = x, Y = y, Z = z, IsUserDefined = true });
+            }
+        }
+
+        private void SaveUserWarps()
+        {
+            string[] lines = new string[userWarps.Count];
+            for (int i = 0; i < userWarps.Count; i++)
+            {
+                WarpLocation w = userWarps[i];
+                lines[i] = string.Format(CultureInfo.InvariantCulture, "{0}|{1}|{2}|{3}|{4}", w.MapIndicator, w.Name, w.X, w.Y, w.Z);
+            }
+            File.WriteAllLines(UserWarpFile, lines);
+        }
+
+        private void lblGadgetPower_Click(object sender, EventArgs e) { }
+        private void lblHSpeed_Click(object sender, EventArgs e) { }
     }
 }
