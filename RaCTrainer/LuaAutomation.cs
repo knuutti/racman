@@ -471,10 +471,9 @@ namespace racman
             }
             catch (System.Net.Sockets.SocketException ex)
             {
+                MessageBox.Show("Error in LuaAutomation: " + ex.ToString());
                 return new byte[] { };
             }
-
-            return new byte[] { };
         }
 
         public static int ReadOneByte(int address)
