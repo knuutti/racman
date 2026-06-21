@@ -1,4 +1,4 @@
-﻿namespace racman
+namespace racman
 {
     partial class SLY3Form
     {
@@ -30,9 +30,8 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SLY3Form));
             this.coinsTextBox = new System.Windows.Forms.TextBox();
-            this.infiniteHealthCheckBox = new System.Windows.Forms.CheckBox();
-            this.infiniteGadgetPowerCheckBox = new System.Windows.Forms.CheckBox();
             this.inputDisplayButton = new System.Windows.Forms.Button();
+            this.positionEditorButton = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.switchGameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,14 +42,23 @@
             this.mapComboBox = new System.Windows.Forms.ComboBox();
             this.loadMapButton = new System.Windows.Forms.Button();
             this.gadgetButton = new System.Windows.Forms.Button();
-            this.positionEditorButton = new System.Windows.Forms.Button();
             this.toggleGroupBox = new System.Windows.Forms.GroupBox();
+            this.gameClockCheckBox = new System.Windows.Forms.CheckBox();
+            this.deathBarriersCheckBox = new System.Windows.Forms.CheckBox();
+            this.guardAICheckBox = new System.Windows.Forms.CheckBox();
+            this.invulnerabilityCheckBox = new System.Windows.Forms.CheckBox();
+            this.infiniteHealthCheckBox = new System.Windows.Forms.CheckBox();
+            this.infiniteGadgetPowerCheckBox = new System.Windows.Forms.CheckBox();
+            this.flyModeCheckBox = new System.Windows.Forms.CheckBox();
+            this.infiniteJumpCheckBox = new System.Windows.Forms.CheckBox();
             this.alwaysOnTopCheckBox = new System.Windows.Forms.CheckBox();
             this.jobComboBox = new System.Windows.Forms.ComboBox();
             this.loadJobButton = new System.Windows.Forms.Button();
             this.skipCinematicsButton = new System.Windows.Forms.Button();
             this.fullReloadButton = new System.Windows.Forms.Button();
             this.reloadGroupBox = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.reloadAsCharacterComboBox = new System.Windows.Forms.ComboBox();
             this.fastReloadButton = new System.Windows.Forms.Button();
             this.healthTextBox = new System.Windows.Forms.TextBox();
             this.setCoinsButton = new System.Windows.Forms.Button();
@@ -60,8 +68,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.jobGroupBox = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.reloadAsCharacterComboBox = new System.Windows.Forms.ComboBox();
             this.menuStrip1.SuspendLayout();
             this.toggleGroupBox.SuspendLayout();
             this.reloadGroupBox.SuspendLayout();
@@ -80,20 +86,20 @@
             this.coinsTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.coinsTextBox_KeyDown);
             // 
             // inputDisplayButton
-            //
-            this.inputDisplayButton.Location = new System.Drawing.Point(226, 295);
+            // 
+            this.inputDisplayButton.Location = new System.Drawing.Point(10, 325);
             this.inputDisplayButton.Name = "inputDisplayButton";
-            this.inputDisplayButton.Size = new System.Drawing.Size(113, 54);
+            this.inputDisplayButton.Size = new System.Drawing.Size(100, 54);
             this.inputDisplayButton.TabIndex = 1;
             this.inputDisplayButton.Text = "Input Display";
             this.inputDisplayButton.UseVisualStyleBackColor = true;
             this.inputDisplayButton.Click += new System.EventHandler(this.inputDisplayButton_Click);
-            //
+            // 
             // positionEditorButton
-            //
-            this.positionEditorButton.Location = new System.Drawing.Point(343, 295);
+            // 
+            this.positionEditorButton.Location = new System.Drawing.Point(116, 325);
             this.positionEditorButton.Name = "positionEditorButton";
-            this.positionEditorButton.Size = new System.Drawing.Size(116, 54);
+            this.positionEditorButton.Size = new System.Drawing.Size(99, 54);
             this.positionEditorButton.TabIndex = 27;
             this.positionEditorButton.Text = "Position Editor";
             this.positionEditorButton.UseVisualStyleBackColor = true;
@@ -178,30 +184,124 @@
             // 
             // gadgetButton
             // 
-            this.gadgetButton.Location = new System.Drawing.Point(119, 99);
+            this.gadgetButton.Location = new System.Drawing.Point(119, 113);
             this.gadgetButton.Name = "gadgetButton";
             this.gadgetButton.Size = new System.Drawing.Size(101, 40);
             this.gadgetButton.TabIndex = 11;
             this.gadgetButton.Text = "Gadgets";
             this.gadgetButton.UseVisualStyleBackColor = true;
             this.gadgetButton.Click += new System.EventHandler(this.gadgetsButton_Click);
-            //
+            // 
             // toggleGroupBox
-            //
-            this.toggleGroupBox.Controls.Add(this.alwaysOnTopCheckBox);
+            // 
+            this.toggleGroupBox.Controls.Add(this.gameClockCheckBox);
+            this.toggleGroupBox.Controls.Add(this.deathBarriersCheckBox);
+            this.toggleGroupBox.Controls.Add(this.guardAICheckBox);
+            this.toggleGroupBox.Controls.Add(this.invulnerabilityCheckBox);
             this.toggleGroupBox.Controls.Add(this.infiniteHealthCheckBox);
             this.toggleGroupBox.Controls.Add(this.infiniteGadgetPowerCheckBox);
-            this.toggleGroupBox.Location = new System.Drawing.Point(226, 196);
+            this.toggleGroupBox.Controls.Add(this.flyModeCheckBox);
+            this.toggleGroupBox.Controls.Add(this.infiniteJumpCheckBox);
+            this.toggleGroupBox.Controls.Add(this.alwaysOnTopCheckBox);
+            this.toggleGroupBox.Location = new System.Drawing.Point(228, 204);
             this.toggleGroupBox.Margin = new System.Windows.Forms.Padding(2);
             this.toggleGroupBox.Name = "toggleGroupBox";
             this.toggleGroupBox.Padding = new System.Windows.Forms.Padding(2);
-            this.toggleGroupBox.Size = new System.Drawing.Size(234, 90);
+            this.toggleGroupBox.Size = new System.Drawing.Size(234, 210);
             this.toggleGroupBox.TabIndex = 15;
             this.toggleGroupBox.TabStop = false;
             this.toggleGroupBox.Text = "Toggles";
-            //
+            // 
+            // gameClockCheckBox
+            // 
+            this.gameClockCheckBox.AutoSize = true;
+            this.gameClockCheckBox.Location = new System.Drawing.Point(16, 102);
+            this.gameClockCheckBox.Name = "gameClockCheckBox";
+            this.gameClockCheckBox.Size = new System.Drawing.Size(119, 17);
+            this.gameClockCheckBox.TabIndex = 11;
+            this.gameClockCheckBox.Text = "Freeze Game Clock";
+            this.gameClockCheckBox.UseVisualStyleBackColor = true;
+            this.gameClockCheckBox.CheckedChanged += new System.EventHandler(this.gameClockCheckBox_CheckedChanged);
+            // 
+            // deathBarriersCheckBox
+            // 
+            this.deathBarriersCheckBox.AutoSize = true;
+            this.deathBarriersCheckBox.Location = new System.Drawing.Point(16, 82);
+            this.deathBarriersCheckBox.Name = "deathBarriersCheckBox";
+            this.deathBarriersCheckBox.Size = new System.Drawing.Size(131, 17);
+            this.deathBarriersCheckBox.TabIndex = 10;
+            this.deathBarriersCheckBox.Text = "Disable Death Barriers";
+            this.deathBarriersCheckBox.UseVisualStyleBackColor = true;
+            this.deathBarriersCheckBox.CheckedChanged += new System.EventHandler(this.deathBarriersCheckBox_CheckedChanged);
+            // 
+            // guardAICheckBox
+            // 
+            this.guardAICheckBox.AutoSize = true;
+            this.guardAICheckBox.Location = new System.Drawing.Point(16, 62);
+            this.guardAICheckBox.Name = "guardAICheckBox";
+            this.guardAICheckBox.Size = new System.Drawing.Size(106, 17);
+            this.guardAICheckBox.TabIndex = 8;
+            this.guardAICheckBox.Text = "Disable Guard AI";
+            this.guardAICheckBox.UseVisualStyleBackColor = true;
+            this.guardAICheckBox.CheckedChanged += new System.EventHandler(this.guardAICheckBox_CheckedChanged);
+            // 
+            // invulnerabilityCheckBox
+            // 
+            this.invulnerabilityCheckBox.AutoSize = true;
+            this.invulnerabilityCheckBox.Location = new System.Drawing.Point(16, 42);
+            this.invulnerabilityCheckBox.Name = "invulnerabilityCheckBox";
+            this.invulnerabilityCheckBox.Size = new System.Drawing.Size(90, 17);
+            this.invulnerabilityCheckBox.TabIndex = 6;
+            this.invulnerabilityCheckBox.Text = "Invulnerability";
+            this.invulnerabilityCheckBox.UseVisualStyleBackColor = true;
+            this.invulnerabilityCheckBox.CheckedChanged += new System.EventHandler(this.invulnerabilityCheckBox_CheckedChanged);
+            // 
+            // infiniteHealthCheckBox
+            // 
+            this.infiniteHealthCheckBox.AutoSize = true;
+            this.infiniteHealthCheckBox.Location = new System.Drawing.Point(16, 122);
+            this.infiniteHealthCheckBox.Margin = new System.Windows.Forms.Padding(2);
+            this.infiniteHealthCheckBox.Name = "infiniteHealthCheckBox";
+            this.infiniteHealthCheckBox.Size = new System.Drawing.Size(91, 17);
+            this.infiniteHealthCheckBox.TabIndex = 12;
+            this.infiniteHealthCheckBox.Text = "Infinite Health";
+            this.infiniteHealthCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // infiniteGadgetPowerCheckBox
+            // 
+            this.infiniteGadgetPowerCheckBox.AutoSize = true;
+            this.infiniteGadgetPowerCheckBox.Location = new System.Drawing.Point(16, 142);
+            this.infiniteGadgetPowerCheckBox.Margin = new System.Windows.Forms.Padding(2);
+            this.infiniteGadgetPowerCheckBox.Name = "infiniteGadgetPowerCheckBox";
+            this.infiniteGadgetPowerCheckBox.Size = new System.Drawing.Size(128, 17);
+            this.infiniteGadgetPowerCheckBox.TabIndex = 13;
+            this.infiniteGadgetPowerCheckBox.Text = "Infinite Gadget Power";
+            this.infiniteGadgetPowerCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // flyModeCheckBox
+            // 
+            this.flyModeCheckBox.AutoSize = true;
+            this.flyModeCheckBox.Location = new System.Drawing.Point(16, 162);
+            this.flyModeCheckBox.Margin = new System.Windows.Forms.Padding(2);
+            this.flyModeCheckBox.Name = "flyModeCheckBox";
+            this.flyModeCheckBox.Size = new System.Drawing.Size(154, 17);
+            this.flyModeCheckBox.TabIndex = 14;
+            this.flyModeCheckBox.Text = "Fly Mode (L2 up, R2 down)";
+            this.flyModeCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // infiniteJumpCheckBox
+            // 
+            this.infiniteJumpCheckBox.AutoSize = true;
+            this.infiniteJumpCheckBox.Location = new System.Drawing.Point(16, 182);
+            this.infiniteJumpCheckBox.Margin = new System.Windows.Forms.Padding(2);
+            this.infiniteJumpCheckBox.Name = "infiniteJumpCheckBox";
+            this.infiniteJumpCheckBox.Size = new System.Drawing.Size(85, 17);
+            this.infiniteJumpCheckBox.TabIndex = 15;
+            this.infiniteJumpCheckBox.Text = "Infinite Jump";
+            this.infiniteJumpCheckBox.UseVisualStyleBackColor = true;
+            // 
             // alwaysOnTopCheckBox
-            //
+            // 
             this.alwaysOnTopCheckBox.AutoSize = true;
             this.alwaysOnTopCheckBox.Location = new System.Drawing.Point(16, 22);
             this.alwaysOnTopCheckBox.Margin = new System.Windows.Forms.Padding(2);
@@ -211,30 +311,6 @@
             this.alwaysOnTopCheckBox.Text = "Always On Top";
             this.alwaysOnTopCheckBox.UseVisualStyleBackColor = true;
             this.alwaysOnTopCheckBox.CheckedChanged += new System.EventHandler(this.alwaysOnTopCheckBox_CheckedChanged);
-            //
-            // infiniteHealthCheckBox
-            //
-            this.infiniteHealthCheckBox.AutoSize = true;
-            this.infiniteHealthCheckBox.Location = new System.Drawing.Point(16, 45);
-            this.infiniteHealthCheckBox.Margin = new System.Windows.Forms.Padding(2);
-            this.infiniteHealthCheckBox.Name = "infiniteHealthCheckBox";
-            this.infiniteHealthCheckBox.Size = new System.Drawing.Size(98, 17);
-            this.infiniteHealthCheckBox.TabIndex = 6;
-            this.infiniteHealthCheckBox.Text = "Infinite Health";
-            this.infiniteHealthCheckBox.UseVisualStyleBackColor = true;
-            this.infiniteHealthCheckBox.CheckedChanged += new System.EventHandler(this.infiniteHealthCheckBox_CheckedChanged);
-            //
-            // infiniteGadgetPowerCheckBox
-            //
-            this.infiniteGadgetPowerCheckBox.AutoSize = true;
-            this.infiniteGadgetPowerCheckBox.Location = new System.Drawing.Point(16, 67);
-            this.infiniteGadgetPowerCheckBox.Margin = new System.Windows.Forms.Padding(2);
-            this.infiniteGadgetPowerCheckBox.Name = "infiniteGadgetPowerCheckBox";
-            this.infiniteGadgetPowerCheckBox.Size = new System.Drawing.Size(120, 17);
-            this.infiniteGadgetPowerCheckBox.TabIndex = 7;
-            this.infiniteGadgetPowerCheckBox.Text = "Infinite Gadget Power";
-            this.infiniteGadgetPowerCheckBox.UseVisualStyleBackColor = true;
-            this.infiniteGadgetPowerCheckBox.CheckedChanged += new System.EventHandler(this.infiniteGadgetPowerCheckBox_CheckedChanged);
             // 
             // jobComboBox
             // 
@@ -300,6 +376,7 @@
             " [S] First piston",
             " [S] Second pistons",
             " [S] Drills",
+            " [S] Find the Guru",
             "Dark Caves",
             " [DC] Enter cave #1",
             " [DC] Escape cave #1",
@@ -311,6 +388,7 @@
             " [BT] Phase 1",
             " [BT] Climb the tower",
             " [BT] Phase 2",
+            " [BT] Release the scorpions",
             "Unleash the Guru",
             " [UtG] Find the drills",
             " [UtG] Drills",
@@ -455,6 +533,7 @@
             " [XMtS] Sink the ship",
             " [XMtS] Dagger Isle",
             " [XMtS] Statue",
+            " [XMtS] Dig up the chest",
             "Crusher from the Depths",
             " [CftD] Shoot Crusher #1",
             " [CftD] Shoot the tentacles",
@@ -477,10 +556,12 @@
             " [RDC] Crusher",
             " [RDC] Boss fight",
             "Carmelita to the Rescue",
+            " [CttR] Talk with Dr. M",
             "A Deadly Bite",
             " [ADB] Sharks #2",
             " [ADB] Sharks #3",
             " [ADB] Sharks #4",
+            " [ADB] Return to the boat",
             "The Dark Current",
             " [TDC] Pinchers",
             " [TDC] Mutant fish",
@@ -535,7 +616,7 @@
             // 
             // skipCinematicsButton
             // 
-            this.skipCinematicsButton.Location = new System.Drawing.Point(15, 99);
+            this.skipCinematicsButton.Location = new System.Drawing.Point(15, 113);
             this.skipCinematicsButton.Name = "skipCinematicsButton";
             this.skipCinematicsButton.Size = new System.Drawing.Size(98, 40);
             this.skipCinematicsButton.TabIndex = 18;
@@ -563,10 +644,37 @@
             this.reloadGroupBox.Margin = new System.Windows.Forms.Padding(2);
             this.reloadGroupBox.Name = "reloadGroupBox";
             this.reloadGroupBox.Padding = new System.Windows.Forms.Padding(2);
-            this.reloadGroupBox.Size = new System.Drawing.Size(201, 99);
+            this.reloadGroupBox.Size = new System.Drawing.Size(201, 101);
             this.reloadGroupBox.TabIndex = 20;
             this.reloadGroupBox.TabStop = false;
             this.reloadGroupBox.Text = "Reload";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(13, 67);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(56, 13);
+            this.label3.TabIndex = 25;
+            this.label3.Text = "Character:";
+            // 
+            // reloadAsCharacterComboBox
+            // 
+            this.reloadAsCharacterComboBox.FormattingEnabled = true;
+            this.reloadAsCharacterComboBox.Items.AddRange(new object[] {
+            "Default",
+            "Sly",
+            "Bentley",
+            "Murray",
+            "Carmelita",
+            "Guru",
+            "Panda King",
+            "Penelope"});
+            this.reloadAsCharacterComboBox.Location = new System.Drawing.Point(75, 64);
+            this.reloadAsCharacterComboBox.Name = "reloadAsCharacterComboBox";
+            this.reloadAsCharacterComboBox.Size = new System.Drawing.Size(114, 21);
+            this.reloadAsCharacterComboBox.TabIndex = 24;
+            this.reloadAsCharacterComboBox.Text = "Default";
             // 
             // fastReloadButton
             // 
@@ -620,7 +728,7 @@
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(234, 155);
+            this.groupBox1.Size = new System.Drawing.Size(234, 163);
             this.groupBox1.TabIndex = 24;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Utility";
@@ -671,38 +779,11 @@
             this.jobGroupBox.TabStop = false;
             this.jobGroupBox.Text = "Jobs";
             // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(13, 67);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(56, 13);
-            this.label3.TabIndex = 25;
-            this.label3.Text = "Character:";
-            // 
-            // reloadAsCharacterComboBox
-            // 
-            this.reloadAsCharacterComboBox.FormattingEnabled = true;
-            this.reloadAsCharacterComboBox.Items.AddRange(new object[] {
-            "Default",
-            "Sly",
-            "Bentley",
-            "Murray",
-            "Carmelita",
-            "Guru",
-            "Panda King",
-            "Penelope"});
-            this.reloadAsCharacterComboBox.Location = new System.Drawing.Point(75, 64);
-            this.reloadAsCharacterComboBox.Name = "reloadAsCharacterComboBox";
-            this.reloadAsCharacterComboBox.Size = new System.Drawing.Size(114, 21);
-            this.reloadAsCharacterComboBox.TabIndex = 24;
-            this.reloadAsCharacterComboBox.Text = "Default";
-            // 
             // SLY3Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(473, 360);
+            this.ClientSize = new System.Drawing.Size(473, 422);
             this.Controls.Add(this.jobGroupBox);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -715,6 +796,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "SLY3Form";
             this.Text = "SluMAN :: Sly 3: Honor Among Thieves (Practice Mode)";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SLY3Form_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.SLY3Form_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -737,6 +819,7 @@
         private System.Windows.Forms.CheckBox infiniteHealthCheckBox;
         private System.Windows.Forms.CheckBox infiniteGadgetPowerCheckBox;
         private System.Windows.Forms.Button inputDisplayButton;
+        private System.Windows.Forms.Button positionEditorButton;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem menuToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem switchGameToolStripMenuItem;
@@ -765,6 +848,11 @@
         private System.Windows.Forms.ToolStripMenuItem rebootPS3ToolStripMenuItem;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox reloadAsCharacterComboBox;
-        private System.Windows.Forms.Button positionEditorButton;
+        private System.Windows.Forms.CheckBox invulnerabilityCheckBox;
+        private System.Windows.Forms.CheckBox guardAICheckBox;
+        private System.Windows.Forms.CheckBox deathBarriersCheckBox;
+        private System.Windows.Forms.CheckBox gameClockCheckBox;
+        internal System.Windows.Forms.CheckBox flyModeCheckBox;
+        internal System.Windows.Forms.CheckBox infiniteJumpCheckBox;
     }
 }

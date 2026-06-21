@@ -402,6 +402,10 @@ namespace racman
                 }
                 ratchetron.ReleaseAllSubs();
             }
+            if (closeInputDisplay)
+            {
+                try { game.api.Disconnect(); } catch { }
+            }
             CloseAdditionalWindows(closeInputDisplay);
         }
 

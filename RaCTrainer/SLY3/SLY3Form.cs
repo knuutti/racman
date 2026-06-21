@@ -22,6 +22,13 @@ namespace racman
 
         private System.Windows.Forms.Timer freezeTimer;
 
+        private float flyFrozenZ;
+        private float prevFlyPosX;
+        private float prevFlyPosY;
+        private bool prevFlyModeState;
+        private const float FlyHeightStep = 20.0f;
+        private const float FlyBoostMultiplier = 8.0f;
+
         public SLY3Form(sly3 game, string gameNameId = "NPEA00343")
         {
             this.game = game;
@@ -47,7 +54,7 @@ namespace racman
             this.gameNameId = gameNameId;
 
             freezeTimer = new System.Windows.Forms.Timer();
-            freezeTimer.Interval = 100;
+            freezeTimer.Interval = 16;
             freezeTimer.Tick += FreezeTimer_Tick;
             freezeTimer.Start();
         }
@@ -62,6 +69,91 @@ namespace racman
             {
                 try { game.SetGadgetPower(100); } catch { }
             }
+
+            // Fly mode and infinite jump are handled by the Position Editor when it is open
+            bool posEditorOpen = PositionEditor != null && !PositionEditor.IsDisposed;
+            if (posEditorOpen)
+            {
+                prevFlyModeState = false;
+                return;
+            }
+
+            if (infiniteJumpCheckBox.Checked)
+            {
+                try
+                {
+                    byte[] epBytes = game.api.ReadMemory(game.pid, sly3.addr.activeCharacterPtr, 4);
+                    uint entityPtr = BitConverter.ToUInt32(epBytes.Reverse().ToArray(), 0);
+                    if (entityPtr != 0)
+                        game.api.WriteMemory(game.pid, entityPtr + 0x338, (uint)0);
+                }
+                catch { }
+            }
+
+            bool flyMode = flyModeCheckBox.Checked;
+            if (!flyMode)
+            {
+                prevFlyModeState = false;
+                return;
+            }
+
+            try
+            {
+                byte[] epBytes = game.api.ReadMemory(game.pid, sly3.addr.activeCharacterPtr, 4);
+                uint entityPtr = BitConverter.ToUInt32(epBytes.Reverse().ToArray(), 0);
+                if (entityPtr == 0) return;
+
+                byte[] tpBytes = game.api.ReadMemory(game.pid, entityPtr + sly3.addr.transformOffset, 4);
+                uint transformPtr = BitConverter.ToUInt32(tpBytes.Reverse().ToArray(), 0);
+                if (transformPtr == 0) return;
+
+                if (!prevFlyModeState)
+                {
+                    flyFrozenZ = ReadFloat(transformPtr + sly3.addr.coordsOffsetZ);
+                    prevFlyPosX = ReadFloat(transformPtr + sly3.addr.coordsOffsetX);
+                    prevFlyPosY = ReadFloat(transformPtr + sly3.addr.coordsOffsetY);
+                }
+                prevFlyModeState = true;
+
+                if ((Inputs.RawInputs & 0x1) != 0) flyFrozenZ += FlyHeightStep;  // L2 = up
+                if ((Inputs.RawInputs & 0x2) != 0) flyFrozenZ -= FlyHeightStep;  // R2 = down
+
+                WriteFloat(transformPtr + sly3.addr.coordsOffsetZ, flyFrozenZ);
+                WriteFloat(transformPtr + 0x1B8, 0f);  // zero Z velocity
+
+                float curX = ReadFloat(transformPtr + sly3.addr.coordsOffsetX);
+                float curY = ReadFloat(transformPtr + sly3.addr.coordsOffsetY);
+                if ((Inputs.RawInputs & 0x8) != 0)  // R1 = horizontal boost
+                {
+                    float deltaX = curX - prevFlyPosX;
+                    float deltaY = curY - prevFlyPosY;
+                    if (Math.Abs(deltaX) > 0.001f || Math.Abs(deltaY) > 0.001f)
+                    {
+                        float newX = prevFlyPosX + deltaX * FlyBoostMultiplier;
+                        float newY = prevFlyPosY + deltaY * FlyBoostMultiplier;
+                        WriteFloat(transformPtr + sly3.addr.coordsOffsetX, newX);
+                        WriteFloat(transformPtr + sly3.addr.coordsOffsetY, newY);
+                        curX = newX;
+                        curY = newY;
+                    }
+                }
+                prevFlyPosX = curX;
+                prevFlyPosY = curY;
+            }
+            catch { }
+        }
+
+        private float ReadFloat(uint address)
+        {
+            byte[] b = game.api.ReadMemory(game.pid, address, 4);
+            return BitConverter.ToSingle(b.Reverse().ToArray(), 0);
+        }
+
+        private void WriteFloat(uint address, float value)
+        {
+            byte[] b = BitConverter.GetBytes(value);
+            if (BitConverter.IsLittleEndian) Array.Reverse(b);
+            game.api.WriteMemory(game.pid, address, b);
         }
 
         private void ApplySavedPreferences()
@@ -146,10 +238,6 @@ namespace racman
             {
                 Console.WriteLine($"Error during disconnect: {ex.Message}");
             }
-            
-            Application.Exit();
-            
-            Environment.Exit(0);
         }
 
         private void HandleDisconnect()
@@ -170,8 +258,8 @@ namespace racman
         private void switchGameToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DisconnectGame();
-            this.Close();
             Program.AttachPS3Form.Show();
+            this.Close();
         }
 
         private void configureButtonCombosToolStripMenuItem_Click(object sender, EventArgs e)
@@ -228,7 +316,7 @@ namespace racman
         {
             if (PositionEditor == null || PositionEditor.IsDisposed)
             {
-                PositionEditor = new SLY3PositionEditor(game);
+                PositionEditor = new SLY3PositionEditor(game, this);
                 PositionEditor.FormClosed += PositionEditor_FormClosed;
                 PositionEditor.Show();
             }
@@ -362,6 +450,10 @@ namespace racman
             if (game.api is Ratchetron ratchetron)
             {
                 ratchetron.ReleaseAllSubs();
+            }
+            if (closeInputDisplay)
+            {
+                try { game.api.Disconnect(); } catch { }
             }
             CloseAdditionalWindows(closeInputDisplay);
         }
@@ -523,6 +615,28 @@ namespace racman
                 }
             }
         }
+
+        private void invulnerabilityCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetInvulnerability(invulnerabilityCheckBox.Checked);
+        }
+
+        private void guardAICheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetGuardAI(guardAICheckBox.Checked);
+        }
+
+        private void deathBarriersCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetDeathBarriers(deathBarriersCheckBox.Checked);
+        }
+
+        private void gameClockCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            game.SetGameClockFrozen(gameClockCheckBox.Checked);
+        }
+
+        
 
         private void infiniteHealthCheckBox_CheckedChanged(object sender, EventArgs e)
         {

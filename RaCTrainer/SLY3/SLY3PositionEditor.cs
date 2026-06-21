@@ -11,6 +11,7 @@ namespace racman
     public partial class SLY3PositionEditor : Form
     {
         private sly3 game;
+        private SLY3Form mainForm;
         private System.Windows.Forms.Timer pollTimer;
 
         private float? frozenPosX;
@@ -19,6 +20,7 @@ namespace racman
         private float flyFrozenZ;
         private float prevFlyPosX;
         private float prevFlyPosY;
+        private bool prevFlyMode;
 
         private const float FlyHeightStep = 20.0f;
         private const float FlyBoostMultiplier = 8.0f;
@@ -39,9 +41,10 @@ namespace racman
         private static readonly string UserWarpFile = "sly3_user_warps.txt";
         private static readonly string BuiltinWarpFile = "data/sly3_warp_locations.txt";
 
-        public SLY3PositionEditor(sly3 game)
+        public SLY3PositionEditor(sly3 game, SLY3Form mainForm = null)
         {
             this.game = game;
+            this.mainForm = mainForm;
             InitializeComponent();
 
             LoadBuiltinWarps();
@@ -111,6 +114,8 @@ namespace racman
 
             try
             {
+                bool flyModeEnabled = mainForm != null && mainForm.flyModeCheckBox.Checked;
+
                 // Position freezes — also zero corresponding velocity axis
                 if (frozenPosX.HasValue)
                 {
@@ -122,14 +127,23 @@ namespace racman
                     WriteFloat(transformPtr + 0x134, frozenPosY.Value);
                     WriteFloat(transformPtr + 0x1B4, 0f);
                 }
-                if (!flyModeCheckBox.Checked && frozenPosZ.HasValue)
+                if (!flyModeEnabled && frozenPosZ.HasValue)
                 {
                     WriteFloat(transformPtr + 0x138, frozenPosZ.Value);
                     WriteFloat(transformPtr + 0x1B8, 0f);
                 }
 
                 // Fly mode: freeze Z pos + Z vel, adjust height with L2/R2, amplify horizontal movement
-                if (flyModeCheckBox.Checked)
+                if (flyModeEnabled && !prevFlyMode)
+                {
+                    flyFrozenZ = ReadFloat(transformPtr + 0x138);
+                    prevFlyPosX = ReadFloat(transformPtr + 0x130);
+                    prevFlyPosY = ReadFloat(transformPtr + 0x134);
+                    zPosTextBox.Text = flyFrozenZ.ToString("F3", CultureInfo.InvariantCulture);
+                }
+                prevFlyMode = flyModeEnabled;
+
+                if (flyModeEnabled)
                 {
                     if ((Inputs.RawInputs & 0x1) != 0) flyFrozenZ += FlyHeightStep;   // L2 = up
                     if ((Inputs.RawInputs & 0x2) != 0) flyFrozenZ -= FlyHeightStep;   // R2 = down
@@ -159,7 +173,8 @@ namespace racman
                 }
 
                 // Infinite jump — write full 4 bytes; LSB is what the game checks
-                if (infiniteJumpCheckBox.Checked) game.api.WriteMemory(game.pid, entityPtr + 0x338, (uint)0);
+                if (mainForm != null && mainForm.infiniteJumpCheckBox.Checked)
+                    game.api.WriteMemory(game.pid, entityPtr + 0x338, (uint)0);
 
                 // Read current state for display labels
                 int entityId = ReadInt(entityPtr + 0x18);
@@ -242,7 +257,7 @@ namespace racman
                 WriteFloat(transformPtr + 0x138, val);
                 WriteFloat(transformPtr + 0x1B8, 0f);
                 if (freezePosZCheckBox.Checked) frozenPosZ = val;
-                if (flyModeCheckBox.Checked) flyFrozenZ = val;
+                if (mainForm != null && mainForm.flyModeCheckBox.Checked) flyFrozenZ = val;
             }
             catch { }
         }
@@ -307,24 +322,6 @@ namespace racman
             else
             {
                 frozenPosZ = null;
-            }
-        }
-
-        private void flyModeCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            if (flyModeCheckBox.Checked)
-            {
-                try
-                {
-                    if (TryResolvePointers(out _, out uint tp))
-                    {
-                        flyFrozenZ = ReadFloat(tp + 0x138);
-                        zPosTextBox.Text = flyFrozenZ.ToString("F3", CultureInfo.InvariantCulture);
-                        prevFlyPosX = ReadFloat(tp + 0x130);
-                        prevFlyPosY = ReadFloat(tp + 0x134);
-                    }
-                }
-                catch { }
             }
         }
 
@@ -432,7 +429,7 @@ namespace racman
                 WriteFloat(transformPtr + 0x1B0, 0f);
                 WriteFloat(transformPtr + 0x1B4, 0f);
                 WriteFloat(transformPtr + 0x1B8, 0f);
-                if (flyModeCheckBox.Checked) flyFrozenZ = loc.Z;
+                if (mainForm != null && mainForm.flyModeCheckBox.Checked) flyFrozenZ = loc.Z;
             }
             catch { }
         }

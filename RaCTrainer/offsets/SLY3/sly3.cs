@@ -57,6 +57,9 @@ namespace racman
         public uint gameSpeed => 0x5898B8;
         public uint mtcTimerValue => 0x7DAB2C;
         public uint pauseLock => 0x5EC6C4;
+        public uint guardAIAddress => 0x5EC6CC;
+        public uint deathBarriersPointer => 0x78C6E4;
+        public uint cameraPointer => 0x78CE2C;
 
         // Episode 1 specific addresses
         public uint veniceStarted => 0x6CE0B4;
@@ -96,6 +99,8 @@ namespace racman
         }
 
         public MapData[] maps;
+        private int infiniteJumpsFreezeSubID = -1;
+        private int gameClockFreezeSubID = -1;
 
         public sly3(IPS3API api) : base(api)
         {
@@ -492,6 +497,90 @@ namespace racman
             api.WriteMemory(pid, 0x6CCDB0, ConvertFloatToBytes(1.0f));
             api.WriteMemory(pid, 0x6CCDD0, ConvertFloatToBytes(1.0f));
             api.WriteMemory(pid, 0x6CCD70, ConvertFloatToBytes(1.0f));
+        }
+
+        private uint GetEntityAddress()
+        {
+            byte[] ptrBytes = api.ReadMemory(pid, sly3.addr.activeCharacterPtr, 4);
+            return BitConverter.ToUInt32(ptrBytes.Reverse().ToArray(), 0);
+        }
+
+        public void SetInvulnerability(bool enabled)
+        {
+            uint entity = GetEntityAddress();
+            api.WriteMemory(pid, entity + 0x17C, ConvertIntToBytes(enabled ? 1 : 0));
+        }
+
+        public void SetInfiniteDoubleJump(bool enabled)
+        {
+            if (infiniteJumpsFreezeSubID != -1)
+            {
+                api.ReleaseSubID(infiniteJumpsFreezeSubID);
+                infiniteJumpsFreezeSubID = -1;
+            }
+            if (enabled)
+            {
+                uint entity = GetEntityAddress();
+                infiniteJumpsFreezeSubID = api.FreezeMemory(pid, entity + 0x32C, 0u);
+            }
+        }
+
+        public void SetSpeedMultiplier(float value)
+        {
+            uint entity = GetEntityAddress();
+            api.WriteMemory(pid, entity + 0x344, ConvertFloatToBytes(value));
+        }
+
+        public void SetUndetectable(bool enabled)
+        {
+            uint entity = GetEntityAddress();
+            api.WriteMemory(pid, entity + 0x1150, ConvertIntToBytes(enabled ? 1 : 0));
+        }
+
+        public void SetGuardAI(bool disabled)
+        {
+            api.WriteMemory(pid, sly3.addr.guardAIAddress, ConvertIntToBytes(disabled ? 1 : 0));
+        }
+
+        public void SetGameClockFrozen(bool frozen)
+        {
+            if (gameClockFreezeSubID != -1)
+            {
+                api.ReleaseSubID(gameClockFreezeSubID);
+                gameClockFreezeSubID = -1;
+            }
+            if (frozen)
+            {
+                byte[] zero = ConvertFloatToBytes(0.0f);
+                api.WriteMemory(pid, sly3.addr.gameSpeed, zero);
+                gameClockFreezeSubID = api.FreezeMemory(pid, sly3.addr.gameSpeed, 4,
+                    IPS3API.MemoryCondition.Any, zero);
+            }
+            else
+            {
+                api.WriteMemory(pid, sly3.addr.gameSpeed, ConvertFloatToBytes(1.0f));
+            }
+        }
+
+        public void SetDeathBarriers(bool disabled)
+        {
+            byte[] ptrBytes = api.ReadMemory(pid, sly3.addr.deathBarriersPointer, 4);
+            uint ptr = BitConverter.ToUInt32(ptrBytes.Reverse().ToArray(), 0);
+            api.WriteMemory(pid, ptr + 0x2C, ConvertIntToBytes(disabled ? 1 : 0));
+        }
+
+        public void SetCameraFOV(float value)
+        {
+            byte[] ptrBytes = api.ReadMemory(pid, sly3.addr.cameraPointer, 4);
+            uint ptr = BitConverter.ToUInt32(ptrBytes.Reverse().ToArray(), 0);
+            api.WriteMemory(pid, ptr + 0x11C, ConvertFloatToBytes(value));
+        }
+
+        public void SetDrawDistance(float value)
+        {
+            byte[] ptrBytes = api.ReadMemory(pid, sly3.addr.cameraPointer, 4);
+            uint ptr = BitConverter.ToUInt32(ptrBytes.Reverse().ToArray(), 0);
+            api.WriteMemory(pid, ptr + 0x114, ConvertFloatToBytes(value));
         }
 
         public void TriggerGameLoad(uint loadType = (uint)Sly3Addresses.LoadTypes.Normal)

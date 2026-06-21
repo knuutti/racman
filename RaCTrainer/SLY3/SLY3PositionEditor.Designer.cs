@@ -48,9 +48,6 @@ namespace racman
             this.zPosTextBox = new System.Windows.Forms.TextBox();
             this.setZPosButton = new System.Windows.Forms.Button();
             this.freezePosZCheckBox = new System.Windows.Forms.CheckBox();
-            this.optionsGroupBox = new System.Windows.Forms.GroupBox();
-            this.flyModeCheckBox = new System.Windows.Forms.CheckBox();
-            this.infiniteJumpCheckBox = new System.Windows.Forms.CheckBox();
             this.warpGroupBox = new System.Windows.Forms.GroupBox();
             this.lblWarpLocation = new System.Windows.Forms.Label();
             this.warpLocationComboBox = new System.Windows.Forms.ComboBox();
@@ -62,7 +59,6 @@ namespace racman
             this.currentMapLabel = new System.Windows.Forms.Label();
             this.charInfoGroupBox.SuspendLayout();
             this.positionGroupBox.SuspendLayout();
-            this.optionsGroupBox.SuspendLayout();
             this.warpGroupBox.SuspendLayout();
             this.SuspendLayout();
             //
@@ -404,38 +400,6 @@ namespace racman
             this.freezePosZCheckBox.UseVisualStyleBackColor = true;
             this.freezePosZCheckBox.CheckedChanged += new System.EventHandler(this.freezePosZCheckBox_CheckedChanged);
             //
-            // optionsGroupBox
-            //
-            this.optionsGroupBox.Controls.Add(this.flyModeCheckBox);
-            this.optionsGroupBox.Controls.Add(this.infiniteJumpCheckBox);
-            this.optionsGroupBox.Location = new System.Drawing.Point(10, 271);
-            this.optionsGroupBox.Name = "optionsGroupBox";
-            this.optionsGroupBox.Size = new System.Drawing.Size(462, 50);
-            this.optionsGroupBox.TabIndex = 2;
-            this.optionsGroupBox.TabStop = false;
-            this.optionsGroupBox.Text = "Options";
-            //
-            // flyModeCheckBox
-            //
-            this.flyModeCheckBox.AutoSize = true;
-            this.flyModeCheckBox.Location = new System.Drawing.Point(10, 22);
-            this.flyModeCheckBox.Name = "flyModeCheckBox";
-            this.flyModeCheckBox.Size = new System.Drawing.Size(172, 17);
-            this.flyModeCheckBox.TabIndex = 0;
-            this.flyModeCheckBox.Text = "Fly Mode (L2 = up, R2 = down)";
-            this.flyModeCheckBox.UseVisualStyleBackColor = true;
-            this.flyModeCheckBox.CheckedChanged += new System.EventHandler(this.flyModeCheckBox_CheckedChanged);
-            //
-            // infiniteJumpCheckBox
-            //
-            this.infiniteJumpCheckBox.AutoSize = true;
-            this.infiniteJumpCheckBox.Location = new System.Drawing.Point(240, 22);
-            this.infiniteJumpCheckBox.Name = "infiniteJumpCheckBox";
-            this.infiniteJumpCheckBox.Size = new System.Drawing.Size(85, 17);
-            this.infiniteJumpCheckBox.TabIndex = 1;
-            this.infiniteJumpCheckBox.Text = "Infinite Jump";
-            this.infiniteJumpCheckBox.UseVisualStyleBackColor = true;
-            //
             // warpGroupBox
             //
             this.warpGroupBox.Controls.Add(this.lblWarpLocation);
@@ -446,10 +410,10 @@ namespace racman
             this.warpGroupBox.Controls.Add(this.saveWarpButton);
             this.warpGroupBox.Controls.Add(this.deleteWarpButton);
             this.warpGroupBox.Controls.Add(this.currentMapLabel);
-            this.warpGroupBox.Location = new System.Drawing.Point(10, 329);
+            this.warpGroupBox.Location = new System.Drawing.Point(10, 271);
             this.warpGroupBox.Name = "warpGroupBox";
             this.warpGroupBox.Size = new System.Drawing.Size(462, 133);
-            this.warpGroupBox.TabIndex = 3;
+            this.warpGroupBox.TabIndex = 2;
             this.warpGroupBox.TabStop = false;
             this.warpGroupBox.Text = "Warp Locations";
             //
@@ -531,10 +495,9 @@ namespace racman
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(484, 472);
+            this.ClientSize = new System.Drawing.Size(484, 414);
             this.Controls.Add(this.charInfoGroupBox);
             this.Controls.Add(this.positionGroupBox);
-            this.Controls.Add(this.optionsGroupBox);
             this.Controls.Add(this.warpGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -546,8 +509,6 @@ namespace racman
             this.charInfoGroupBox.PerformLayout();
             this.positionGroupBox.ResumeLayout(false);
             this.positionGroupBox.PerformLayout();
-            this.optionsGroupBox.ResumeLayout(false);
-            this.optionsGroupBox.PerformLayout();
             this.warpGroupBox.ResumeLayout(false);
             this.warpGroupBox.PerformLayout();
             this.ResumeLayout(false);
@@ -589,10 +550,6 @@ namespace racman
         private System.Windows.Forms.TextBox zPosTextBox;
         private System.Windows.Forms.Button setZPosButton;
         private System.Windows.Forms.CheckBox freezePosZCheckBox;
-
-        private System.Windows.Forms.GroupBox optionsGroupBox;
-        private System.Windows.Forms.CheckBox flyModeCheckBox;
-        private System.Windows.Forms.CheckBox infiniteJumpCheckBox;
 
         private System.Windows.Forms.GroupBox warpGroupBox;
         private System.Windows.Forms.Label lblWarpLocation;
